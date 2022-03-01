@@ -26,9 +26,9 @@ clean:
 ## Set up python virtual environment and install python dependencies
 environment:
 ifneq ($(wildcard .venv/.*),)
-	@echo "Found .venv, skipping virtual environment creation."
+	@echo ">>> Found .venv, skipping virtual environment creation."
 else
-	@echo "Did not find .venv, creating virtual environment."
+	@echo ">>> Did not find .venv, creating virtual environment."
 	$(PYTHON_INTERPRETER) -m pip install --upgrade pip
 	$(PYTHON_INTERPRETER) -m pip install -q virtualenv
 	@echo ">>> Installing virtualenv."
