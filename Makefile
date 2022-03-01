@@ -1,7 +1,7 @@
 #################################################################################
 # File adapted from https://github.com/drivendata/cookiecutter-data-science
 #################################################################################
-.PHONY: environment tests data data_extract data_transform clean exploration experiments experiment_eval final_model final_eval
+.PHONY: environment tests data data_extract data_transform clean exploration experiments experiments_eval final_model final_eval python_exploration r_exploration
 
 #################################################################################
 # GLOBALS
@@ -32,15 +32,22 @@ data_training_test: environment
 data: data_extract data_transform data_training_test
 	@echo "[MAKE data]>>> Running local ETL."
 
-exploration: data_training_test
-	@echo "[MAKE exploration]>>> Running exploration notebooks and converting to .html files."
+
+python_exploration: data_training_test
+	@echo "[MAKE python_exploration]>>> Running exploratory jupyter notebooks and converting to .html files."
 	. .venv/bin/activate && jupyter nbconvert --execute --to html notebooks/develop/Data-Exploration.ipynb
+
+r_exploration: environment
+	@echo "[MAKE r_exploration]>>> Running exploratory RMarkdown notebooks and converting to .html files."
+
+exploration: python_exploration r_exploration
+	@echo "[MAKE exploration]>>> Finished running exploration notebooks."
 
 experiments: data_training_test
 	@echo "[MAKE experiments]>>> Running Hyper-parameters experiments based on BayesianSearchCV."
 
-experiment_eval: environment
-	@echo "[MAKE experiment_eval]>>> Running Evaluation of experiments"
+experiments_eval: environment
+	@echo "[MAKE experiments_eval]>>> Running Evaluation of experiments"
 
 final_model: environment
 	@echo "[MAKE final_model]>>> Building final model from best model in experiment."
@@ -48,7 +55,7 @@ final_model: environment
 final_eval: environment
 	@echo "[MAKE final_eval]>>> Running evaluation of final model on test set."
 
-all: tests data exploration experiments experiment_eval final_model final_eval
+all: tests data exploration experiments experiments_eval final_model final_eval
 
 ## Delete all generated files (e.g. virtual environment)
 clean:
