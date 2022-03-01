@@ -28,6 +28,11 @@ data_training_test: environment
 
 data: data_extract data_transform data_training_test
 
+exploration: environment
+	. .venv/bin/activate && jupyter nbconvert --execute --to html notebooks/develop/Data-Exploration.ipynb
+
+all: data exploration
+
 ## Delete all generated files (e.g. virtual environment)
 clean:
 	rm -rf .venv

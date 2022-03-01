@@ -1,7 +1,9 @@
 click==8.0.4
+helpsk==0.1.15
+jupyter-contrib-nbextensions==0.5.1
+notebook==6.4.8
 numpy==1.22.2
 pandas==1.4.1
 python-dateutil==2.8.2
 PyYAML==6.0
 scikit-learn==1.0.2
-helpsk
