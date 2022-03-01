@@ -17,9 +17,9 @@ PYTHON_INTERPRETER = python3.9
 data: environment
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw data/processed
 
-## Delete all compiled Python files
+## Delete all generated files (e.g. virtual environment)
 clean:
-	find . -type f -name "*.py[co]" -delete
+	rm -rf .venv
 	find . -type d -name "__pycache__" -delete
 
 ## Set up python interpreter environment and install python dependencies
@@ -37,8 +37,8 @@ else
 endif
 
 	@echo ">>> Activating virtual environment."
-	. .venv/bin/activate && pip install -r requirements.txt
 	@echo ">>> Installing packages from requirements.txt."
+	. .venv/bin/activate && pip install -r requirements.txt
 
 #################################################################################
 # PROJECT RULES                                                                 #
