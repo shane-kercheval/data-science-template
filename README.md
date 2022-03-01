@@ -54,6 +54,8 @@ This repo is a template for ML/DS Projects. It's influenced from:
 │   ├── test-files                <- Directory where artifacts and results of tests are saved to be compared to the sources of truth. Only .gitkeep in this directory should be synced to Github
 │   ├── test.py                   <- Runs the tests defined in test_config.yml and then compares the produced artifacts/results with those defined as expected in the true/ directory
 │
+│
+├── Makefile                      <- Makefile with commands like `make data` or `make train`
 ├── run.py                        <- Simplifies the execution of one or more of the src scripts 
 ├── requirements.txt              <- Python package dependencies 
 ```
