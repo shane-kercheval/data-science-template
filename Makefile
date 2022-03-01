@@ -1,32 +1,20 @@
 #################################################################################
 # File adapted from https://github.com/drivendata/cookiecutter-data-science
 #################################################################################
-.PHONY: clean data lint requirements
+.PHONY: clean data environment
 
 #################################################################################
 # GLOBALS                                                                       #
 #################################################################################
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-PROJECT_NAME = project-name
-PYTHON_INTERPRETER = python3
-
-ifeq (,$(shell which conda))
-HAS_CONDA=False
-else
-HAS_CONDA=True
-endif
+PYTHON_INTERPRETER = python3.9
 
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
 
-## Install Python Dependencies
-requirements:
-	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
-	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
-
 ## Make Dataset
-data: requirements
+data: environment
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw data/processed
 
 ## Delete all compiled Python files
@@ -34,28 +22,23 @@ clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
 
-## Lint using flake8
-lint:
-	flake8 src
-
-## Set up python interpreter environment
-create_environment:
-ifeq (True,$(HAS_CONDA))
-		@echo ">>> Detected conda, creating conda environment."
-ifeq (3,$(findstring 3,$(PYTHON_INTERPRETER)))
-	conda create --name $(PROJECT_NAME) python=3
+## Set up python interpreter environment and install python dependencies
+environment:
+ifneq ($(wildcard .venv/.*),)
+	@echo "Found .venv, skipping virtual environment creation."
 else
-	conda create --name $(PROJECT_NAME) python=2.7
-endif
-		@echo ">>> New conda env created. Activate with:\nsource activate $(PROJECT_NAME)"
-else
-	$(PYTHON_INTERPRETER) -m pip install -q virtualenv virtualenvwrapper
-	@echo ">>> Installing virtualenvwrapper if not already installed.\nMake sure the following lines are in shell startup file\n\
-	export WORKON_HOME=$$HOME/.virtualenvs\nexport PROJECT_HOME=$$HOME/Devel\nsource /usr/local/bin/virtualenvwrapper.sh\n"
-	@bash -c "source `which virtualenvwrapper.sh`;mkvirtualenv $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER)"
-	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
+	@echo "Did not find .venv, creating virtual environment."
+	$(PYTHON_INTERPRETER) -m pip install --upgrade pip
+	$(PYTHON_INTERPRETER) -m pip install -q virtualenv
+	@echo ">>> Installing virtualenv."
+	virtualenv .venv
+	@echo ">>> Creating environment at .venv."
+	@echo ">>> To activate virtual environment, run: 'source .venv/bin/activate'."
 endif
 
+	@echo ">>> Activating virtual environment."
+	. .venv/bin/activate && pip install -r requirements.txt
+	@echo ">>> Installing packages from requirements.txt."
 
 #################################################################################
 # PROJECT RULES                                                                 #
