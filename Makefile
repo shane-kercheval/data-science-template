@@ -1,7 +1,7 @@
 #################################################################################
 # File adapted from https://github.com/drivendata/cookiecutter-data-science
 #################################################################################
-.PHONY: environment data clean
+.PHONY: environment data data_extract data_transform clean
 
 #################################################################################
 # GLOBALS
@@ -14,10 +14,15 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 #################################################################################
 
 ## Make Dataset
-data: environment
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/extract_data.py
+data_extract: environment
+	@echo ">>> Extracting data."
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/data.py extract
 
+data_transform: environment
+	@echo ">>> Transforming data."
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/data.py transform
 
+data: data_extract data_transform
 
 ## Delete all generated files (e.g. virtual environment)
 clean:

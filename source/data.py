@@ -3,13 +3,27 @@ import pickle
 import logging
 import logging.config
 from pathlib import Path
+import click
 from sklearn.datasets import fetch_openml
 import numpy as np
 
 import warnings
 
+logging.config.fileConfig("config/logging/local.conf")
+logger = logging.getLogger(__name__)
+project_directory = Path(__file__).resolve().parents[1]
 
-def extract_data(project_directory, logger):
+
+@click.group()
+def main():
+    """
+    Logic For Extracting and Transforming Datasets
+    """
+    pass
+
+
+@main.command()
+def extract():
     logger.info(f"Downloading credit data from https://www.openml.org/d/31")
     credit_g = fetch_openml('credit-g', version=1)
     credit_data = credit_g['data']
@@ -29,8 +43,12 @@ def extract_data(project_directory, logger):
     logger.info(f"Saving credit data to `{output_file}`")
     credit_data.to_pickle(output_file)
 
+
+@main.command()
+def transform():
+    logger.info(f"Transforming Data")
+
+
+
 if __name__ == '__main__':
-    logging.config.fileConfig("config/logging/local.conf")
-    logger = logging.getLogger(__name__)
-    project_dir = Path(__file__).resolve().parents[1]
-    extract_data(project_directory=project_dir, logger=logger)
+    main()
