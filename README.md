@@ -13,23 +13,23 @@ This repo is a template for ML/DS Projects. It's influenced from:
 │
 ├── config                        <- Directory for yaml configuration files for model training, scoring, etc
 │   ├── logging                   <- Configuration of python loggers
-├── data
+│
+├── data                          <- Folder that contains data used or generated.
 │   ├── external                  <- Data from third party sources.
-│   ├── interim                   <- Intermediate data that has been transformed.
-│   ├── processed                 <- The final, canonical data sets for modeling.
-│   └── raw                       <- The original, immutable data dump.
-│    
-├── data                          <- Folder that contains data used or generated. Only the external/ and sample/ subdirectories are tracked by git. 
-│   ├── archive                   <- Place to put archive data is no longer usabled. Not synced with git. 
-│   ├── external                  <- External data sources, will be synced with git
-│   ├── sample                    <- Sample data used for code development and testing, will be synced with git
+│   └── raw                       <- The original, immutable data dump. (This directory is excluded via .gitignore)
+│   ├── interim                   <- Intermediate data that has been transformed. (This directory is excluded via .gitignore)
+│   ├── processed                 <- The final, canonical data sets for modeling. (This directory is excluded via .gitignore)
 │
 ├── deliverables                  <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   ├── figures                   <- Generated graphics and figures to be used in reporting.
 │   ├── archive                   <- Previous deliverables that are outdated or no longer applicable.
 │
+├── figures                       <- Generated graphics and figures to be used in reporting and analysis.
+│   ├── deliverables              <- Generated graphics and figures to be used in reporting.
+│   ├── [etc]                     <- Various folders to organize figures (e.g. model evaluation).
+│   ├── archive                   <- Previous figures that are outdated or no longer applicable.
+│
 ├── models                        <- Trained model objects (TMOs), model predictions, and/or model summaries
-│   ├── archive                   <- Previous models that are outdated or no longer applicable. This directory is included in the .gitignore and is not tracked by git
+│   ├── archive                   <- Previous models that are outdated or no longer applicable. (This directory is excluded via .gitignore)
 │
 ├── notebooks
 │   ├── develop                   <- Current notebooks being used in development.

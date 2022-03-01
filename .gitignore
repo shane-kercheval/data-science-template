@@ -171,5 +171,12 @@ vignettes/*.pdf
 *.Rproj
 .DS_Store
 
+# exclude pickle, RDS (R), and csv files by default.
 *.pkl
 *.csv
+*.RDS
+
+# exclude data folders by default
+/data/interim/*
+/data/processed/*
+/data/raw/*
