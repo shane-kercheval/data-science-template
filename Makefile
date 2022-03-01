@@ -6,8 +6,8 @@
 #################################################################################
 # GLOBALS                                                                       #
 #################################################################################
-PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PYTHON_INTERPRETER = python3.9
+PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 #################################################################################
 # COMMANDS                                                                      #
