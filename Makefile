@@ -15,7 +15,7 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 ## Make Dataset
 data: environment
-	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw data/processed
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/extract_data.py
 
 ## Delete all generated files (e.g. virtual environment)
 clean:
