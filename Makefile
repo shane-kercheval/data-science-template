@@ -1,7 +1,7 @@
 #################################################################################
 # File adapted from https://github.com/drivendata/cookiecutter-data-science
 #################################################################################
-.PHONY: environment data data_extract data_transform clean
+.PHONY: environment data data_extract data_transform clean exploration experiments experiment_eval final_model final_eval
 
 #################################################################################
 # GLOBALS
@@ -29,9 +29,22 @@ data_training_test: environment
 data: data_extract data_transform data_training_test
 
 exploration: environment
+	@echo ">>> Running exploration notebooks and converting to .html files."
 	. .venv/bin/activate && jupyter nbconvert --execute --to html notebooks/develop/Data-Exploration.ipynb
 
-all: data exploration
+experiments: environment
+	@echo ">>> Running Hyper-parameters experiments based on BayesianSearchCV."
+
+experiment_eval: environment
+	@echo ">>> Running Evaluation of experiments"
+
+final_model: environment
+	@echo ">>> Building final model from best model in experiment."
+
+final_eval: environment
+	@echo ">>> Running evaluation of final model on test set."
+
+all: data exploration experiments experiment_eval final_model final_eval
 
 ## Delete all generated files (e.g. virtual environment)
 clean:
