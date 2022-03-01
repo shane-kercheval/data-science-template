@@ -22,7 +22,7 @@ clean:
 	rm -rf .venv
 	find . -type d -name "__pycache__" -delete
 
-## Set up python interpreter environment and install python dependencies
+## Set up python virtual environment and install python dependencies
 environment:
 ifneq ($(wildcard .venv/.*),)
 	@echo "Found .venv, skipping virtual environment creation."
