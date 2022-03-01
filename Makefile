@@ -1,7 +1,7 @@
 #################################################################################
 # File adapted from https://github.com/drivendata/cookiecutter-data-science
 #################################################################################
-.PHONY: environment data data_extract data_transform clean exploration experiments experiment_eval final_model final_eval
+.PHONY: environment tests data data_extract data_transform clean exploration experiments experiment_eval final_model final_eval
 
 #################################################################################
 # GLOBALS
@@ -13,38 +13,42 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 # Project-specific Commands
 #################################################################################
 
+tests: environment
+	@echo "[MAKE tests]>>> Running unit tests."
+
 ## Make Dataset
 data_extract: environment
-	@echo ">>> Extracting data."
+	@echo "[MAKE data_extract]>>> Extracting data."
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/data.py extract
 
 data_transform: environment
-	@echo ">>> Transforming data."
+	@echo "[MAKE data_transform]>>> Transforming data."
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/data.py transform
 
 data_training_test: environment
-	@echo ">>> Transforming data."
+	@echo "[MAKE data_training_test]>>> Creating training & test sets."
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/data.py create-training-test
 
 data: data_extract data_transform data_training_test
+	@echo "[MAKE data]>>> Running local ETL."
 
-exploration: environment
-	@echo ">>> Running exploration notebooks and converting to .html files."
+exploration: data_training_test
+	@echo "[MAKE exploration]>>> Running exploration notebooks and converting to .html files."
 	. .venv/bin/activate && jupyter nbconvert --execute --to html notebooks/develop/Data-Exploration.ipynb
 
-experiments: environment
-	@echo ">>> Running Hyper-parameters experiments based on BayesianSearchCV."
+experiments: data_training_test
+	@echo "[MAKE experiments]>>> Running Hyper-parameters experiments based on BayesianSearchCV."
 
 experiment_eval: environment
-	@echo ">>> Running Evaluation of experiments"
+	@echo "[MAKE experiment_eval]>>> Running Evaluation of experiments"
 
 final_model: environment
-	@echo ">>> Building final model from best model in experiment."
+	@echo "[MAKE final_model]>>> Building final model from best model in experiment."
 
 final_eval: environment
-	@echo ">>> Running evaluation of final model on test set."
+	@echo "[MAKE final_eval]>>> Running evaluation of final model on test set."
 
-all: data exploration experiments experiment_eval final_model final_eval
+all: tests data exploration experiments experiment_eval final_model final_eval
 
 ## Delete all generated files (e.g. virtual environment)
 clean:
@@ -60,24 +64,23 @@ clean:
 # Generic Commands
 #################################################################################
 
-
 ## Set up python virtual environment and install python dependencies
 environment:
 ifneq ($(wildcard .venv/.*),)
-	@echo ">>> Found .venv, skipping virtual environment creation."
-	@echo ">>> Activating virtual environment."
-	@echo ">>> Installing packages from requirements.txt."
+	@echo "[MAKE environment]>>> Found .venv, skipping virtual environment creation."
+	@echo "[MAKE environment]>>> Activating virtual environment."
+	@echo "[MAKE environment]>>> Installing packages from requirements.txt."
 	. .venv/bin/activate && pip install -q -r requirements.txt
 else
-	@echo ">>> Did not find .venv, creating virtual environment."
+	@echo "[MAKE environment]>>> Did not find .venv, creating virtual environment."
 	$(PYTHON_INTERPRETER) -m pip install --upgrade pip
 	$(PYTHON_INTERPRETER) -m pip install -q virtualenv
-	@echo ">>> Installing virtualenv."
+	@echo "[MAKE environment]>>> Installing virtualenv."
 	virtualenv .venv
-	@echo ">>> NOTE: Creating environment at .venv."
-	@echo ">>> NOTE: To activate virtual environment, run: 'source .venv/bin/activate'."
-	@echo ">>> Activating virtual environment."
-	@echo ">>> Installing packages from requirements.txt."
+	@echo "[MAKE environment]>>> NOTE: Creating environment at .venv."
+	@echo "[MAKE environment]>>> NOTE: To activate virtual environment, run: 'source .venv/bin/activate'."
+	@echo "[MAKE environment]>>> Activating virtual environment."
+	@echo "[MAKE environment]>>> Installing packages from requirements.txt."
 	. .venv/bin/activate && pip install -r requirements.txt
 endif
 
