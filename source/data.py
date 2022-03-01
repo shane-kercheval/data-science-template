@@ -50,6 +50,7 @@ def extract():
 def transform():
     logger.info(f"Transforming Data")
 
+
 @main.command()
 def create_training_test():
     logger.info(f"Splitting training & test datasets")
