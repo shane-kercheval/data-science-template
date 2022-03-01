@@ -17,6 +17,8 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 data: environment
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/extract_data.py
 
+
+
 ## Delete all generated files (e.g. virtual environment)
 clean:
 	rm -rf .venv
