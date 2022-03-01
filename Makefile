@@ -1,16 +1,16 @@
 #################################################################################
 # File adapted from https://github.com/drivendata/cookiecutter-data-science
 #################################################################################
-.PHONY: clean data environment
+.PHONY: environment data clean
 
 #################################################################################
-# GLOBALS                                                                       #
+# GLOBALS
 #################################################################################
 PYTHON_INTERPRETER = python3.9
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 #################################################################################
-# COMMANDS                                                                      #
+# Project-specific Commands
 #################################################################################
 
 ## Make Dataset
@@ -22,6 +22,11 @@ clean:
 	rm -rf .venv
 	rm data/raw/credit_data.pkl
 	find . -type d -name "__pycache__" -delete
+
+#################################################################################
+# Generic Commands
+#################################################################################
+
 
 ## Set up python virtual environment and install python dependencies
 environment:
@@ -42,15 +47,8 @@ endif
 	. .venv/bin/activate && pip install -q -r requirements.txt
 
 #################################################################################
-# PROJECT RULES                                                                 #
+# Self Documenting Commands
 #################################################################################
-
-
-
-#################################################################################
-# Self Documenting Commands                                                     #
-#################################################################################
-
 .DEFAULT_GOAL := help
 
 # Inspired by <http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html>
