@@ -36,7 +36,11 @@ all: data exploration
 ## Delete all generated files (e.g. virtual environment)
 clean:
 	rm -rf .venv
-	rm data/raw/credit.pkl
+	rm -f data/raw/credit.pkl
+	rm -f data/processed/X_test.pkl
+	rm -f data/processed/X_train.pkl
+	rm -f data/processed/y_test.pkl
+	rm -f data/processed/y_train.pkl
 	find . -type d -name "__pycache__" -delete
 
 #################################################################################
