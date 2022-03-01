@@ -22,12 +22,16 @@ data_transform: environment
 	@echo ">>> Transforming data."
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/data.py transform
 
-data: data_extract data_transform
+data_training_test: environment
+	@echo ">>> Transforming data."
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/data.py create-training-test
+
+data: data_extract data_transform data_training_test
 
 ## Delete all generated files (e.g. virtual environment)
 clean:
 	rm -rf .venv
-	rm data/raw/credit_data.pkl
+	rm data/raw/credit.pkl
 	find . -type d -name "__pycache__" -delete
 
 #################################################################################
