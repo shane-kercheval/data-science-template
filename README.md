@@ -61,3 +61,15 @@ This repo is a template for ML/DS Projects. It's influenced from:
 ```
 
 The project structure was heavily influenced by - https://github.com/cmawer/reproducible-model.
+
+
+# Project Requirements
+
+> This section should describe the project-specific requirements (e.g. python3.9).
+
+- python3.9
+- R version XXX
+
+# Project Overview
+
+TBD
