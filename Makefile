@@ -20,6 +20,7 @@ data: environment
 ## Delete all generated files (e.g. virtual environment)
 clean:
 	rm -rf .venv
+	rm data/raw/credit_data.pkl
 	find . -type d -name "__pycache__" -delete
 
 ## Set up python virtual environment and install python dependencies
@@ -32,13 +33,13 @@ else
 	$(PYTHON_INTERPRETER) -m pip install -q virtualenv
 	@echo ">>> Installing virtualenv."
 	virtualenv .venv
-	@echo ">>> Creating environment at .venv."
-	@echo ">>> To activate virtual environment, run: 'source .venv/bin/activate'."
+	@echo ">>> NOTE: Creating environment at .venv."
+	@echo ">>> NOTE: To activate virtual environment, run: 'source .venv/bin/activate'."
 endif
 
 	@echo ">>> Activating virtual environment."
 	@echo ">>> Installing packages from requirements.txt."
-	. .venv/bin/activate && pip install -r requirements.txt
+	. .venv/bin/activate && pip install -q -r requirements.txt
 
 #################################################################################
 # PROJECT RULES                                                                 #
