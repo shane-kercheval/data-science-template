@@ -6,18 +6,23 @@ from pathlib import Path
 from sklearn.datasets import fetch_openml
 import numpy as np
 
+import warnings
+
+
 def extract_data(project_directory, logger):
     logger.info(f"Downloading credit data from https://www.openml.org/d/31")
     credit_g = fetch_openml('credit-g', version=1)
     credit_data = credit_g['data']
     credit_data['target'] = credit_g['target']
-    print(credit_data.shape)
-    logger.info(f"Credit data downloaded with {len(credit_data)} rows.")
+    logger.info(f"Credit data downloaded with {credit_data.shape[0]} rows and {credit_data.shape[1]} columns.")
     
     ## Create Missing Values
-    credit_data['duration'].iloc[0:46] = np.nan
-    credit_data['checking_status'].iloc[25:75] = np.nan
-    credit_data['credit_amount'].iloc[10:54] = 0
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        credit_data['duration'].iloc[0:46] = np.nan
+        credit_data['checking_status'].iloc[25:75] = np.nan
+        credit_data['credit_amount'].iloc[10:54] = 0
+    
     logger.info(f"Done processing credit data.")
 
     output_file = os.path.join(project_directory, 'data/raw/credit_data.pkl')
