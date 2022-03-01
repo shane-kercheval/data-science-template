@@ -39,6 +39,9 @@ clean:
 environment:
 ifneq ($(wildcard .venv/.*),)
 	@echo ">>> Found .venv, skipping virtual environment creation."
+	@echo ">>> Activating virtual environment."
+	@echo ">>> Installing packages from requirements.txt."
+	. .venv/bin/activate && pip install -q -r requirements.txt
 else
 	@echo ">>> Did not find .venv, creating virtual environment."
 	$(PYTHON_INTERPRETER) -m pip install --upgrade pip
@@ -47,11 +50,10 @@ else
 	virtualenv .venv
 	@echo ">>> NOTE: Creating environment at .venv."
 	@echo ">>> NOTE: To activate virtual environment, run: 'source .venv/bin/activate'."
-endif
-
 	@echo ">>> Activating virtual environment."
 	@echo ">>> Installing packages from requirements.txt."
-	. .venv/bin/activate && pip install -q -r requirements.txt
+	. .venv/bin/activate && pip install -r requirements.txt
+endif
 
 #################################################################################
 # Self Documenting Commands
