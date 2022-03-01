@@ -20,7 +20,6 @@ def extract_data(project_directory, logger):
     credit_data['credit_amount'].iloc[10:54] = 0
     logger.info(f"Done processing credit data.")
 
-    
     output_file = os.path.join(project_directory, 'data/raw/credit_data.pkl')
     logger.info(f"Saving credit data to `{output_file}`")
     credit_data.to_pickle(output_file)
