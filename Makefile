@@ -33,7 +33,6 @@ data_training_test: environment
 data: data_extract data_transform data_training_test
 	@echo "[MAKE data]>>> Running local ETL."
 
-
 python_exploration: data_training_test
 	@echo "[MAKE python_exploration]>>> Running exploratory jupyter notebooks and converting to .html files."
 	. .venv/bin/activate && jupyter nbconvert --execute --to html notebooks/develop/Data-Exploration.ipynb
@@ -67,6 +66,7 @@ clean:
 	rm -f data/processed/X_train.pkl
 	rm -f data/processed/y_test.pkl
 	rm -f data/processed/y_train.pkl
+	rm -f models/experiments/new_results.txt
 	find . -type d -name "__pycache__" -delete
 
 #################################################################################
