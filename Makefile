@@ -47,8 +47,15 @@ experiments: environment
 	@echo "[MAKE experiments]>>> Running Hyper-parameters experiments based on BayesianSearchCV."
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/run_experiments.py
 
-experiments_eval: environment
+experiments_eval: models/experiments/new_results.txt
 	@echo "[MAKE experiments_eval]>>> Running Evaluation of experiments"
+	@echo "[MAKE experiments_eval]>>> Moving experimentation .ipynb template to models/experiments directory."
+	cp notebooks/experiment-template.ipynb notebooks/develop/$(shell cat models/experiments/new_results.txt).ipynb
+	@echo "[MAKE experiments_eval]>>> Setting the experiments yaml file name within the ipynb file."
+	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat models/experiments/new_results.txt)/g' notebooks/develop/$(shell cat models/experiments/new_results.txt).ipynb
+	@echo "[MAKE experiments_eval]>>> Running the notebook and creating html."
+	. .venv/bin/activate && jupyter nbconvert --execute --to html notebooks/develop/$(shell cat models/experiments/new_results.txt).ipynb
+	rm -f models/experiments/new_results.txt
 
 final_model: environment
 	@echo "[MAKE final_model]>>> Building final model from best model in experiment."

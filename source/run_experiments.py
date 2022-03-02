@@ -66,7 +66,7 @@ def main():
     logger.info(f"Best Params: {bayes_search.best_params_}")
 
     with open('models/experiments/new_results.txt', 'w') as text_file:
-        text_file.writelines([yaml_file_name + "\n", model_file_name])
+        text_file.writelines(file_name)
 
 
 if __name__ == '__main__':
