@@ -37,7 +37,7 @@ This repo is a template for ML/DS Projects. It's influenced from:
 │   ├── archive                   <- Previous notebooks that are outdated or no longer applicable.
 │   ├── template.ipynb            <- Template notebook for analysis with useful imports and helper functions. 
 │
-├── notebooks                     <- Data dictionaries, manuals, and all other explanatory materials.
+├── references                    <- Data dictionaries, manuals, and all other explanatory materials.
 │
 ├── src                           <- Source data for the sybil project 
 │   ├── archive                   <- Previous scripts that are outdated or no longer applicable.
