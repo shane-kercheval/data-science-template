@@ -15,6 +15,7 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 tests: environment
 	@echo "[MAKE tests]>>> Running unit tests."
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m unittest discover tests
 
 ## Make Dataset
 data_extract: environment

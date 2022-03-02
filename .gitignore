@@ -129,6 +129,9 @@ dmypy.json
 .pyre/
 
 
+# PyCharm
+.idea/*
+
 # History files
 .Rhistory
 .Rapp.history
