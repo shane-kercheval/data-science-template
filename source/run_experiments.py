@@ -27,8 +27,9 @@ def main():
             RandomForestBayesianSearchSpace(iterations=3),
         ]
     )
-
-    with Timer("Model Experiment (BayesSearchCV)", get_logger()):
+    logger = get_logger()
+    with Timer("Model Experiment (BayesSearchCV)", logger):
+        logger.info("Starting BayesSearchCV")
         bayes_search = BayesSearchCV(
             estimator=search_space.pipeline(),
             search_spaces=search_space.search_spaces(),
@@ -47,7 +48,12 @@ def main():
             description='BayesSearchCV',
             parameter_name_mappings=search_space.param_name_mappings()
         )
-        results.to_yaml_file(yaml_file_name=f'models/Multi-model - BayesSearchCV - {str(datetime.datetime.now())}.yaml')
+        results_file = f'models/Multi-model - BayesSearchCV - {str(datetime.datetime.now())}.yaml'
+        logger.info(f"Saving results of BayesSearchCV to: `{results_file}`")
+        results.to_yaml_file(yaml_file_name=results_file)
+
+        logger.info(f"Best Score: {bayes_search.best_score_}")
+        logger.info(f"Best Params: {bayes_search.best_params_}")
 
 
 if __name__ == '__main__':
