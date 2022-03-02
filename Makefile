@@ -89,14 +89,17 @@ ifneq ($(wildcard .venv/.*),)
 	. .venv/bin/activate && pip install -q -r requirements.txt
 else
 	@echo "[MAKE environment]>>> Did not find .venv, creating virtual environment."
-	$(PYTHON_INTERPRETER) -m pip install --upgrade pip
-	$(PYTHON_INTERPRETER) -m pip install -q virtualenv
+	python -m pip install --upgrade pip
+	python -m pip install -q virtualenv
 	@echo "[MAKE environment]>>> Installing virtualenv."
-	virtualenv .venv
+	virtualenv .venv --python=$(PYTHON_INTERPRETER)
 	@echo "[MAKE environment]>>> NOTE: Creating environment at .venv."
 	@echo "[MAKE environment]>>> NOTE: To activate virtual environment, run: 'source .venv/bin/activate'."
 	@echo "[MAKE environment]>>> Activating virtual environment."
 	@echo "[MAKE environment]>>> Installing packages from requirements.txt."
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m pip install --upgrade pip
+	# . .venv/bin/activate && $(PYTHON_INTERPRETER) -m pip install --upgrade build
+	# . .venv/bin/activate && $(PYTHON_INTERPRETER) -m pip install --upgrade twine
 	. .venv/bin/activate && pip install -r requirements.txt
 endif
 
