@@ -48,7 +48,8 @@ def main():
             description='BayesSearchCV',
             parameter_name_mappings=search_space.param_name_mappings()
         )
-        results_file = f'models/Multi-model - BayesSearchCV - {str(datetime.datetime.now())}.yaml'
+        timestamp = f"{datetime.datetime.now():%Y-%m-%d-%H-%M-%S}"
+        results_file = f'models/experiments/Multi-model-BayesSearchCV-{timestamp}.yaml'
         logger.info(f"Saving results of BayesSearchCV to: `{results_file}`")
         results.to_yaml_file(yaml_file_name=results_file)
 
