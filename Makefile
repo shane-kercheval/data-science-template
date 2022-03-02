@@ -20,15 +20,15 @@ tests: environment
 ## Make Dataset
 data_extract: environment
 	@echo "[MAKE data_extract]>>> Extracting data."
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/data.py extract
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py extract
 
 data_transform: environment
 	@echo "[MAKE data_transform]>>> Transforming data."
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/data.py transform
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py transform
 
 data_training_test: environment
 	@echo "[MAKE data_training_test]>>> Creating training & test sets."
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/data.py create-training-test
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py create-training-test
 
 data: data_extract data_transform data_training_test
 	@echo "[MAKE data]>>> Running local ETL."
@@ -44,8 +44,9 @@ r_exploration: environment
 exploration: python_exploration r_exploration
 	@echo "[MAKE exploration]>>> Finished running exploration notebooks."
 
-experiments: data_training_test
+experiments: environment
 	@echo "[MAKE experiments]>>> Running Hyper-parameters experiments based on BayesianSearchCV."
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/run_experiments.py
 
 experiments_eval: environment
 	@echo "[MAKE experiments_eval]>>> Running Evaluation of experiments"

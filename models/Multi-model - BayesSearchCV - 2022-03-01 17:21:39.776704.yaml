@@ -1,0 +1,166 @@
+description: BayesSearchCV
+cross_validation_type: <class 'skopt.searchcv.BayesSearchCV'>
+higher_score_is_better: true
+number_of_splits: 5
+score_names:
+- roc_auc
+parameter_names:
+- model
+- model__C
+- model__max_features
+- model__max_depth
+- model__n_estimators
+- model__min_samples_split
+- model__min_samples_leaf
+- model__max_samples
+- model__criterion
+- prep__numeric__imputer__transformer
+- prep__numeric__scaler__transformer
+- prep__numeric__pca__transformer
+- prep__non_numeric__encoder__transformer
+parameter_names_mapping:
+  model: model
+  model__C: C
+  model__max_features: max_features
+  model__max_depth: max_depth
+  model__n_estimators: n_estimators
+  model__min_samples_split: min_samples_split
+  model__min_samples_leaf: min_samples_leaf
+  model__max_samples: max_samples
+  model__criterion: criterion
+  prep__numeric__imputer__transformer: imputer
+  prep__numeric__scaler__transformer: scaler
+  prep__numeric__pca__transformer: pca
+  prep__non_numeric__encoder__transformer: encoder
+test_score_rankings:
+  roc_auc:
+  - 7
+  - 8
+  - 6
+  - 3
+  - 2
+  - 5
+  - 4
+  - 1
+test_score_averages:
+  roc_auc:
+  - 0.7263932822687875
+  - 0.7125537018798377
+  - 0.7472597283679335
+  - 0.76323441451448
+  - 0.7685794582527196
+  - 0.7563857604239843
+  - 0.7615285006542353
+  - 0.7690344841171
+test_score_standard_deviations:
+  roc_auc:
+  - 0.023291543837312304
+  - 0.03248025183321265
+  - 0.026865708184857767
+  - 0.030945693431885097
+  - 0.03529303015233927
+  - 0.033830622536266085
+  - 0.03541612956661108
+  - 0.04492128118116266
+trials:
+- model: LogisticRegression()
+  model__C: 2.3712235042499274e-05
+  prep__non_numeric__encoder__transformer: CustomOrdinalEncoder()
+  prep__numeric__imputer__transformer: SimpleImputer(strategy='most_frequent')
+  prep__numeric__pca__transformer: PCA('mle')
+  prep__numeric__scaler__transformer: StandardScaler()
+- model: LogisticRegression()
+  model__C: 0.0031932541960563612
+  prep__non_numeric__encoder__transformer: CustomOrdinalEncoder()
+  prep__numeric__imputer__transformer: SimpleImputer(strategy='median')
+  prep__numeric__pca__transformer: PCA('mle')
+  prep__numeric__scaler__transformer: MinMaxScaler()
+- model: LogisticRegression()
+  model__C: 32.730896501169475
+  prep__non_numeric__encoder__transformer: OneHotEncoder()
+  prep__numeric__imputer__transformer: SimpleImputer()
+  prep__numeric__pca__transformer: PCA('mle')
+  prep__numeric__scaler__transformer: StandardScaler()
+- model: LogisticRegression()
+  prep__non_numeric__encoder__transformer: OneHotEncoder()
+  prep__numeric__imputer__transformer: SimpleImputer()
+  prep__numeric__pca__transformer: None
+  prep__numeric__scaler__transformer: StandardScaler()
+- model: RandomForestClassifier()
+  model__criterion: gini
+  model__max_depth: 50
+  model__max_features: 0.797397050836895
+  model__max_samples: 0.6620299911421869
+  model__min_samples_leaf: 4
+  model__min_samples_split: 29
+  model__n_estimators: 539
+  prep__non_numeric__encoder__transformer: OneHotEncoder()
+  prep__numeric__imputer__transformer: SimpleImputer(strategy='most_frequent')
+  prep__numeric__pca__transformer: None
+  prep__numeric__scaler__transformer: None
+- model: RandomForestClassifier()
+  model__criterion: gini
+  model__max_depth: 87
+  model__max_features: 0.4008718223246863
+  model__max_samples: 0.6905323823987464
+  model__min_samples_leaf: 11
+  model__min_samples_split: 2
+  model__n_estimators: 1056
+  prep__non_numeric__encoder__transformer: CustomOrdinalEncoder()
+  prep__numeric__imputer__transformer: SimpleImputer()
+  prep__numeric__pca__transformer: PCA('mle')
+  prep__numeric__scaler__transformer: None
+- model: RandomForestClassifier()
+  model__criterion: gini
+  model__max_depth: 74
+  model__max_features: 0.2492810023922022
+  model__max_samples: 0.7893321681141925
+  model__min_samples_leaf: 14
+  model__min_samples_split: 17
+  model__n_estimators: 729
+  prep__non_numeric__encoder__transformer: CustomOrdinalEncoder()
+  prep__numeric__imputer__transformer: SimpleImputer(strategy='most_frequent')
+  prep__numeric__pca__transformer: PCA('mle')
+  prep__numeric__scaler__transformer: None
+- model: RandomForestClassifier()
+  prep__non_numeric__encoder__transformer: OneHotEncoder()
+  prep__numeric__imputer__transformer: SimpleImputer()
+  prep__numeric__pca__transformer: None
+  prep__numeric__scaler__transformer: None
+timings:
+  fit time averages:
+  - 0.01708502769470215
+  - 0.016286849975585938
+  - 0.023259639739990234
+  - 0.012500381469726563
+  - 0.6545166015625
+  - 0.8990771770477295
+  - 0.5391691207885743
+  - 0.41661992073059084
+  fit time standard deviations:
+  - 0.003301187670214545
+  - 0.005186289242173174
+  - 0.00360817097874941
+  - 0.00038491843682029087
+  - 0.016392491151150147
+  - 0.017446979256814116
+  - 0.014079921348198686
+  - 0.007849457863486535
+  score time averages:
+  - 0.008258819580078125
+  - 0.0074730396270751955
+  - 0.003107595443725586
+  - 0.003045511245727539
+  - 0.02535114288330078
+  - 0.04691205024719238
+  - 0.03679676055908203
+  - 0.029430532455444337
+  score time standard deviations:
+  - 0.0025717407875114283
+  - 0.0051008662777812025
+  - 0.00042094344397333516
+  - 0.00012290790167240935
+  - 0.0007457113850043301
+  - 0.0023137600269615075
+  - 0.0037407662608052116
+  - 0.00364539677704177

@@ -7,4 +7,5 @@ pandas==1.4.1
 python-dateutil==2.8.2
 PyYAML==6.0
 scikit-learn==1.0.2
+scikit-optimize==0.9.0
 xmltodict==0.12.0

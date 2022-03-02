@@ -1,8 +1,9 @@
 import datetime
 import logging
 import logging.config
-import yaml
+
 import xmltodict
+import yaml
 
 
 def get_logger(config="config/logging/local.conf", logger_name='app', leg_level="DEBUG"):
@@ -27,9 +28,9 @@ def open_dict_like_file(file_name):
 
 
 class Timer:
-    def __init__(self, description, logger):
+    def __init__(self, message, logger):
         self.logger = logger
-        self.description = description
+        self.message = message
 
     def __enter__(self):
         self.start = datetime.datetime.now()
@@ -39,4 +40,4 @@ class Timer:
     def __exit__(self, *args):
         self.end = datetime.datetime.now()
         self.interval = self.end - self.start
-        self.logger.info("%s took %0.2f seconds", self.description, self.interval.total_seconds())
+        self.logger.info("%s (%0.2f seconds)", self.message, self.interval.total_seconds())
