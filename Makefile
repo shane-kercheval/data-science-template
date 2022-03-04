@@ -13,74 +13,80 @@ SNOWFLAKE_VERSION := 2.7.4
 
 # PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
+
+FORMAT_MESSAGE =  "\n[MAKE "$(1)"] >>>" $(2)"\n"
+
 #################################################################################
 # Project-specific Commands
 #################################################################################
+temp:
+	@echo $(call FORMAT_MESSAGE,"tests_python","Running python unit tests.")
+
 tests_python: environment_python
-	@echo "[MAKE tests_python]>>> Running python unit tests."
+	@echo $(call FORMAT_MESSAGE,"tests_python", "Running python unit tests.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m unittest discover tests
 
 tests_r: environment_r
-	@echo "[MAKE tests_r]>>> Running R unit tests."
+	@echo $(call FORMAT_MESSAGE,"tests_r","Running R unit tests.")
 	R --quiet -e "testthat::test_dir('tests')"
 
 tests: tests_python tests_r
-	@echo "[MAKE tests]>>> Finished running unit tests."
+	@echo $(call FORMAT_MESSAGE,"tests","Finished running unit tests.")
 
 ## Make Dataset
 data_extract: environment_python
-	@echo "[MAKE data_extract]>>> Extracting data."
+	@echo $(call FORMAT_MESSAGE,"data_extract","Extracting data.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py extract
 
 data_transform: environment_python
-	@echo "[MAKE data_transform]>>> Transforming data."
+	@echo $(call FORMAT_MESSAGE,"data_transform","Transforming data.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py transform
 
 data_training_test: environment_python
-	@echo "[MAKE data_training_test]>>> Creating training & test sets."
+	@echo $(call FORMAT_MESSAGE,"data_training_test","Creating training & test sets.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py create-training-test
 
 data: data_extract data_transform data_training_test
-	@echo "[MAKE data]>>> Finished running local ETL."
+	@echo $(call FORMAT_MESSAGE,"data","Finished running local ETL.")
 
 exploration_python: environment_python data_training_test
-	@echo "[MAKE exploration_python]>>> Running exploratory jupyter notebooks and converting to .html files."
+	@echo $(call FORMAT_MESSAGE,"exploration_python","Running exploratory jupyter notebooks and converting to .html files.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html notebooks/develop/Data-Exploration.ipynb
 
 exploration_r: environment_r
-	@echo "[MAKE exploration_r]>>> Running exploratory RMarkdown notebooks and converting to .html files."
+	@echo $(call FORMAT_MESSAGE,"exploration_r","Running exploratory RMarkdown notebooks and converting to .html files.")
 	Rscript -e "rmarkdown::render('notebooks/develop/r-markdown-template.Rmd')"
 
 exploration: exploration_python exploration_r
-	@echo "[MAKE exploration]>>> Finished running exploration notebooks."
+	@echo $(call FORMAT_MESSAGE,"exploration","Finished running exploration notebooks.")
 
 experiments: environment
-	@echo "[MAKE experiments]>>> Running Hyper-parameters experiments based on BayesianSearchCV."
+	@echo $(call FORMAT_MESSAGE,"experiments","Running Hyper-parameters experiments based on BayesianSearchCV.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/run_experiments.py
 
 experiments_eval: models/experiments/new_results.txt
-	@echo "[MAKE experiments_eval]>>> Running Evaluation of experiments"
-	@echo "[MAKE experiments_eval]>>> Moving experimentation .ipynb template to models/experiments directory."
+	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running Evaluation of experiments")
+	@echo $(call FORMAT_MESSAGE,"experiments_eval","Moving experimentation .ipynb template to models/experiments directory.")
 	cp notebooks/experiment-template.ipynb notebooks/develop/$(shell cat models/experiments/new_results.txt).ipynb
-	@echo "[MAKE experiments_eval]>>> Setting the experiments yaml file name within the ipynb file."
+	@echo $(call FORMAT_MESSAGE,"experiments_eval","Setting the experiments yaml file name within the ipynb file.")
 	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat models/experiments/new_results.txt)/g' notebooks/develop/$(shell cat models/experiments/new_results.txt).ipynb
-	@echo "[MAKE experiments_eval]>>> Running the notebook and creating html."
+	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running the notebook and creating html.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html notebooks/develop/$(shell cat models/experiments/new_results.txt).ipynb
 	rm -f models/experiments/new_results.txt
 
 final_model: environment
-	@echo "[MAKE final_model]>>> Building final model from best model in experiment."
+	@echo $(call FORMAT_MESSAGE,"final_model","Building final model from best model in experiment.")
 
 final_eval: environment
-	@echo "[MAKE final_eval]>>> Running evaluation of final model on test set."
+	@echo $(call FORMAT_MESSAGE,"final_eval","Running evaluation of final model on test set.")
 
 ## Run entire workflow.
 all: environment tests data exploration experiments experiments_eval final_model final_eval
-	@echo "[MAKE all]>>> Finished running entire workflow."
+	@echo $(call FORMAT_MESSAGE,"all","Finished running entire workflow.")
 
 ## Delete all generated files (e.g. virtual environment)
 clean: clean_python clean_r
-	@echo "[MAKE clean]>>> Cleaning project files."
+	@echo $(call FORMAT_MESSAGE,"clean","Cleaning project files.")
 	rm -f data/raw/*.pkl
 	rm -f data/raw/*.csv
 	rm -f data/processed/*
@@ -89,43 +95,43 @@ clean: clean_python clean_r
 # Generic Commands
 #################################################################################
 clean_python:
-	@echo "[MAKE clean_python]>>> Cleaning Python files."
+	@echo $(call FORMAT_MESSAGE,"clean_python","Cleaning Python files.")
 	rm -rf .venv
 	find . -type d -name "__pycache__" -delete
 
 clean_r:
-	@echo "[MAKE clean_r]>>> Cleaning R files."
+	@echo $(call FORMAT_MESSAGE,"clean_r","Cleaning R files.")
 	rm -rf renv
 	rm -f .Rprofile
 
 environment_python:
 ifneq ($(wildcard .venv/.*),)
-	@echo "[MAKE environment_python]>>> Found .venv, skipping virtual environment creation."
-	@echo "[MAKE environment_python]>>> Activating virtual environment."
-	@echo "[MAKE environment_python]>>> Installing packages from requirements.txt."
+	@echo $(call FORMAT_MESSAGE,"environment_python","Found .venv directory. Skipping virtual environment creation.")
+	@echo $(call FORMAT_MESSAGE,"environment_python","Activating virtual environment.")
+	@echo $(call FORMAT_MESSAGE,"environment_python","Installing packages from requirements.txt.")
 	. .venv/bin/activate && pip install -q -r requirements.txt
 else
-	@echo "[MAKE environment_python]>>> Did not find .venv, creating virtual environment."
+	@echo $(call FORMAT_MESSAGE,"environment_python","Did not find .venv directory. Creating virtual environment.")
 	python -m pip install --upgrade pip
 	python -m pip install -q virtualenv
-	@echo "[MAKE environment_python]>>> Installing virtualenv."
+	@echo $(call FORMAT_MESSAGE,"environment_python","Installing virtualenv.")
 	virtualenv .venv --python=$(PYTHON_INTERPRETER)
-	@echo "[MAKE environment_python]>>> NOTE: Creating environment at .venv."
-	@echo "[MAKE environment_python]>>> NOTE: To activate virtual environment, run: 'source .venv/bin/activate'."
-	@echo "[MAKE environment_python]>>> Activating virtual environment."
-	@echo "[MAKE environment_python]>>> Installing packages from requirements.txt."
+	@echo $(call FORMAT_MESSAGE,"environment_python","NOTE: Creating environment at .venv.")
+	@echo $(call FORMAT_MESSAGE,"environment_python","NOTE: To activate virtual environment, run: 'source .venv/bin/activate'.")
+	@echo $(call FORMAT_MESSAGE,"environment_python","Activating virtual environment.")
+	@echo $(call FORMAT_MESSAGE,"environment_python","Installing packages from requirements.txt.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m pip install --upgrade pip
 	. .venv/bin/activate && pip install -r requirements.txt
-	@echo "[MAKE environment_python]>>> Installing snowflake packages."
+	@echo $(call FORMAT_MESSAGE,"environment_python","Installing snowflake packages.")
 	. .venv/bin/activate && pip install -r https://raw.githubusercontent.com/snowflakedb/snowflake-connector-python/v$(SNOWFLAKE_VERSION)/tested_requirements/requirements_$(PYTHON_VERSION_SHORT).reqs
 	. .venv/bin/activate && pip install snowflake-connector-python==v$(SNOWFLAKE_VERSION)
 endif
 
 environment_r:
 ifneq ($(wildcard renv/.*),)
-	@echo "[MAKE environment_r]>>> Found renv, skipping virtual environment creation."
+	@echo $(call FORMAT_MESSAGE,"environment_r","Found renv directory. Skipping virtual environment creation.")
 else
-	@echo "[MAKE environment_r]>>> Did not find renv, creating virtual environment."
+	@echo $(call FORMAT_MESSAGE,"environment_r","Did not find renv directory. Creating virtual environment.")
 	R --quiet -e 'install.packages("renv", repos = "http://cran.us.r-project.org")'
 	# Creates `.Rprofile` file, and `renv` folder
 	R --quiet -e 'renv::init(bare = TRUE)'
