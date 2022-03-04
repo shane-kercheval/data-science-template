@@ -19,9 +19,6 @@ FORMAT_MESSAGE =  "\n[MAKE "$(1)"] >>>" $(2)"\n"
 #################################################################################
 # Project-specific Commands
 #################################################################################
-temp:
-	@echo $(call FORMAT_MESSAGE,"tests_python","Running python unit tests.")
-
 tests_python: environment_python
 	@echo $(call FORMAT_MESSAGE,"tests_python", "Running python unit tests.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m unittest discover tests
