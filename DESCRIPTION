@@ -13,3 +13,4 @@ Depends:
     stringr,
     testthat,
     tidyverse,
+    withr,

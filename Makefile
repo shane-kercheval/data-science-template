@@ -126,10 +126,10 @@ ifneq ($(wildcard renv/.*),)
 	@echo "[MAKE environment_r]>>> Found renv, skipping virtual environment creation."
 else
 	@echo "[MAKE environment_r]>>> Did not find renv, creating virtual environment."
-	R --quite -e 'install.packages("renv", repos = "http://cran.us.r-project.org")'
+	R --quiet -e 'install.packages("renv", repos = "http://cran.us.r-project.org")'
 	# Creates `.Rprofile` file, and `renv` folder
-	R --quite -e 'renv::init(bare = TRUE)'
-	R --quite -e 'renv::install()'
+	R --quiet -e 'renv::init(bare = TRUE)'
+	R --quiet -e 'renv::install()'
 endif
 
 ## Set up python/R virtual environments and install dependencies

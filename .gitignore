@@ -179,6 +179,9 @@ vignettes/*.pdf
 *.csv
 *.RDS
 
+renv/*
+.Rprofile
+
 # exclude data folders by default
 /data/interim/*
 /data/processed/*
