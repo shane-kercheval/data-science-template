@@ -14,7 +14,7 @@ SNOWFLAKE_VERSION := 2.7.4
 # PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 
-FORMAT_MESSAGE =  "\n[MAKE "$(1)"] >>>" $(2)"\n"
+FORMAT_MESSAGE =  "\n[MAKE "$(1)"] >>>" $(2)
 
 #################################################################################
 # Project-specific Commands
@@ -137,7 +137,7 @@ endif
 
 ## Set up python/R virtual environments and install dependencies
 environment: environment_python environment_r
-	@echo "[MAKE environment]>>> Finished setting up environment."
+	@echo $(call FORMAT_MESSAGE,"environment","Finished setting up environment.")
 
 #################################################################################
 # Self Documenting Commands
