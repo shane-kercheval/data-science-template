@@ -1,46 +1,57 @@
 #################################################################################
 # File adapted from https://github.com/drivendata/cookiecutter-data-science
 #################################################################################
-.PHONY: environment tests data data_extract data_transform clean exploration experiments experiments_eval final_model final_eval python_exploration r_exploration
+.PHONY: clean_python clean_r clean environment_python environment_r environment tests_python tests_r tests data_extract data_transform data_training_test data exploration_python exploration_r exploration experiments experiments_eval final_model final_eval all
 
 #################################################################################
 # GLOBALS
 #################################################################################
-PYTHON_INTERPRETER = python3.9
-PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+PYTHON_VERSION := 3.9
+PYTHON_VERSION_SHORT := $(subst .,,$(PYTHON_VERSION))
+PYTHON_INTERPRETER := python$(PYTHON_VERSION)
+SNOWFLAKE_VERSION := 2.7.4
+
+# PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 #################################################################################
 # Project-specific Commands
 #################################################################################
-
-tests: environment
-	@echo "[MAKE tests]>>> Running unit tests."
+tests_python: environment_python
+	@echo "[MAKE tests_python]>>> Running python unit tests."
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m unittest discover tests
 
+tests_r: environment_r
+	@echo "[MAKE tests_r]>>> Running R unit tests."
+	R --quiet -e "testthat::test_dir('tests')"
+
+tests: tests_python tests_r
+	@echo "[MAKE tests]>>> Finished running unit tests."
+
 ## Make Dataset
-data_extract: environment
+data_extract: environment_python
 	@echo "[MAKE data_extract]>>> Extracting data."
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py extract
 
-data_transform: environment
+data_transform: environment_python
 	@echo "[MAKE data_transform]>>> Transforming data."
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py transform
 
-data_training_test: environment
+data_training_test: environment_python
 	@echo "[MAKE data_training_test]>>> Creating training & test sets."
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py create-training-test
 
 data: data_extract data_transform data_training_test
-	@echo "[MAKE data]>>> Running local ETL."
+	@echo "[MAKE data]>>> Finished running local ETL."
 
-python_exploration: data_training_test
-	@echo "[MAKE python_exploration]>>> Running exploratory jupyter notebooks and converting to .html files."
+exploration_python: environment_python data_training_test
+	@echo "[MAKE exploration_python]>>> Running exploratory jupyter notebooks and converting to .html files."
 	. .venv/bin/activate && jupyter nbconvert --execute --to html notebooks/develop/Data-Exploration.ipynb
 
-r_exploration: environment
-	@echo "[MAKE r_exploration]>>> Running exploratory RMarkdown notebooks and converting to .html files."
+exploration_r: environment_r
+	@echo "[MAKE exploration_r]>>> Running exploratory RMarkdown notebooks and converting to .html files."
+	Rscript -e "rmarkdown::render('notebooks/develop/r-markdown-template.Rmd')"
 
-exploration: python_exploration r_exploration
+exploration: exploration_python exploration_r
 	@echo "[MAKE exploration]>>> Finished running exploration notebooks."
 
 experiments: environment
@@ -63,45 +74,67 @@ final_model: environment
 final_eval: environment
 	@echo "[MAKE final_eval]>>> Running evaluation of final model on test set."
 
-all: tests data exploration experiments experiments_eval final_model final_eval
+## Run entire workflow.
+all: environment tests data exploration experiments experiments_eval final_model final_eval
+	@echo "[MAKE all]>>> Finished running entire workflow."
 
 ## Delete all generated files (e.g. virtual environment)
-clean:
-	rm -rf .venv
-	rm -f data/raw/credit.pkl
-	rm -f data/processed/X_test.pkl
-	rm -f data/processed/X_train.pkl
-	rm -f data/processed/y_test.pkl
-	rm -f data/processed/y_train.pkl
-	rm -f models/experiments/new_results.txt
-	find . -type d -name "__pycache__" -delete
+clean: clean_python clean_r
+	@echo "[MAKE clean]>>> Cleaning project files."
+	rm -f data/raw/*.pkl
+	rm -f data/raw/*.csv
+	rm -f data/processed/*
 
 #################################################################################
 # Generic Commands
 #################################################################################
+clean_python:
+	@echo "[MAKE clean_python]>>> Cleaning Python files."
+	rm -rf .venv
+	find . -type d -name "__pycache__" -delete
 
-## Set up python virtual environment and install python dependencies
-environment:
+clean_r:
+	@echo "[MAKE clean_r]>>> Cleaning R files."
+	rm -rf renv
+	rm -f .Rprofile
+
+environment_python:
 ifneq ($(wildcard .venv/.*),)
-	@echo "[MAKE environment]>>> Found .venv, skipping virtual environment creation."
-	@echo "[MAKE environment]>>> Activating virtual environment."
-	@echo "[MAKE environment]>>> Installing packages from requirements.txt."
+	@echo "[MAKE environment_python]>>> Found .venv, skipping virtual environment creation."
+	@echo "[MAKE environment_python]>>> Activating virtual environment."
+	@echo "[MAKE environment_python]>>> Installing packages from requirements.txt."
 	. .venv/bin/activate && pip install -q -r requirements.txt
 else
-	@echo "[MAKE environment]>>> Did not find .venv, creating virtual environment."
+	@echo "[MAKE environment_python]>>> Did not find .venv, creating virtual environment."
 	python -m pip install --upgrade pip
 	python -m pip install -q virtualenv
-	@echo "[MAKE environment]>>> Installing virtualenv."
+	@echo "[MAKE environment_python]>>> Installing virtualenv."
 	virtualenv .venv --python=$(PYTHON_INTERPRETER)
-	@echo "[MAKE environment]>>> NOTE: Creating environment at .venv."
-	@echo "[MAKE environment]>>> NOTE: To activate virtual environment, run: 'source .venv/bin/activate'."
-	@echo "[MAKE environment]>>> Activating virtual environment."
-	@echo "[MAKE environment]>>> Installing packages from requirements.txt."
+	@echo "[MAKE environment_python]>>> NOTE: Creating environment at .venv."
+	@echo "[MAKE environment_python]>>> NOTE: To activate virtual environment, run: 'source .venv/bin/activate'."
+	@echo "[MAKE environment_python]>>> Activating virtual environment."
+	@echo "[MAKE environment_python]>>> Installing packages from requirements.txt."
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m pip install --upgrade pip
-	# . .venv/bin/activate && $(PYTHON_INTERPRETER) -m pip install --upgrade build
-	# . .venv/bin/activate && $(PYTHON_INTERPRETER) -m pip install --upgrade twine
 	. .venv/bin/activate && pip install -r requirements.txt
+	@echo "[MAKE environment_python]>>> Installing snowflake packages."
+	. .venv/bin/activate && pip install -r https://raw.githubusercontent.com/snowflakedb/snowflake-connector-python/v$(SNOWFLAKE_VERSION)/tested_requirements/requirements_$(PYTHON_VERSION_SHORT).reqs
+	. .venv/bin/activate && pip install snowflake-connector-python==v$(SNOWFLAKE_VERSION)
 endif
+
+environment_r:
+ifneq ($(wildcard renv/.*),)
+	@echo "[MAKE environment_r]>>> Found renv, skipping virtual environment creation."
+else
+	@echo "[MAKE environment_r]>>> Did not find renv, creating virtual environment."
+	R --quite -e 'install.packages("renv", repos = "http://cran.us.r-project.org")'
+	# Creates `.Rprofile` file, and `renv` folder
+	R --quite -e 'renv::init(bare = TRUE)'
+	R --quite -e 'renv::install()'
+endif
+
+## Set up python/R virtual environments and install dependencies
+environment: environment_python environment_r
+	@echo "[MAKE environment]>>> Finished setting up environment."
 
 #################################################################################
 # Self Documenting Commands
