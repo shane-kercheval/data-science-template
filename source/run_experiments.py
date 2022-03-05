@@ -2,12 +2,11 @@ import datetime
 import pickle
 
 import helpsk as hlp
-from helpsk.sklearn_search_bayesian import BayesianSearchSpace
-from helpsk.sklearn_search_bayesian_classification import LogisticBayesianSearchSpace, RandomForestBayesianSearchSpace
 from sklearn.model_selection import RepeatedKFold
-from skopt import BayesSearchCV
+from skopt import BayesSearchCV  # noqa
 
 from helpers.utilities import get_logger, Timer
+import helpers.classification_search_space as css
 
 
 def main():
@@ -20,19 +19,12 @@ def main():
     with open('data/processed/y_train.pkl', 'rb') as handle:
         y_train = pickle.load(handle)
 
-    search_space = BayesianSearchSpace(
-        x_train,
-        model_search_spaces=[
-            LogisticBayesianSearchSpace(iterations=3, random_state=42),
-            RandomForestBayesianSearchSpace(iterations=3, random_state=42),
-        ]
-    )
     logger = get_logger()
     with Timer("Model Experiment (BayesSearchCV)", logger):
         logger.info("Starting BayesSearchCV")
         bayes_search = BayesSearchCV(
-            estimator=search_space.pipeline(),
-            search_spaces=search_space.search_spaces(),
+            estimator=css.create_pipeline(data=x_train),
+            search_spaces=css.create_search_space(iterations=5),
             cv=RepeatedKFold(n_splits=5, n_repeats=1, random_state=42),
             scoring='roc_auc',
             refit=True,
@@ -46,7 +38,7 @@ def main():
             searcher=bayes_search,
             higher_score_is_better=True,
             description='BayesSearchCV',
-            parameter_name_mappings=search_space.param_name_mappings()
+            parameter_name_mappings=css.get_search_space_mappings(),
         )
 
     timestamp = f'{datetime.datetime.now():%Y-%m-%d-%H-%M-%S}'
