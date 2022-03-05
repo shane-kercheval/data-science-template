@@ -6,6 +6,16 @@ This repo is a template for ML/DS Projects. It's influenced from:
 - https://github.com/drivendata/cookiecutter-data-science
 
 
+---
+
+This project contains a very slimmed down version of python and R code that mimics a DS/ML project.
+
+The code and Makefile will generate python/R virtual environments, install package/library dependencies from the requirements.txt/DESCRIPTION files, run unit tests, run ETL scripts, and jupyter/R-markdown notesbooks that generate html/markdown outputs.
+
+All of this can be done with the simple command `make all` from the project directory.
+
+It requires Python 3.9 (which can be configured in the Makefile) and is currently ran with R 4.X.
+
 ## Repo structure 
 
 ```
@@ -62,14 +72,30 @@ This repo is a template for ML/DS Projects. It's influenced from:
 
 The project structure was heavily influenced by - https://github.com/cmawer/reproducible-model.
 
-
-# Project Requirements
+## Project Requirements
 
 > This section should describe the project-specific requirements (e.g. python3.9).
 
-- python3.9
-- R version XXX
-
 # Project Overview
+
+TBD
+
+## Goal
+
+TBD
+
+## Result/Deliverables
+
+TBD
+
+## Limitations
+
+TBD
+
+## Next Steps
+
+TBD
+
+## Notes
 
 TBD
