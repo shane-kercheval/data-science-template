@@ -61,7 +61,7 @@ It requires Python 3.9 (which can be configured in the Makefile) and is currentl
 │   ├── evaluate_model.py         <- Script for evaluating model performance 
 │
 ├── tests                         <- Files necessary for running model tests (see documentation below) 
-│   ├── test-files                <- Directory where artifacts and results of tests are saved to be compared to the sources of truth. Only .gitkeep in this directory should be synced to Github
+│   ├── test_files                <- Directory where artifacts and results of tests are saved to be compared to the sources of truth. Only .gitkeep in this directory should be synced to Github
 │   ├── test.py                   <- Runs the tests defined in test_config.yml and then compares the produced artifacts/results with those defined as expected in the true/ directory
 │
 │
