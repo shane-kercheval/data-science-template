@@ -69,6 +69,7 @@ experiments_eval: artifacts/models/experiments/new_results.txt
 	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat artifacts/models/experiments/new_results.txt)/g' code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running the notebook and creating html.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
+	mv code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).html artifacts/models/experiments/$(shell cat artifacts/models/experiments/new_results.txt).html
 	rm -f artifacts/models/experiments/new_results.txt
 
 final_model: environment
