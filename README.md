@@ -12,7 +12,8 @@ The structure and documents were heavily influenced from:
 
 This project contains a very slimmed down version of python and R code that mimics a DS/ML project.
 
-The code and Makefile will
+The code and Makefile will:
+
     - create python/R virtual environments
     - install package/library dependencies from the requirements.txt/DESCRIPTION files
     - run unit tests
