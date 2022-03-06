@@ -10,12 +10,19 @@ This repo is a template for ML/DS Projects. It's influenced from:
 
 This project contains a very slimmed down version of python and R code that mimics a DS/ML project.
 
-The code and Makefile will generate python/R virtual environments, install package/library dependencies from the requirements.txt/DESCRIPTION files, run unit tests, run ETL scripts, and jupyter/R-markdown notesbooks that generate html/markdown outputs.
+The code and Makefile will
+    - create python/R virtual environments
+    - install package/library dependencies from the requirements.txt/DESCRIPTION files
+    - run unit tests
+    - run ETL scripts
+    - run experiments using BayesSearchCV
+    - run jupyter/R-markdown notesbooks that generate html/markdown outputs
 
-All of this can be done with the simple command `make all` from the project directory.
+The entire project can be built/ran with the simple command `make all` from the project directory.
 
 It requires Python 3.9 (which can be configured in the Makefile) and is currently ran with R 4.X.
 
+---
 
 To activate virtual environment run `source .venv/bin/activate`; for example:
 
@@ -27,87 +34,57 @@ jupyter notebook
 ## Repo structure 
 
 ```
-├── README.md                     <- You are here
+├── README.md                  <- You are here
 │
-├── config                        <- Directory for yaml configuration files for model training, scoring, etc
-│   ├── logging                   <- Configuration of python loggers
+├── artifacts/                 <- All non-code/document artifacts (e.g. data, models, etc.).
+│   ├── data/                  <- Folder that contains data (used or generated).
+│   │   ├── external/          <- Data from third party sources.
+│   │   ├── interim/           <- Intermediate data that has been transformed. (This directory is excluded via .gitignore)
+│   │   ├── processed/         <- The final, canonical data sets for modeling. (This directory is excluded via .gitignore)
+│   │   ├── raw/               <- The original, immutable data dump. (This directory is excluded via .gitignore)
+│   ├── models/                <- Trained model objects (TMOs), model predictions, and/or model summaries
+│   │   ├── archive/           <- Folder that contains old models.
+│   │   ├── current/           <- The current model being used by the project.
+│   │   ├── experiments/       <- Contains experimentss and experiments output (e.g. yaml/html showing performance of experiments.)
 │
-├── data                          <- Folder that contains data used or generated.
-│   ├── external                  <- Data from third party sources.
-│   ├── raw                       <- The original, immutable data dump. (This directory is excluded via .gitignore)
-│   ├── interim                   <- Intermediate data that has been transformed. (This directory is excluded via .gitignore)
-│   ├── processed                 <- The final, canonical data sets for modeling. (This directory is excluded via .gitignore)
+├── code/                      <- All source-code (e.g. SQL, python scripts, notebooks, unit-tests, etc.)
+│   ├── config/                <- Directory for yaml configuration files for model training, scoring, etc
+│   ├── notebooks/             <- All notebooks in projects. Users should attempt to separate reporting/exploring (notebooks) and processing (scripts).
+│   │   ├── archive/           <- Previous notebooks that are outdated or no longer applicable.
+│   │   ├── deliver/           <- Notebooks shared with others. 
+│   │   ├── develop/           <- Current notebooks being used in development.
+│   ├── ├── template.ipynb     <- Template notebook for analysis with useful imports and helper functions. 
+│   ├── scripts/               <- Source-code for the project. Should contain most of the processing, model development, and business logic. Code should be modular and reusable.
+│   │   ├── helpers/           <- Helper scripts used in the main files files 
+│   │   ├── sql/               <- 
+│   │   ├── file.py            <- python script
+│   │   ├── file.R             <- R script
+│   ├── tests/                 <- Files necessary for running model tests (see documentation below) 
+│   │   ├── test_files/        <- Files that help run unit tests, e.g. mock yaml files.
+│   │   ├── test_file.py       <- python unit-test script
+│   │   ├── test_file.R        <- R unit-test script
+
+├── docs/                      <- All documentation, data dictionaries, manuals, and final reports and deliverables.
+│   ├── data/                  <- Location to place documents describing results of data exploration, data dictionaries, etc.
+│   ├── model/                 <- Model documentation 
+│   │   ├── archive/
+│   │   ├── baseline_model/
+│   │   ├── current_model/
+│   ├── project/               <- Project documentation, including project charter, and results.
+│   │   ├── deliverables/      <- All generated and sharable deliverables.
 │
-├── doc                           <- All documentation, data dictionaries, manuals, and final reports and deliverables.
-│   ├── data                      <- Location to place documents describing results of data exploration, data dictionaries, etc.
-│   ├── model                     <- Model documentation 
-│   ├── project                   <- Project documentation, including project charter, and results.
-│   │   ├── deliverables          <- All generated and sharable deliverables.
-│
-├── figures                       <- Generated graphics and figures to be used in reporting and analysis.
-│   ├── deliverables              <- Generated graphics and figures to be used in reporting.
-│   ├── docs                      <- Graphics and figures to be used in documentation.
-│   ├── archive                   <- Previous figures that are outdated or no longer applicable.
-│   ├── [etc]                     <- Various folders to organize figures (e.g. model evaluation).
-│
-├── models                        <- Trained model objects (TMOs), model predictions, and/or model summaries
-│   ├── archive                   <- Previous models that are outdated or no longer applicable. (This directory is excluded via .gitignore)
-│
-├── notebooks
-│   ├── develop                   <- Current notebooks being used in development.
-│   ├── deliver                   <- Notebooks shared with others. 
-│   ├── archive                   <- Previous notebooks that are outdated or no longer applicable.
-│   ├── template.ipynb            <- Template notebook for analysis with useful imports and helper functions. 
-│
-├── references                    <- Data dictionaries, manuals, and all other explanatory materials.
-│
-├── src                           <- Source data for the sybil project 
-│   ├── archive                   <- Previous scripts that are outdated or no longer applicable.
-│   ├── helpers                   <- Helper scripts used in main src files 
-│   ├── sql                       <- SQL source code
-│   ├── ingest_data.py            <- Script for ingesting data from different sources 
-│   ├── generate_features.py      <- Script for cleaning and transforming data and generating features used for use in training and scoring.
-│   ├── train_model.py            <- Script for training machine learning model(s)
-│   ├── score_model.py            <- Script for scoring new predictions using a trained model.
-│   ├── postprocess.py            <- Script for postprocessing predictions and model results
-│   ├── evaluate_model.py         <- Script for evaluating model performance 
-│
-├── tests                         <- Files necessary for running model tests (see documentation below) 
-│   ├── test_files                <- Directory where artifacts and results of tests are saved to be compared to the sources of truth. Only .gitkeep in this directory should be synced to Github
-│   ├── test.py                   <- Runs the tests defined in test_config.yml and then compares the produced artifacts/results with those defined as expected in the true/ directory
+├── figures/                   <- Centralized location for all figures and diagrams.
+│   │   ├── archive/
+│   │   ├── deliverables/
+│   │   ├── docs/
 │
 │
-├── Makefile                      <- Makefile with commands like `make data` or `make train`
-├── run.py                        <- Simplifies the execution of one or more of the src scripts 
-├── requirements.txt              <- Python package dependencies 
+├── Makefile                   <- Makefile with commands like `make data` or `make train`
+├── requirements.txt           <- Python package dependencies
+├── DESCRIPTION                <- R package dependencies
+
 ```
 
-The project structure was heavily influenced by - https://github.com/cmawer/reproducible-model.
+# Project Details
 
-## Project Requirements
-
-> This section should describe the project-specific requirements (e.g. python3.9).
-
-# Project Overview
-
-TBD
-
-## Goal
-
-TBD
-
-## Result/Deliverables
-
-TBD
-
-## Limitations
-
-TBD
-
-## Next Steps
-
-TBD
-
-## Notes
-
-TBD
+- see [docs/project/]

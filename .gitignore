@@ -183,6 +183,10 @@ renv/*
 .Rprofile
 
 # exclude data folders by default
-/data/interim/*
-/data/processed/*
-/data/raw/*
+artifacts/data/interim/*
+artifacts/data/processed/*
+artifacts/data/raw/*
+!artifacts/data/external/*.csv
+
+!artifacts/models/current/*
+!artifacts/models/archive/*.pkl
