@@ -1,6 +1,8 @@
 # data-science-template
 
-This repo is a template for ML/DS Projects. It's influenced from:
+This repo contians a template for ML/DS Projects.
+
+The structure and documents were heavily influenced from:
 
 - https://github.com/cmawer/reproducible-model
 - https://github.com/drivendata/cookiecutter-data-science
