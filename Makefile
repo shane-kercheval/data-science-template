@@ -57,7 +57,7 @@ exploration_r: environment_r
 exploration: exploration_python exploration_r
 	@echo $(call FORMAT_MESSAGE,"exploration","Finished running exploration notebooks.")
 
-experiments: environment
+experiments: environment_python
 	@echo $(call FORMAT_MESSAGE,"experiments","Running Hyper-parameters experiments based on BayesianSearchCV.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) code/scripts/run_experiments.py
 

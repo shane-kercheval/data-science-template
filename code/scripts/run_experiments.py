@@ -13,10 +13,10 @@ def main():
     """
     Logic For Running Experiments.
     """
-    with open('data/processed/X_train.pkl', 'rb') as handle:
+    with open('artifacts/data/processed/X_train.pkl', 'rb') as handle:
         x_train = pickle.load(handle)
 
-    with open('data/processed/y_train.pkl', 'rb') as handle:
+    with open('artifacts/data/processed/y_train.pkl', 'rb') as handle:
         y_train = pickle.load(handle)
 
     logger = get_logger()
@@ -44,8 +44,8 @@ def main():
     timestamp = f'{datetime.datetime.now():%Y-%m-%d-%H-%M-%S}'
     file_name = f'multi-model-BayesSearchCV-{timestamp}'
 
-    yaml_file_name = f'models/experiments/{file_name}.yaml'
-    model_file_name = f'models/experiments/{file_name}_best_estimator.pkl'
+    yaml_file_name = f'artifacts/models/experiments/{file_name}.yaml'
+    model_file_name = f'artifacts/models/experiments/{file_name}_best_estimator.pkl'
 
     logger.info(f"Saving results of BayesSearchCV to: `{yaml_file_name}`")
     results.to_yaml_file(yaml_file_name=yaml_file_name)
@@ -57,7 +57,7 @@ def main():
     logger.info(f"Best Score: {bayes_search.best_score_}")
     logger.info(f"Best Params: {bayes_search.best_params_}")
 
-    with open('models/experiments/new_results.txt', 'w') as text_file:
+    with open('artifacts/models/experiments/new_results.txt', 'w') as text_file:
         text_file.writelines(file_name)
 
 

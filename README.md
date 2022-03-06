@@ -16,6 +16,14 @@ All of this can be done with the simple command `make all` from the project dire
 
 It requires Python 3.9 (which can be configured in the Makefile) and is currently ran with R 4.X.
 
+
+To activate virtual environment run `source .venv/bin/activate`; for example:
+
+```commandline
+source .venv/bin/activate
+jupyter notebook
+```
+
 ## Repo structure 
 
 ```
