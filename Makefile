@@ -21,11 +21,11 @@ FORMAT_MESSAGE =  "\n[MAKE "$(1)"] >>>" $(2)
 #################################################################################
 tests_python: environment_python
 	@echo $(call FORMAT_MESSAGE,"tests_python", "Running python unit tests.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m unittest discover tests
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m unittest discover code/tests
 
 tests_r: environment_r
 	@echo $(call FORMAT_MESSAGE,"tests_r","Running R unit tests.")
-	R --quiet -e "testthat::test_dir('tests')"
+	R --quiet -e "testthat::test_dir('code/tests')"
 
 tests: tests_python tests_r
 	@echo $(call FORMAT_MESSAGE,"tests","Finished running unit tests.")
@@ -33,43 +33,43 @@ tests: tests_python tests_r
 ## Make Dataset
 data_extract: environment_python
 	@echo $(call FORMAT_MESSAGE,"data_extract","Extracting data.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py extract
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) code/scripts/etl.py extract
 
 data_transform: environment_python
 	@echo $(call FORMAT_MESSAGE,"data_transform","Transforming data.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py transform
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) code/scripts/etl.py transform
 
 data_training_test: environment_python
 	@echo $(call FORMAT_MESSAGE,"data_training_test","Creating training & test sets.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/etl.py create-training-test
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) code/scripts/etl.py create-training-test
 
 data: data_extract data_transform data_training_test
 	@echo $(call FORMAT_MESSAGE,"data","Finished running local ETL.")
 
 exploration_python: environment_python data_training_test
 	@echo $(call FORMAT_MESSAGE,"exploration_python","Running exploratory jupyter notebooks and converting to .html files.")
-	. .venv/bin/activate && jupyter nbconvert --execute --to html notebooks/develop/Data-Exploration.ipynb
+	. .venv/bin/activate && jupyter nbconvert --execute --to html code/notebooks/develop/Data-Exploration.ipynb
 
 exploration_r: environment_r
-	@echo $(call FORMAT_MESSAGE,"exploration_r","Running exploratory RMarkdown notebooks and converting to .html files.")
-	Rscript -e "rmarkdown::render('notebooks/develop/r-markdown-template.Rmd')"
+	@echo $(call FORMAT_MESSAGE,"exploration_r","Running exploratory RMarkdown notebooks and converting to .md files.")
+	Rscript -e "rmarkdown::render('code/notebooks/develop/r-markdown-template.Rmd')"
 
 exploration: exploration_python exploration_r
 	@echo $(call FORMAT_MESSAGE,"exploration","Finished running exploration notebooks.")
 
 experiments: environment
 	@echo $(call FORMAT_MESSAGE,"experiments","Running Hyper-parameters experiments based on BayesianSearchCV.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/run_experiments.py
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) code/scripts/run_experiments.py
 
-experiments_eval: models/experiments/new_results.txt
+experiments_eval: artifacts/models/experiments/new_results.txt
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running Evaluation of experiments")
-	@echo $(call FORMAT_MESSAGE,"experiments_eval","Moving experimentation .ipynb template to models/experiments directory.")
-	cp notebooks/experiment-template.ipynb notebooks/develop/$(shell cat models/experiments/new_results.txt).ipynb
+	@echo $(call FORMAT_MESSAGE,"experiments_eval","Moving experimentation .ipynb template to /artifacts/models/experiments directory.")
+	cp notebooks/experiment-template.ipynb code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Setting the experiments yaml file name within the ipynb file.")
-	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat models/experiments/new_results.txt)/g' notebooks/develop/$(shell cat models/experiments/new_results.txt).ipynb
+	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat artifacts/models/experiments/new_results.txt)/g' code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running the notebook and creating html.")
-	. .venv/bin/activate && jupyter nbconvert --execute --to html notebooks/develop/$(shell cat models/experiments/new_results.txt).ipynb
-	rm -f models/experiments/new_results.txt
+	. .venv/bin/activate && jupyter nbconvert --execute --to html code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
+	rm -f artifacts/models/experiments/new_results.txt
 
 final_model: environment
 	@echo $(call FORMAT_MESSAGE,"final_model","Building final model from best model in experiment.")
@@ -84,9 +84,9 @@ all: environment tests data exploration experiments experiments_eval final_model
 ## Delete all generated files (e.g. virtual environment)
 clean: clean_python clean_r
 	@echo $(call FORMAT_MESSAGE,"clean","Cleaning project files.")
-	rm -f data/raw/*.pkl
-	rm -f data/raw/*.csv
-	rm -f data/processed/*
+	rm -f artifacts/data/raw/*.pkl
+	rm -f artifacts/data/raw/*.csv
+	rm -f artifacts/data/processed/*
 
 #################################################################################
 # Generic Commands
@@ -114,7 +114,7 @@ else
 	@echo $(call FORMAT_MESSAGE,"environment_python","Installing virtualenv.")
 	virtualenv .venv --python=$(PYTHON_INTERPRETER)
 	@echo $(call FORMAT_MESSAGE,"environment_python","NOTE: Creating environment at .venv.")
-	@echo $(call FORMAT_MESSAGE,"environment_python","NOTE: To activate virtual environment, run: 'source .venv/bin/activate'.")
+	@echo $(call FORMAT_MESSAGE,"environment_python","NOTE: Run this command to activate virtual environment: 'source .venv/bin/activate'.")
 	@echo $(call FORMAT_MESSAGE,"environment_python","Activating virtual environment.")
 	@echo $(call FORMAT_MESSAGE,"environment_python","Installing packages from requirements.txt.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m pip install --upgrade pip

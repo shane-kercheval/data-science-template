@@ -1,9 +1,9 @@
 import time
 import unittest
 import pandas as pd
-import source.helpers.classification_search_space as css
-from source.helpers.utilities import Timer, get_logger
-from tests.helpers import get_test_path
+import code.scripts.helpers.classification_search_space as css
+from code.scripts.helpers.utilities import Timer, get_logger
+from code.tests.helpers import get_test_path
 
 
 class TestHelpers(unittest.TestCase):
