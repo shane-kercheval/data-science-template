@@ -63,8 +63,8 @@ experiments: environment_python
 
 experiments_eval: artifacts/models/experiments/new_results.txt
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running Evaluation of experiments")
-	@echo $(call FORMAT_MESSAGE,"experiments_eval","Moving experimentation .ipynb template to /artifacts/models/experiments directory.")
-	cp notebooks/experiment-template.ipynb code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
+	@echo $(call FORMAT_MESSAGE,"experiments_eval","Copying experiments template (experiment-template.ipynb) to /artifacts/models/experiments directory.")
+	cp code/notebooks/experiment-template.ipynb code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Setting the experiments yaml file name within the ipynb file.")
 	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat artifacts/models/experiments/new_results.txt)/g' code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running the notebook and creating html.")
