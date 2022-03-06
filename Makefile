@@ -94,7 +94,7 @@ clean: clean_python clean_r
 clean_python:
 	@echo $(call FORMAT_MESSAGE,"clean_python","Cleaning Python files.")
 	rm -rf .venv
-	find . -type d -name "__pycache__" -delete
+	find . \( -name __pycache__ \) -prune -exec rm -rf {} +
 
 clean_r:
 	@echo $(call FORMAT_MESSAGE,"clean_r","Cleaning R files.")
