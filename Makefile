@@ -96,6 +96,7 @@ clean_python:
 	@echo $(call FORMAT_MESSAGE,"clean_python","Cleaning Python files.")
 	rm -rf .venv
 	find . \( -name __pycache__ \) -prune -exec rm -rf {} +
+	find . \( -name .ipynb_checkpoints \) -prune -exec rm -rf {} +
 
 clean_r:
 	@echo $(call FORMAT_MESSAGE,"clean_r","Cleaning R files.")
