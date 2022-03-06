@@ -87,4 +87,5 @@ jupyter notebook
 
 # Project Details
 
-- see [docs/project/]
+- see [docs/project/Charter.md](./docs/project/Charter.md) for project description.
+- see [docs/project/Exit-Report.md](./docs/project/Exit-Report.md) for project results.
