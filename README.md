@@ -4,7 +4,7 @@ This repo is a template for ML/DS Projects. It's influenced from:
 
 - https://github.com/cmawer/reproducible-model
 - https://github.com/drivendata/cookiecutter-data-science
-
+- https://github.com/Azure/Azure-TDSP-ProjectTemplate
 
 ---
 
@@ -26,17 +26,21 @@ It requires Python 3.9 (which can be configured in the Makefile) and is currentl
 │
 ├── data                          <- Folder that contains data used or generated.
 │   ├── external                  <- Data from third party sources.
-│   └── raw                       <- The original, immutable data dump. (This directory is excluded via .gitignore)
+│   ├── raw                       <- The original, immutable data dump. (This directory is excluded via .gitignore)
 │   ├── interim                   <- Intermediate data that has been transformed. (This directory is excluded via .gitignore)
 │   ├── processed                 <- The final, canonical data sets for modeling. (This directory is excluded via .gitignore)
 │
-├── deliverables                  <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   ├── archive                   <- Previous deliverables that are outdated or no longer applicable.
+├── doc                           <- All documentation, data dictionaries, manuals, and final reports and deliverables.
+│   ├── data                      <- Location to place documents describing results of data exploration, data dictionaries, etc.
+│   ├── model                     <- Model documentation 
+│   ├── project                   <- Project documentation, including project charter, and results.
+│   │   ├── deliverables          <- All generated and sharable deliverables.
 │
 ├── figures                       <- Generated graphics and figures to be used in reporting and analysis.
 │   ├── deliverables              <- Generated graphics and figures to be used in reporting.
-│   ├── [etc]                     <- Various folders to organize figures (e.g. model evaluation).
+│   ├── docs                      <- Graphics and figures to be used in documentation.
 │   ├── archive                   <- Previous figures that are outdated or no longer applicable.
+│   ├── [etc]                     <- Various folders to organize figures (e.g. model evaluation).
 │
 ├── models                        <- Trained model objects (TMOs), model predictions, and/or model summaries
 │   ├── archive                   <- Previous models that are outdated or no longer applicable. (This directory is excluded via .gitignore)
