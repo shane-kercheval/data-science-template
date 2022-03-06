@@ -21,7 +21,7 @@ The code and Makefile will:
     - run experiments using BayesSearchCV
     - run jupyter/R-markdown notesbooks that generate html/markdown outputs
 
-The entire project can be built/ran with the simple command `make all` from the project directory.
+The entire project can be built/ran with the simple command `make all` from the project directory. See `Makefile` for additional commands and implicit project DAG.
 
 It requires Python 3.9 (which can be configured in the Makefile) and is currently ran with R 4.X.
 
