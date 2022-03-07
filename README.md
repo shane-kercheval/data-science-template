@@ -81,7 +81,7 @@ jupyter notebook
 │           ├── models/
 │
 │
-├── Makefile                   <- Makefile with commands like `make data` or `make train`
+├── Makefile                   <- Makefile with commands like `make all`, `make environment`, `make data`, etc.
 ├── requirements.txt           <- Python package dependencies
 ├── DESCRIPTION                <- R package dependencies
 
