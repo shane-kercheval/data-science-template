@@ -124,6 +124,7 @@ else
 	@echo $(call FORMAT_MESSAGE,"environment_python","Installing snowflake packages.")
 	. .venv/bin/activate && pip install -r https://raw.githubusercontent.com/snowflakedb/snowflake-connector-python/v$(SNOWFLAKE_VERSION)/tested_requirements/requirements_$(PYTHON_VERSION_SHORT).reqs
 	. .venv/bin/activate && pip install snowflake-connector-python==v$(SNOWFLAKE_VERSION)
+	. .venv/bin/activate && brew install libomp
 endif
 
 environment_r:
