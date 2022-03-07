@@ -75,7 +75,7 @@ jupyter notebook
 │       ├── current_model/
 │   ├── project/               <- Project documentation, including project charter, and results.
 │       ├── deliverables/      <- All generated and sharable deliverables.
-│   ├── figures/                   <- Centralized location for all figures and diagrams.
+│   ├── figures/               <- Centralized location for all figures and diagrams in project except for those embedded in notebooks.
 │           ├── archive/
 │           ├── data/
 │           ├── models/
