@@ -38,6 +38,10 @@ jupyter notebook
 
 ```
 ├── README.md                  <- You are here
+├── Makefile                   <- Makefile, which runs all components of the project with commands like `make all`, `make environment`, `make data`, etc.
+├── requirements.txt           <- Python package dependencies
+├── DESCRIPTION                <- R package dependencies
+│
 │
 ├── artifacts/                 <- All non-code/document artifacts (e.g. data, models, etc.).
 │   ├── data/                  <- Folder that contains data (used or generated).
@@ -80,11 +84,6 @@ jupyter notebook
 │           ├── data/
 │           ├── models/
 │
-│
-├── Makefile                   <- Makefile with commands like `make all`, `make environment`, `make data`, etc.
-├── requirements.txt           <- Python package dependencies
-├── DESCRIPTION                <- R package dependencies
-
 ```
 
 # Project Details
