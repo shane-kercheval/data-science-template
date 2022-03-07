@@ -4,6 +4,7 @@ Depends:
     dplyr,
     glue,
     ggplot2,
+    hms,
     janitor,
     knitr,
     lubridate,
