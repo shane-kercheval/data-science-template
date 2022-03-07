@@ -83,7 +83,6 @@ jupyter notebook
 │           ├── archive/
 │           ├── data/
 │           ├── models/
-│
 ```
 
 # Project Details
