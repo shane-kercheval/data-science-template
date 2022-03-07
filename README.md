@@ -41,45 +41,44 @@ jupyter notebook
 │
 ├── artifacts/                 <- All non-code/document artifacts (e.g. data, models, etc.).
 │   ├── data/                  <- Folder that contains data (used or generated).
-│   │   ├── external/          <- Data from third party sources.
-│   │   ├── interim/           <- Intermediate data that has been transformed. (This directory is excluded via .gitignore)
-│   │   ├── processed/         <- The final, canonical data sets for modeling. (This directory is excluded via .gitignore)
-│   │   ├── raw/               <- The original, immutable data dump. (This directory is excluded via .gitignore)
+│       ├── external/          <- Data from third party sources.
+│       ├── interim/           <- Intermediate data that has been transformed. (This directory is excluded via .gitignore)
+│       ├── processed/         <- The final, canonical data sets for modeling. (This directory is excluded via .gitignore)
+│       ├── raw/               <- The original, immutable data dump. (This directory is excluded via .gitignore)
 │   ├── models/                <- Trained model objects (TMOs), model predictions, and/or model summaries
-│   │   ├── archive/           <- Folder that contains old models.
-│   │   ├── current/           <- The current model being used by the project.
-│   │   ├── experiments/       <- Contains experimentss and experiments output (e.g. yaml/html showing performance of experiments.)
+│       ├── archive/           <- Folder that contains old models.
+│       ├── current/           <- The current model being used by the project.
+│       ├── experiments/       <- Contains experimentss and experiments output (e.g. yaml/html showing performance of experiments.)
 │
 ├── code/                      <- All source-code (e.g. SQL, python scripts, notebooks, unit-tests, etc.)
 │   ├── config/                <- Directory for yaml configuration files for model training, scoring, etc
 │   ├── notebooks/             <- All notebooks in projects. Users should attempt to separate reporting/exploring (notebooks) and processing (scripts).
-│   │   ├── archive/           <- Previous notebooks that are outdated or no longer applicable.
-│   │   ├── deliver/           <- Notebooks shared with others. 
-│   │   ├── develop/           <- Current notebooks being used in development.
-│   ├── ├── template.ipynb     <- Template notebook for analysis with useful imports and helper functions. 
+│       ├── archive/           <- Previous notebooks that are outdated or no longer applicable.
+│       ├── deliver/           <- Notebooks shared with others. 
+│       ├── develop/           <- Current notebooks being used in development.
+│       ├── template.ipynb     <- Template notebook for analysis with useful imports and helper functions. 
 │   ├── scripts/               <- Source-code for the project. Should contain most of the processing, model development, and business logic. Code should be modular and reusable.
-│   │   ├── helpers/           <- Helper scripts used in the main files files 
-│   │   ├── sql/               <- 
-│   │   ├── file.py            <- python script
-│   │   ├── file.R             <- R script
+│       ├── helpers/           <- Helper scripts used in the main files files 
+│       ├── sql/               <- 
+│       ├── file.py            <- python script
+│       ├── file.R             <- R script
 │   ├── tests/                 <- Files necessary for running model tests (see documentation below) 
-│   │   ├── test_files/        <- Files that help run unit tests, e.g. mock yaml files.
-│   │   ├── test_file.py       <- python unit-test script
-│   │   ├── test_file.R        <- R unit-test script
-
+│       ├── test_files/        <- Files that help run unit tests, e.g. mock yaml files.
+│       ├── test_file.py       <- python unit-test script
+│       ├── test_file.R        <- R unit-test script
+│
 ├── docs/                      <- All documentation, data dictionaries, manuals, and final reports and deliverables.
 │   ├── data/                  <- Location to place documents describing results of data exploration, data dictionaries, etc.
 │   ├── model/                 <- Model documentation 
-│   │   ├── archive/
-│   │   ├── baseline_model/
-│   │   ├── current_model/
+│       ├── archive/
+│       ├── baseline_model/
+│       ├── current_model/
 │   ├── project/               <- Project documentation, including project charter, and results.
-│   │   ├── deliverables/      <- All generated and sharable deliverables.
-│
-├── figures/                   <- Centralized location for all figures and diagrams.
-│   │   ├── archive/
-│   │   ├── deliverables/
-│   │   ├── docs/
+│       ├── deliverables/      <- All generated and sharable deliverables.
+│   ├── figures/                   <- Centralized location for all figures and diagrams.
+│           ├── archive/
+│           ├── data/
+│           ├── models/
 │
 │
 ├── Makefile                   <- Makefile with commands like `make data` or `make train`

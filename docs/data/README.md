@@ -13,7 +13,7 @@ If the client is providing you the data from a database-like data management sys
 
 _Example image of data schema when data is from a sql server_
 
-![](../../figures/docs/data-dictionary-from-sql-table.PNG)
+![](../figures/docs/data-dictionary-from-sql-table.PNG)
 
 ## <Dataset 2 name (dictionary in Excel file)\>
 
