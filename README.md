@@ -10,20 +10,25 @@ The structure and documents were heavily influenced from:
 
 ---
 
-This project contains a very slimmed down version of python and R code that mimics a DS/ML project.
+This project contains python and R code that mimics a very slimmed down version of a DS/ML project.
 
-The code and Makefile will:
+The `Makefile` runs all components of the project. You can think of it as containing the implicit DAG, or recipe, of the project.
 
-    - create python/R virtual environments
-    - install package/library dependencies from the requirements.txt/DESCRIPTION files
-    - run unit tests
-    - run ETL scripts
-    - run experiments using BayesSearchCV
-    - run jupyter/R-markdown notesbooks that generate html/markdown outputs
+Common commands available from the Makefile are:
 
-The entire project can be built/ran with the simple command `make all` from the project directory. See `Makefile` for additional commands and implicit project DAG.
+- `make all`: The entire project can be built/ran with the simple command `make all` from the project directory, which runs all components (build virtual environments, run tests, run scripts, generate output, etc.)
+- `make clean`: Removes all virtual environments, python/R generated/hidden folders, and interim/processed data.
+- `make environment`: Creates python/R virtual environments and install packages from the requirements.txt/DESCRIPTION files
+- `make data`: Runs ETL scripts
+- `make exploration`: Runs exploration notebooks and generate html/md documents.
+- `make experiments`: Runs scripts which use BayesSearchCV over several models.
+- `make experiments_eval`: Runs notebooks which evaluates the performance of the BayesSearchCV and produces an html report.
+- `make final_model`: Retrains the best model from the most recent experiments on all data, and predict on test/holdout set. (not implemented yet)
+- `make final_eval`: Runs the notebook which shows the performance of the final model and produces an html report. (not implemented yet)
 
-It requires Python 3.9 (which can be configured in the Makefile) and is currently ran with R 4.X.
+See `Makefile` for additional commands and implicit project DAG.
+
+This project requires Python 3.9 (but the python version can be configured in the Makefile) and is currently ran with R version 4.X.
 
 ---
 
@@ -33,6 +38,8 @@ To activate virtual environment run `source .venv/bin/activate`; for example:
 source .venv/bin/activate
 jupyter notebook
 ```
+
+---
 
 ## Repo structure 
 
@@ -84,6 +91,8 @@ jupyter notebook
 │           ├── data/
 │           ├── models/
 ```
+
+---
 
 # Project Details
 
