@@ -80,12 +80,13 @@ jupyter notebook
 │
 ├── docs/                      <- All documentation, data dictionaries, manuals, and final reports and deliverables.
 │   ├── data/                  <- Location to place documents describing results of data exploration, data dictionaries, etc.
-│   ├── model/                 <- Model documentation 
+│   ├── deliverables/          <- All generated and sharable deliverables.
+│   ├── models/                <- Model documentation 
 │       ├── archive/
 │       ├── baseline_model/
 │       ├── current_model/
+│       ├── experiments/
 │   ├── project/               <- Project documentation, including project charter, and results.
-│       ├── deliverables/      <- All generated and sharable deliverables.
 │   ├── figures/               <- Centralized location for all figures and diagrams in project except for those embedded in notebooks.
 │           ├── archive/
 │           ├── data/

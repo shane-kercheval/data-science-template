@@ -48,7 +48,8 @@ data: data_extract data_transform data_training_test
 
 exploration_python: environment_python data_training_test
 	@echo $(call FORMAT_MESSAGE,"exploration_python","Running exploratory jupyter notebooks and converting to .html files.")
-	. .venv/bin/activate && jupyter nbconvert --execute --to html code/notebooks/develop/Data-Exploration.ipynb
+	. .venv/bin/activate && jupyter nbconvert --execute --to html code/notebooks/develop/data-profile.ipynb
+	mv code/notebooks/develop/data-profile.html docs/data/data-profile.html
 
 exploration_r: environment_r
 	@echo $(call FORMAT_MESSAGE,"exploration_r","Running exploratory RMarkdown notebooks and converting to .md files.")
@@ -69,7 +70,7 @@ experiments_eval: artifacts/models/experiments/new_results.txt
 	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat artifacts/models/experiments/new_results.txt)/g' code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running the notebook and creating html.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
-	mv code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).html artifacts/models/experiments/$(shell cat artifacts/models/experiments/new_results.txt).html
+	mv code/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).html docs/models/experiments/$(shell cat artifacts/models/experiments/new_results.txt).html
 	rm -f artifacts/models/experiments/new_results.txt
 
 final_model: environment
