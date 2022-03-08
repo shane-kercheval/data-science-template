@@ -54,6 +54,8 @@ exploration_python: environment_python data_training_test
 exploration_r: environment_r
 	@echo $(call FORMAT_MESSAGE,"exploration_r","Running exploratory RMarkdown notebooks and converting to .md files.")
 	Rscript -e "rmarkdown::render('code/notebooks/develop/r-markdown-template.Rmd')"
+	mv code/notebooks/develop/r-markdown-template.md docs/data/r-markdown-template.md
+	mv code/notebooks/develop/r-markdown-template_files/ docs/data/r-markdown-template_files/
 
 exploration: exploration_python exploration_r
 	@echo $(call FORMAT_MESSAGE,"exploration","Finished running exploration notebooks.")
