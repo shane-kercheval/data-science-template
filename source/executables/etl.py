@@ -7,7 +7,7 @@ from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 
-from helpers.utilities import get_logger
+from source.library.utilities import get_logger
 
 
 @click.group()
