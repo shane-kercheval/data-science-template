@@ -33,15 +33,15 @@ tests: tests_python tests_r
 ## Make Dataset
 data_extract: environment_python
 	@echo $(call FORMAT_MESSAGE,"data_extract","Extracting data.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/etl.py extract
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/executables/etl.py extract
 
 data_transform: environment_python
 	@echo $(call FORMAT_MESSAGE,"data_transform","Transforming data.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/etl.py transform
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/executables/etl.py transform
 
 data_training_test: environment_python
 	@echo $(call FORMAT_MESSAGE,"data_training_test","Creating training & test sets.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/etl.py create-training-test
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/executables/etl.py create-training-test
 
 data: data_extract data_transform data_training_test
 	@echo $(call FORMAT_MESSAGE,"data","Finished running local ETL.")
@@ -63,7 +63,7 @@ exploration: exploration_python exploration_r
 
 experiments: environment_python
 	@echo $(call FORMAT_MESSAGE,"experiments","Running Hyper-parameters experiments based on BayesianSearchCV.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/run_experiments.py
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/executables/experiments.py
 
 experiments_eval: artifacts/models/experiments/new_results.txt
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running Evaluation of experiments")
