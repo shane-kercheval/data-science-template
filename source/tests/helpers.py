@@ -8,7 +8,7 @@ def get_test_path(file_path) -> str:
     """
     path = os.getcwd()
     if not is_debugging():
-        path = os.path.join(path, 'code/tests')
+        path = os.path.join(path, 'source/tests')
 
     path = os.path.join(path, 'test_files', file_path)
     return path
