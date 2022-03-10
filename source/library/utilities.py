@@ -6,7 +6,7 @@ import xmltodict
 import yaml
 
 
-def get_logger(config="code/config/logging/local.conf", logger_name='app', leg_level="DEBUG"):
+def get_logger(config="source/config/logging/local.conf", logger_name='app', leg_level="DEBUG"):
     logging.config.fileConfig(config, disable_existing_loggers=False)
     logger = logging.getLogger(logger_name)
     logger.setLevel(leg_level)
