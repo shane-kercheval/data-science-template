@@ -20,10 +20,11 @@ class TestHelpers(unittest.TestCase):
         self.assertTrue(True)
 
     def test__timer(self):
-        with Timer("scoring", get_logger()):
+        print('\n')
+        with Timer("testing timer", get_logger()):
             time.sleep(0.1)
 
-        with Timer("scoring", get_logger()) as timer:
+        with Timer("testing another timer", get_logger()) as timer:
             time.sleep(0.1)
 
         self.assertIsNotNone(timer.interval)
@@ -37,6 +38,7 @@ class TestHelpers(unittest.TestCase):
         # this test mainly makes sure that the function runs, and outputs the result to a file so we can
         # track changes in github
         self.assertIsNotNone(pipeline)
+
         with open(get_test_file_path('classification_create_pipeline.txt'), 'w') as file:
             file.write(TestHelpers.to_string(pipeline))
 

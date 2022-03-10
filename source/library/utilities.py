@@ -40,4 +40,4 @@ class Timer:
     def __exit__(self, *args):
         self.end = datetime.datetime.now()
         self.interval = self.end - self.start
-        self.logger.info("%s (%0.2f seconds)", self.message, self.interval.total_seconds())
+        self.logger.info(f"{self.message} ({self.interval.total_seconds():.2f} seconds)")
