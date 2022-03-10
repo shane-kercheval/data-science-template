@@ -52,6 +52,21 @@ def create_search_space(iterations=50, random_state=42) -> list:
             {
                 'model':
                     Categorical(categories=[LogisticRegression(max_iter=1000, random_state=random_state)]),
+                'prep__numeric__imputer__transformer':
+                    Categorical(categories=[SimpleImputer()]),
+                'prep__numeric__scaler__transformer':
+                    Categorical(categories=[StandardScaler()]),
+                'prep__numeric__pca__transformer':
+                    Categorical(categories=[None]),
+                'prep__non_numeric__encoder__transformer':
+                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')])
+            },
+            1
+        ),
+        (
+            {
+                'model':
+                    Categorical(categories=[LogisticRegression(max_iter=1000, random_state=random_state)]),
                 'model__C':
                     Real(low=1e-06, high=100, prior='log-uniform', transform='identity'),
                 'prep__numeric__imputer__transformer':
@@ -81,7 +96,7 @@ def create_search_space(iterations=50, random_state=42) -> list:
         (
             {
                 'model':
-                    Categorical(categories=[LogisticRegression(max_iter=1000, random_state=random_state)]),
+                    Categorical(categories=[LinearSVC(random_state=random_state)]),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=[SimpleImputer()]),
                 'prep__numeric__scaler__transformer':
@@ -126,11 +141,13 @@ def create_search_space(iterations=50, random_state=42) -> list:
         (
             {
                 'model':
-                    Categorical(categories=[LinearSVC(random_state=random_state)]),
+                    Categorical(categories=[
+                        ExtraTreesClassifier(bootstrap=True, n_estimators=500, random_state=random_state)
+                    ]),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=[SimpleImputer()]),
                 'prep__numeric__scaler__transformer':
-                    Categorical(categories=[StandardScaler()]),
+                    Categorical(categories=[None]),
                 'prep__numeric__pca__transformer':
                     Categorical(categories=[None]),
                 'prep__non_numeric__encoder__transformer':
@@ -185,9 +202,7 @@ def create_search_space(iterations=50, random_state=42) -> list:
         (
             {
                 'model':
-                    Categorical(categories=[
-                        ExtraTreesClassifier(bootstrap=True, n_estimators=500, random_state=random_state)
-                    ]),
+                    Categorical(categories=[RandomForestClassifier(n_estimators=500, random_state=random_state)]),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=[SimpleImputer()]),
                 'prep__numeric__scaler__transformer':
@@ -242,7 +257,14 @@ def create_search_space(iterations=50, random_state=42) -> list:
         (
             {
                 'model':
-                    Categorical(categories=[RandomForestClassifier(n_estimators=500, random_state=random_state)]),
+                    Categorical(categories=[
+                        XGBClassifier(
+                            n_estimators=500,
+                            eval_metric='logloss',
+                            use_label_encoder=False,
+                            random_state=random_state,
+                        )
+                    ]),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=[SimpleImputer()]),
                 'prep__numeric__scaler__transformer':
@@ -304,28 +326,6 @@ def create_search_space(iterations=50, random_state=42) -> list:
                     )
             },
             iterations
-        ),
-        (
-            {
-                'model':
-                    Categorical(categories=[
-                        XGBClassifier(
-                            n_estimators=500,
-                            eval_metric='logloss',
-                            use_label_encoder=False,
-                            random_state=random_state,
-                        )
-                    ]),
-                'prep__numeric__imputer__transformer':
-                    Categorical(categories=[SimpleImputer()]),
-                'prep__numeric__scaler__transformer':
-                    Categorical(categories=[None]),
-                'prep__numeric__pca__transformer':
-                    Categorical(categories=[None]),
-                'prep__non_numeric__encoder__transformer':
-                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')])
-            },
-            1
         ),
     ]
 
