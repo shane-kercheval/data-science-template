@@ -5,8 +5,8 @@ import helpsk as hlp
 from sklearn.model_selection import RepeatedKFold
 from skopt import BayesSearchCV  # noqa
 
-from source.library.utilities import get_logger, Timer
-import source.library.classification_search_space as css
+from helpers.utilities import get_logger, Timer
+import helpers.classification_search_space as css
 
 
 def main():
