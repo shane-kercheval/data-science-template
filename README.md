@@ -61,15 +61,11 @@ jupyter notebook
 │       ├── current/           <- The current model being used by the project.
 │       ├── experiments/       <- Contains experimentss and experiments output (e.g. yaml/html showing performance of experiments.)
 │
-├── source/                      <- All source-code (e.g. SQL, python scripts, notebooks, unit-tests, etc.)
+├── source/                    <- All source-code (e.g. SQL, python scripts, notebooks, unit-tests, etc.)
 │   ├── config/                <- Directory for yaml configuration files for model training, scoring, etc
-│   ├── executables/           <- Command-line programs that execute the project tasks (e.g. etl & data processing, experiments, model-building, etc.). They typically have outputs that are artifacts (e.g. .pkl models or data).
-│   ├── library/               <- Supporting source-code that promotes code reusability and unit-testing. Clients that use this code are notebooks, executables, and tests.
-│   ├── notebooks/             <- All notebooks in projects. Users should attempt to separate reporting/exploring (notebooks) and processing (scripts).
-│       ├── archive/           <- Previous notebooks that are outdated or no longer applicable.
-│       ├── deliver/           <- Notebooks shared with others. 
-│       ├── develop/           <- Current notebooks being used in development.
-│       ├── templates/         <- Template notebooks for analysis with useful imports and helper functions. 
+│   ├── executables/           <- Notebooks, as well as command-line programs that execute the project tasks (e.g. etl & data processing, experiments, model-building, etc.). They typically have outputs that are artifacts (e.g. .pkl models or data).
+│       ├── helpers/           <- Supporting source-code that promotes code reusability and unit-testing. Clients that use this code are notebooks, executables, and tests.
+│       ├── templates/             <- Template notebooks for analysis with useful imports and helper functions. 
 │   ├── sql/                   <- SQL scripts for querying DWH/lake. 
 │   ├── tests/                 <- Files necessary for running model tests (see documentation below) 
 │       ├── test_files/        <- Files that help run unit tests, e.g. mock yaml files.
