@@ -48,15 +48,15 @@ data: data_extract data_transform data_training_test
 
 exploration_python: environment_python data_training_test
 	@echo $(call FORMAT_MESSAGE,"exploration_python","Running exploratory jupyter notebooks and converting to .html files.")
-	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/develop/data-profile.ipynb
-	mv source/notebooks/develop/data-profile.html docs/data/data-profile.html
+	. .venv/bin/activate && jupyter nbconvert --execute --to html source/executables/data-profile.ipynb
+	mv source/executables/data-profile.html docs/data/data-profile.html
 
 exploration_r: environment_r
 	@echo $(call FORMAT_MESSAGE,"exploration_r","Running exploratory RMarkdown notebooks and converting to .md files.")
-	Rscript -e "rmarkdown::render('source/notebooks/develop/r-markdown-template.Rmd')"
+	Rscript -e "rmarkdown::render('source/executables/r-markdown-template.Rmd')"
 	rm -rf docs/data/r-markdown-template_files/
-	mv source/notebooks/develop/r-markdown-template.md docs/data/r-markdown-template.md
-	mv source/notebooks/develop/r-markdown-template_files/ docs/data/
+	mv source/executables/r-markdown-template.md docs/data/r-markdown-template.md
+	mv source/executables/r-markdown-template_files/ docs/data/
 
 exploration: exploration_python exploration_r
 	@echo $(call FORMAT_MESSAGE,"exploration","Finished running exploration notebooks.")
@@ -68,12 +68,12 @@ experiments: environment_python
 experiments_eval: artifacts/models/experiments/new_results.txt
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running Evaluation of experiments")
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Copying experiments template (experiment-template.ipynb) to /artifacts/models/experiments directory.")
-	cp source/notebooks/experiment-template.ipynb source/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
+	cp source/executables/templates/experiment-template.ipynb source/executables/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Setting the experiments yaml file name within the ipynb file.")
-	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat artifacts/models/experiments/new_results.txt)/g' source/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
+	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat artifacts/models/experiments/new_results.txt)/g' source/executables/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running the notebook and creating html.")
-	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
-	mv source/notebooks/develop/$(shell cat artifacts/models/experiments/new_results.txt).html docs/models/experiments/$(shell cat artifacts/models/experiments/new_results.txt).html
+	. .venv/bin/activate && jupyter nbconvert --execute --to html source/executables/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
+	mv source/executables/$(shell cat artifacts/models/experiments/new_results.txt).html docs/models/experiments/$(shell cat artifacts/models/experiments/new_results.txt).html
 	rm -f artifacts/models/experiments/new_results.txt
 
 final_model: environment
