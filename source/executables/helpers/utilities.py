@@ -28,16 +28,21 @@ def open_dict_like_file(file_name):
 
 
 class Timer:
-    def __init__(self, message, logger):
-        self.logger = logger
-        self.message = message
+    def __init__(self, message, logger=None):
+        self._logger = logger
+        self._message = message
 
     def __enter__(self):
-        self.start = datetime.datetime.now()
+        self._start = datetime.datetime.now()
 
         return self
 
     def __exit__(self, *args):
-        self.end = datetime.datetime.now()
-        self.interval = self.end - self.start
-        self.logger.info(f"{self.message} ({self.interval.total_seconds():.2f} seconds)")
+        self._end = datetime.datetime.now()
+        self._interval = self._end - self._start
+        message = f"{self._message} ({self._interval.total_seconds():.2f} seconds)"
+
+        if self._logger is None:
+            print(message)
+        else:
+            self._logger.info(message)

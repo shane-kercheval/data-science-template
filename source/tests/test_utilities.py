@@ -21,13 +21,16 @@ class TestHelpers(unittest.TestCase):
 
     def test__timer(self):
         print('\n')
-        with Timer("testing timer", get_logger()):
-            time.sleep(0.1)
+        with Timer("testing timer without logger"):
+            time.sleep(0.05)
+
+        with Timer("testing timer with logger", get_logger()):
+            time.sleep(0.2)
 
         with Timer("testing another timer", get_logger()) as timer:
             time.sleep(0.1)
 
-        self.assertIsNotNone(timer.interval)
+        self.assertIsNotNone(timer._interval)
 
     def test__classification_search_space(self):
         pipeline = css.create_pipeline(pd.DataFrame({
