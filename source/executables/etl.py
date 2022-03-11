@@ -7,6 +7,7 @@ from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 
+from helpsk.utility import read_pickle, to_pickle
 from helpers.utilities import get_logger
     
 
@@ -52,8 +53,7 @@ def create_training_test():
     logger = get_logger()
     logger.info(f"Splitting training & test datasets")
 
-    with open('artifacts/data/raw/credit.pkl', 'rb') as handle:
-        credit_data = pickle.load(handle)
+    credit_data = read_pickle('artifacts/data/raw/credit.pkl')
 
     y_full = credit_data['target']
     x_full = credit_data.drop(columns='target')
@@ -65,23 +65,19 @@ def create_training_test():
 
     file_name = 'artifacts/data/processed/x_train.pkl'
     logger.info(f"Creating `{file_name}`")
-    with open(file_name, 'wb') as handle:
-        pickle.dump(x_train, handle)
+    to_pickle(x_train, file_name)
 
     file_name = 'artifacts/data/processed/x_test.pkl'
     logger.info(f"Creating `{file_name}`")
-    with open(file_name, 'wb') as handle:
-        pickle.dump(x_test, handle)
+    to_pickle(x_test, file_name)
 
     file_name = 'artifacts/data/processed/y_train.pkl'
     logger.info(f"Creating `{file_name}`")
-    with open(file_name, 'wb') as handle:
-        pickle.dump(y_train, handle)
+    to_pickle(y_train, file_name)
 
     file_name = 'artifacts/data/processed/y_test.pkl'
     logger.info(f"Creating `{file_name}`")
-    with open(file_name, 'wb') as handle:
-        pickle.dump(y_test, handle)
+    to_pickle(y_test, file_name)
 
 
 if __name__ == '__main__':
