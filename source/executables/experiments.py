@@ -1,7 +1,7 @@
 import datetime
 import pickle
 
-from helpsk.sklearn.sklearn_eval import MLExperimentResults
+from helpsk.sklearn_eval import MLExperimentResults
 from helpsk.utility import read_pickle, to_pickle
 
 from sklearn.model_selection import RepeatedKFold
@@ -19,8 +19,8 @@ def main():
     logger.info(f"Starting experiments.")
     logger.info(f"Loading training/test sets.")
 
-    x_train = read_pickle('artifacts/data/processed/X_train.pkl', 'rb')
-    y_train = read_pickle('artifacts/data/processed/y_train.pkl', 'rb')
+    x_train = read_pickle('artifacts/data/processed/X_train.pkl')
+    y_train = read_pickle('artifacts/data/processed/y_train.pkl')
 
     with Timer("Running Model Experiments (BayesSearchCV)", logger):
         bayes_search = BayesSearchCV(
