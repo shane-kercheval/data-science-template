@@ -1,7 +1,7 @@
 #################################################################################
 # File adapted from https://github.com/drivendata/cookiecutter-data-science
 #################################################################################
-.PHONY: clean_python clean_r clean environment_python environment_r environment tests_python tests_r tests data_extract data_transform data_training_test data exploration_python exploration_r exploration experiments experiments_eval final_model final_eval all
+.PHONY: clean_python clean_r clean environment_python environment_r environment tests_python tests_r tests data_extract data_transform data_training_test data exploration_python exploration_r exploration experiments_run experiments_eval experiments_eval final_model final_eval all
 
 #################################################################################
 # GLOBALS
@@ -61,8 +61,8 @@ exploration_r: environment_r
 exploration: exploration_python exploration_r
 	@echo $(call FORMAT_MESSAGE,"exploration","Finished running exploration notebooks.")
 
-experiments: environment_python
-	@echo $(call FORMAT_MESSAGE,"experiments","Running Hyper-parameters experiments based on BayesianSearchCV.")
+experiments_run: environment_python
+	@echo $(call FORMAT_MESSAGE,"experiments_run","Running Hyper-parameters experiments based on BayesianSearchCV.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/executables/experiments.py
 
 experiments_eval: artifacts/models/experiments/new_results.txt
@@ -75,6 +75,9 @@ experiments_eval: artifacts/models/experiments/new_results.txt
 	. .venv/bin/activate && jupyter nbconvert --execute --to html source/executables/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
 	mv source/executables/$(shell cat artifacts/models/experiments/new_results.txt).html docs/models/experiments/$(shell cat artifacts/models/experiments/new_results.txt).html
 	rm -f artifacts/models/experiments/new_results.txt
+
+experiments: experiments_run experiments_eval
+	@echo $(call FORMAT_MESSAGE,"experiments","Done Running and Evaluating Experiments.")
 
 final_model: environment
 	@echo $(call FORMAT_MESSAGE,"final_model","Building final model from best model in experiment.")
