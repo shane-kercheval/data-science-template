@@ -53,10 +53,10 @@ exploration_python: environment_python data_training_test
 
 exploration_r: environment_r
 	@echo $(call FORMAT_MESSAGE,"exploration_r","Running exploratory RMarkdown notebooks and converting to .md files.")
-	Rscript -e "rmarkdown::render('source/notebooks/r-markdown-template.Rmd')"
+	Rscript -e "rmarkdown::render('source/notebooks/templates/r-markdown-template.Rmd')"
 	rm -rf docs/data/r-markdown-template_files/
-	mv source/notebooks/r-markdown-template.md docs/data/r-markdown-template.md
-	mv source/notebooks/r-markdown-template_files/ docs/data/
+	mv source/notebooks/templates/r-markdown-template.md docs/data/r-markdown-template.md
+	mv source/notebooks/templates/r-markdown-template_files/ docs/data/
 
 exploration: exploration_python exploration_r
 	@echo $(call FORMAT_MESSAGE,"exploration","Finished running exploration notebooks.")
