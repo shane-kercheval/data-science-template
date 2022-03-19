@@ -1,14 +1,15 @@
 import datetime
-import pickle
+import os
+import sys
 
 from helpsk.sklearn_eval import MLExperimentResults
 from helpsk.utility import read_pickle, to_pickle
-
 from sklearn.model_selection import RepeatedKFold
 from skopt import BayesSearchCV  # noqa
 
-from helpers.utilities import get_logger, Timer
-import helpers.classification_search_space as css
+sys.path.append(os.getcwd())
+from source.library.utilities import get_logger, Timer  # noqa
+import source.library.classification_search_space as css  # noqa
 
 
 def main():

@@ -1,4 +1,5 @@
-import pickle
+import os
+import sys
 import warnings
 
 import click
@@ -6,10 +7,11 @@ import numpy as np
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
-
 from helpsk.utility import read_pickle, to_pickle
-from helpers.utilities import get_logger
-    
+
+sys.path.append(os.getcwd())
+from source.library.utilities import get_logger  # noqa
+
 
 @click.group()
 def main():
