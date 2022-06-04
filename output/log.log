@@ -1,0 +1,25 @@
+2022-06-04 16:39:41 - INFO     | FUNCTION: EXTRACT
+2022-06-04 16:39:41 - INFO     | Downloading credit data from https://www.openml.org/d/31
+2022-06-04 16:39:41 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
+2022-06-04 16:39:41 - INFO     | Done processing credit data.
+2022-06-04 16:39:41 - INFO     | Saving credit data to `artifacts/data/raw/credit.pkl`
+2022-06-04 16:39:42 - INFO     | FUNCTION: TRANSFORM
+2022-06-04 16:39:42 - INFO     | Transforming Data
+2022-06-04 16:39:44 - INFO     | FUNCTION: CREATE_TRAINING_TEST
+2022-06-04 16:39:44 - INFO     | Splitting training & test datasets
+2022-06-04 16:39:44 - INFO     | Creating `artifacts/data/processed/x_train.pkl`
+2022-06-04 16:39:44 - INFO     | Creating `artifacts/data/processed/x_test.pkl`
+2022-06-04 16:39:44 - INFO     | Creating `artifacts/data/processed/y_train.pkl`
+2022-06-04 16:39:44 - INFO     | Creating `artifacts/data/processed/y_test.pkl`
+2022-06-04 16:41:08 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-04 16:41:08 - INFO     | FUNCTION: EXPERIMENTS.RUN
+2022-06-04 16:41:08 - INFO     | PARAMS:
+2022-06-04 16:41:08 - INFO     |     input_directory: artifacts/data/processed
+2022-06-04 16:41:08 - INFO     |     output_directory: artifacts/models/experiments
+2022-06-04 16:41:08 - INFO     |     n_iterations: 50
+2022-06-04 16:41:08 - INFO     |     n_splits: 10
+2022-06-04 16:41:08 - INFO     |     n_repeats: 1
+2022-06-04 16:41:08 - INFO     |     score: roc_auc
+2022-06-04 16:41:08 - INFO     | Loading training/test sets from input directory artifacts/data/processed
+2022-06-04 16:41:08 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-04 16:41:26 - INFO     | *****Timer Finished (18.35 seconds)

@@ -1,17 +1,25 @@
-# common imports
-import os
-import sys
-from pathlib import Path
+import logging
+import logging.config
 import pandas as pd
 import numpy as np
 import math
-import helpsk as hlp
+import re
+import os
+import sys
+import json
+import random
+import pickle as pkl
 import plotly.express as px
+from pathlib import Path
+import helpsk as hlp
 import plotly.io as pio
 
 pio.renderers.default='notebook'
 
-# pandas display options
+logging.config.fileConfig("source/config/logging/local_to_file.conf",
+                          defaults={'logfilename': 'output/log.log'},
+                          disable_existing_loggers=False)
+
 # https://pandas.pydata.org/pandas-docs/stable/user_guide/options.html#available-options
 pd.options.display.max_columns = 30 # default 20
 pd.options.display.max_rows = 60 # default 60

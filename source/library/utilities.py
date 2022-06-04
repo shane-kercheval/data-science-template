@@ -1,42 +1,108 @@
+"""
+This file provides general helper functions such as logging and saving/pickling objects.
+"""
 import datetime
 import logging
 import logging.config
+import os
+from pathlib import Path
+from typing import Union
 
-import xmltodict
-import yaml
-
-
-def get_logger(config="source/config/logging/local.conf", logger_name='app', leg_level="DEBUG"):
-    logging.config.fileConfig(config, disable_existing_loggers=False)
-    logger = logging.getLogger(logger_name)
-    logger.setLevel(leg_level)
-
-    return logger
+import pandas as pd
+from helpsk.utility import to_pickle
 
 
-def open_dict_like_file(file_name):
-    with open(file_name, "r") as f:
-        if file_name.endswith("json"):
-            result = yaml.load(f)
-        elif file_name.endswith("yaml") or file_name.endswith("yml"):
-            result = yaml.load(f)
-        elif file_name.endswith("xml"):
-            result = xmltodict.parse(f.read())
-        else:
-            logging.warning("%s not a known dictionary-like file type", file_name)
-    return result
+def log_info(message: str):
+    """
+    Calls logging.info. Use this function rather than logging.info directly in case a production
+    environment requires a different library/setup.
+
+    Args:
+        message: the message to log
+    """
+    logging.info(message)
+
+
+def log_func(func_name: str, params: Union[dict, None] = None):
+    """
+    This function is meant to be used at the start of the calling function; calls log_info and passes the
+    name of the function and optional parameter names/values.
+
+    Args:
+        func_name:
+            the name of the function
+        params:
+            a dictionary containing the names of the function parameters (as dictionary keys) and the
+            parameter values (as dictionary values).
+    """
+    log_info(f"FUNCTION: {func_name.upper()}")
+    if params is not None:
+        log_info(f"PARAMS:")
+        for key, value in params.items():
+            log_info(f"    {key}: {value}")
+
+
+def dataframe_to_pickle(df: pd.DataFrame, output_directory: str, file_name: str) -> str:
+    """
+    This function takes a Pandas DataFrame and saves it as a pickled object to the directory with the file
+    name specified. The output directory is created if it does not yet exist.
+
+    Args:
+        df: the Pandas DataFrame to pickle
+        output_directory: the directory to save the pickled object
+        file_name: the name of the file
+    """
+    Path(output_directory).mkdir(exist_ok=True)
+    file_path = os.path.join(output_directory, file_name)
+    df.to_pickle(file_path)
+    return file_path
+
+
+def dataframe_to_csv(df: pd.DataFrame, output_directory: str, file_name: str) -> str:
+    """
+    This function takes a Pandas DataFrame and saves it as a csv file to the directory with the file
+    name specified. The output directory is created if it does not yet exist.
+
+    Args:
+        df: the Pandas DataFrame to pickle
+        output_directory: the directory to save the csv file
+        file_name: the name of the file
+    """
+    Path(output_directory).mkdir(exist_ok=True)
+    file_path = os.path.join(output_directory, file_name)
+    df.to_csv(file_path, index=False)
+    return file_path
+
+
+def object_to_pickle(obj: object, output_directory: str, file_name: str) -> str:
+    """
+    This function takes a generic object and saves it as a pickled object to the directory with the file
+    name specified. The output directory is created if it does not yet exist.
+
+    Args:
+        obj: the object to pickle
+        output_directory: the directory to save the pickled object
+        file_name: the name of the file
+    """
+    Path(output_directory).mkdir(exist_ok=True)
+    file_path = os.path.join(output_directory, file_name)
+    to_pickle(obj=obj, path=file_path)
+    return file_path
 
 
 class Timer:
-    def __init__(self, message, logger=None):
-        self._logger = logger
+    """
+    This class provides way to time the duration of code within the context manager.
+    """
+    def __init__(self, message):
         self._message = message
 
     def __enter__(self):
-        if self._logger is None:
-            print(f'Started: {self._message}')
-        else:
-            self._logger.info(f'Started: {self._message}')
+        # log_info()(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} - Starting Timer: {self._message}\n"
+        #              f"                          ======")
+        # "2022-05-26-11:19:46 - INFO     | Finished (10.82 seconds)"
+        logging.basicConfig()
+        log_info(f'*****Timer Started: {self._message}')
         self._start = datetime.datetime.now()
 
         return self
@@ -44,9 +110,4 @@ class Timer:
     def __exit__(self, *args):
         self._end = datetime.datetime.now()
         self._interval = self._end - self._start
-        message = f"Finished ({self._interval.total_seconds():.2f} seconds)"
-
-        if self._logger is None:
-            print(message)
-        else:
-            self._logger.info(message)
+        log_info(f'*****Timer Finished ({self._interval.total_seconds():.2f} seconds)')

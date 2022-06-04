@@ -33,15 +33,17 @@ tests: tests_python tests_r
 ## Make Dataset
 data_extract: environment_python
 	@echo $(call FORMAT_MESSAGE,"data_extract","Extracting data.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/etl.py extract
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py extract
 
 data_transform: environment_python
 	@echo $(call FORMAT_MESSAGE,"data_transform","Transforming data.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/etl.py transform
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py transform
 
 data_training_test: environment_python
 	@echo $(call FORMAT_MESSAGE,"data_training_test","Creating training & test sets.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/etl.py create-training-test
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py create-training-test \
+		-input_directory='artifacts/data/raw' \
+		-output_directory='artifacts/data/processed'
 
 data: data_extract data_transform data_training_test
 	@echo $(call FORMAT_MESSAGE,"data","Finished running local ETL.")
@@ -63,7 +65,13 @@ exploration: exploration_python exploration_r
 
 experiments_run: environment_python
 	@echo $(call FORMAT_MESSAGE,"experiments_run","Running Hyper-parameters experiments based on BayesianSearchCV.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/experiments.py
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py run-experiments \
+		-input_directory='artifacts/data/processed' \
+		-output_directory='artifacts/models/experiments'\
+		-n_iterations=4 \
+		-n_splits=5 \
+		-n_repeats=1 \
+		-score='roc_auc'
 
 experiments_eval: artifacts/models/experiments/new_results.txt
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running Evaluation of experiments")
@@ -85,8 +93,11 @@ final_model: environment
 final_eval: environment
 	@echo $(call FORMAT_MESSAGE,"final_eval","Running evaluation of final model on test set.")
 
+remove_logs:
+	rm -f output/log.log
+
 ## Run entire workflow.
-all: environment tests data exploration experiments experiments_eval final_model final_eval
+all: environment tests remove_logs data exploration experiments experiments_eval final_model final_eval
 	@echo $(call FORMAT_MESSAGE,"all","Finished running entire workflow.")
 
 ## Delete all generated files (e.g. virtual environment)
