@@ -21,6 +21,7 @@ FORMAT_MESSAGE =  "\n[MAKE "$(1)"] >>>" $(2)
 #################################################################################
 tests_python: environment_python
 	@echo $(call FORMAT_MESSAGE,"tests_python", "Running python unit tests.")
+	rm -f source/tests/test_files/log.log
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m unittest discover source/tests
 
 tests_r: environment_r
