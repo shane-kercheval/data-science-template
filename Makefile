@@ -52,14 +52,14 @@ data: data_extract data_transform data_training_test
 exploration_python: environment_python data_training_test
 	@echo $(call FORMAT_MESSAGE,"exploration_python","Running exploratory jupyter notebooks and converting to .html files.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/data-profile.ipynb
-	mv source/notebooks/data-profile.html docs/data/data-profile.html
+	mv source/notebooks/data-profile.html output/data/data-profile.html
 
 exploration_r: environment_r
 	@echo $(call FORMAT_MESSAGE,"exploration_r","Running exploratory RMarkdown notebooks and converting to .md files.")
 	Rscript -e "rmarkdown::render('source/notebooks/templates/r-markdown-template.Rmd')"
-	rm -rf docs/data/r-markdown-template_files/
-	mv source/notebooks/templates/r-markdown-template.md docs/data/r-markdown-template.md
-	mv source/notebooks/templates/r-markdown-template_files/ docs/data/
+	rm -rf output/data/r-markdown-template_files/
+	mv source/notebooks/templates/r-markdown-template.md output/data/r-markdown-template.md
+	mv source/notebooks/templates/r-markdown-template_files/ output/data/
 
 exploration: exploration_python exploration_r
 	@echo $(call FORMAT_MESSAGE,"exploration","Finished running exploration notebooks.")
@@ -82,7 +82,7 @@ experiments_eval: artifacts/models/experiments/new_results.txt
 	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat artifacts/models/experiments/new_results.txt)/g' source/notebooks/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running the notebook and creating html.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
-	mv source/notebooks/$(shell cat artifacts/models/experiments/new_results.txt).html docs/models/experiments/$(shell cat artifacts/models/experiments/new_results.txt).html
+	mv source/notebooks/$(shell cat artifacts/models/experiments/new_results.txt).html output/models/experiments/$(shell cat artifacts/models/experiments/new_results.txt).html
 	rm -f artifacts/models/experiments/new_results.txt
 
 experiments: experiments_run experiments_eval

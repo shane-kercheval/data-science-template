@@ -16,7 +16,7 @@ import plotly.io as pio
 
 pio.renderers.default='notebook'
 
-logging.config.fileConfig("source/config/logging/local_to_file.conf",
+logging.config.fileConfig("source/config/logging_to_file.conf",
                           defaults={'logfilename': 'output/log.log'},
                           disable_existing_loggers=False)
 
