@@ -1,39 +1,39 @@
-2022-06-04 16:56:23 - INFO     | FUNCTION: EXTRACT
-2022-06-04 16:56:23 - INFO     | Downloading credit data from https://www.openml.org/d/31
-2022-06-04 16:56:23 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
-2022-06-04 16:56:23 - INFO     | Done processing credit data.
-2022-06-04 16:56:23 - INFO     | Saving credit data to `artifacts/data/raw/credit.pkl`
-2022-06-04 16:56:24 - INFO     | FUNCTION: TRANSFORM
-2022-06-04 16:56:24 - INFO     | Transforming Data
-2022-06-04 16:56:26 - INFO     | FUNCTION: CREATE_TRAINING_TEST
-2022-06-04 16:56:26 - INFO     | Splitting training & test datasets
-2022-06-04 16:56:26 - INFO     | Creating `artifacts/data/processed/x_train.pkl`
-2022-06-04 16:56:26 - INFO     | Creating `artifacts/data/processed/x_test.pkl`
-2022-06-04 16:56:26 - INFO     | Creating `artifacts/data/processed/y_train.pkl`
-2022-06-04 16:56:26 - INFO     | Creating `artifacts/data/processed/y_test.pkl`
-2022-06-04 16:56:28 - INFO     | *****Timer Started: Loading Data
-2022-06-04 16:56:28 - INFO     | *****Timer Finished (0.00 seconds)
-2022-06-04 16:56:28 - INFO     | *****Timer Started: Loading training/test datasets
-2022-06-04 16:56:28 - INFO     | *****Timer Finished (0.00 seconds)
-2022-06-04 16:56:28 - INFO     | (800, 20)
-2022-06-04 16:56:28 - INFO     | 800
-2022-06-04 16:56:28 - INFO     | (200, 20)
-2022-06-04 16:56:28 - INFO     | 200
-2022-06-04 16:56:35 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-04 16:56:35 - INFO     | FUNCTION: EXPERIMENTS.RUN
-2022-06-04 16:56:35 - INFO     | PARAMS:
-2022-06-04 16:56:35 - INFO     |     input_directory: artifacts/data/processed
-2022-06-04 16:56:35 - INFO     |     output_directory: artifacts/models/experiments
-2022-06-04 16:56:35 - INFO     |     n_iterations: 4
-2022-06-04 16:56:35 - INFO     |     n_splits: 5
-2022-06-04 16:56:35 - INFO     |     n_repeats: 1
-2022-06-04 16:56:35 - INFO     |     score: roc_auc
-2022-06-04 16:56:35 - INFO     | Loading training/test sets from input directory artifacts/data/processed
-2022-06-04 16:56:35 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-04 16:57:21 - INFO     | *****Timer Finished (46.06 seconds)
-2022-06-04 16:57:21 - INFO     | Saving results of BayesSearchCV to: `artifacts/models/experiments/multi-model-BayesSearchCV-2022-06-04-16-57-21.yaml`
-2022-06-04 16:57:21 - INFO     | Saving the best_estimator of BayesSearchCV to: `artifacts/models/experiments/multi-model-BayesSearchCV-2022-06-04-16-57-21_best_estimator.pkl`
-2022-06-04 16:57:21 - INFO     | Best Score: 0.7668027026011365
-2022-06-04 16:57:21 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-06-04 16:57:25 - INFO     | Best Score: 0.7668027026011365
-2022-06-04 16:57:25 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
+2022-06-04 17:54:18 - INFO     | FUNCTION: EXTRACT
+2022-06-04 17:54:18 - INFO     | Downloading credit data from https://www.openml.org/d/31
+2022-06-04 17:54:18 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
+2022-06-04 17:54:18 - INFO     | Done processing credit data.
+2022-06-04 17:54:18 - INFO     | Saving credit data to `artifacts/data/raw/credit.pkl`
+2022-06-04 17:54:20 - INFO     | FUNCTION: TRANSFORM
+2022-06-04 17:54:20 - INFO     | Transforming Data
+2022-06-04 17:54:21 - INFO     | FUNCTION: CREATE_TRAINING_TEST
+2022-06-04 17:54:21 - INFO     | Splitting training & test datasets
+2022-06-04 17:54:21 - INFO     | Creating `artifacts/data/processed/x_train.pkl`
+2022-06-04 17:54:21 - INFO     | Creating `artifacts/data/processed/x_test.pkl`
+2022-06-04 17:54:21 - INFO     | Creating `artifacts/data/processed/y_train.pkl`
+2022-06-04 17:54:21 - INFO     | Creating `artifacts/data/processed/y_test.pkl`
+2022-06-04 17:54:26 - INFO     | *****Timer Started: Loading Data
+2022-06-04 17:54:26 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-04 17:54:26 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-04 17:54:26 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-04 17:54:26 - INFO     | (800, 20)
+2022-06-04 17:54:26 - INFO     | 800
+2022-06-04 17:54:26 - INFO     | (200, 20)
+2022-06-04 17:54:26 - INFO     | 200
+2022-06-04 17:54:32 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-04 17:54:32 - INFO     | FUNCTION: EXPERIMENTS.RUN
+2022-06-04 17:54:32 - INFO     | PARAMS:
+2022-06-04 17:54:32 - INFO     |     input_directory: artifacts/data/processed
+2022-06-04 17:54:32 - INFO     |     output_directory: artifacts/models/experiments
+2022-06-04 17:54:32 - INFO     |     n_iterations: 4
+2022-06-04 17:54:32 - INFO     |     n_splits: 5
+2022-06-04 17:54:32 - INFO     |     n_repeats: 1
+2022-06-04 17:54:32 - INFO     |     score: roc_auc
+2022-06-04 17:54:32 - INFO     | Loading training/test sets from input directory artifacts/data/processed
+2022-06-04 17:54:32 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-04 17:54:51 - INFO     | *****Timer Finished (19.18 seconds)
+2022-06-04 17:54:51 - INFO     | Saving results of BayesSearchCV to: `artifacts/models/experiments/multi-model-BayesSearchCV-2022-06-04-17-54-51.yaml`
+2022-06-04 17:54:51 - INFO     | Saving the best_estimator of BayesSearchCV to: `artifacts/models/experiments/multi-model-BayesSearchCV-2022-06-04-17-54-51_best_estimator.pkl`
+2022-06-04 17:54:51 - INFO     | Best Score: 0.7668027026011365
+2022-06-04 17:54:51 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2022-06-04 17:54:55 - INFO     | Best Score: 0.7668027026011365
+2022-06-04 17:54:55 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
