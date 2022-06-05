@@ -43,7 +43,7 @@ def log_func(func_name: str, params: Union[dict, None] = None):
     """
     log_info(f"FUNCTION: {func_name.upper()}")
     if params is not None:
-        log_info(f"PARAMS:")
+        log_info("PARAMS:")
         for key, value in params.items():
             log_info(f"    {key}: {value}")
 

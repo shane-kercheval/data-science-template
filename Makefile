@@ -24,6 +24,11 @@ tests_python: environment_python
 	rm -f source/tests/test_files/log.log
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) -m unittest discover source/tests
 
+linting:
+	. .venv/bin/activate && flake8 --max-line-length 110 source/scripts
+	. .venv/bin/activate && flake8 --max-line-length 110 source/library
+	. .venv/bin/activate && flake8 --max-line-length 110 source/tests
+
 tests_r: environment_r
 	@echo $(call FORMAT_MESSAGE,"tests_r","Running R unit tests.")
 	R --quiet -e "testthat::test_dir('source/tests')"
@@ -90,7 +95,7 @@ remove_logs:
 	rm -f output/log.log
 
 ## Run entire workflow.
-all: environment tests remove_logs data exploration experiments experiments_eval final_model final_eval
+all: environment tests linting remove_logs data exploration experiments experiments_eval final_model final_eval
 	@echo $(call FORMAT_MESSAGE,"all","Finished running entire workflow.")
 
 ## Delete all generated files (e.g. virtual environment)
