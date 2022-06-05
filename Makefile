@@ -27,6 +27,7 @@ tests_python: environment_python
 linting:
 	. .venv/bin/activate && flake8 --max-line-length 110 source/scripts
 	. .venv/bin/activate && flake8 --max-line-length 110 source/library
+	. .venv/bin/activate && flake8 --max-line-length 110 source/tests
 
 tests_r: environment_r
 	@echo $(call FORMAT_MESSAGE,"tests_r","Running R unit tests.")
