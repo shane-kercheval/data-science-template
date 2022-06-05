@@ -1,6 +1,6 @@
 # data-science-template
 
-This repo contains a template for ML/DS Projects.
+This repo contains a template for ML/DS Projects..
 
 The structure and documents were heavily influenced from:
 
