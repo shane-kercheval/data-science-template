@@ -63,7 +63,7 @@ def run(input_directory: str,
     log_info(f"Saving data and results to `{output_directory}`")
     Path(output_directory).mkdir(exist_ok=True)
 
-    log_info(f"Splitting training & test datasets")
+    log_info("Splitting training & test datasets")
 
     credit_data = read_pickle(os.path.join(input_directory, 'credit.pkl'))
 

@@ -202,7 +202,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
         (
             {
                 'model':
-                    Categorical(categories=[RandomForestClassifier(n_estimators=500, random_state=random_state)]),
+                    Categorical(categories=[
+                        RandomForestClassifier(n_estimators=500, random_state=random_state)
+                    ]),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=[SimpleImputer()]),
                 'prep__numeric__scaler__transformer':
@@ -217,7 +219,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
         (
             {
                 'model':
-                    Categorical(categories=[RandomForestClassifier(n_estimators=500, random_state=random_state)]),
+                    Categorical(categories=[
+                        RandomForestClassifier(n_estimators=500, random_state=random_state)
+                    ]),
                 'model__max_features':
                     Real(low=0.01, high=0.95, prior='uniform', transform='identity'),
                 'model__max_depth':
