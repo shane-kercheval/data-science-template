@@ -7,9 +7,15 @@ import logging.config
 import os
 from pathlib import Path
 from typing import Union
+import yaml
 
 import pandas as pd
 from helpsk.utility import to_pickle
+
+
+def get_config(file_path: str = "source/config/config.yaml"):
+    with open(file_path, "r") as f:
+        return yaml.safe_load(f)
 
 
 def log_info(message: str):

@@ -1,7 +1,7 @@
 #################################################################################
 # File adapted from https://github.com/drivendata/cookiecutter-data-science
 #################################################################################
-.PHONY: clean_python clean_r clean environment_python environment_r environment tests_python tests_r tests data_extract data_transform data_training_test data exploration_python exploration_r exploration experiments_run experiments_eval experiments_eval final_model final_eval all
+.PHONY: clean_python clean_r clean environment_python environment_r environment tests_python tests_r tests data_extract data_transform data exploration_python exploration_r exploration experiments_run experiments_eval experiments_eval final_model final_eval all
 
 #################################################################################
 # GLOBALS
@@ -40,16 +40,10 @@ data_transform: environment_python
 	@echo $(call FORMAT_MESSAGE,"data_transform","Transforming data.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py transform
 
-data_training_test: environment_python
-	@echo $(call FORMAT_MESSAGE,"data_training_test","Creating training & test sets.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py create-training-test \
-		-input_directory='artifacts/data/raw' \
-		-output_directory='artifacts/data/processed'
-
-data: data_extract data_transform data_training_test
+data: data_extract data_transform
 	@echo $(call FORMAT_MESSAGE,"data","Finished running local ETL.")
 
-exploration_python: environment_python data_training_test
+exploration_python: environment_python
 	@echo $(call FORMAT_MESSAGE,"exploration_python","Running exploratory jupyter notebooks and converting to .html files.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/data-profile.ipynb
 	mv source/notebooks/data-profile.html output/data/data-profile.html
@@ -67,23 +61,21 @@ exploration: exploration_python exploration_r
 experiments_run: environment_python
 	@echo $(call FORMAT_MESSAGE,"experiments_run","Running Hyper-parameters experiments based on BayesianSearchCV.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py run-experiments \
-		-input_directory='artifacts/data/processed' \
-		-output_directory='artifacts/models/experiments'\
 		-n_iterations=4 \
 		-n_splits=5 \
 		-n_repeats=1 \
 		-score='roc_auc'
 
-experiments_eval: artifacts/models/experiments/new_results.txt
+experiments_eval: source/notebooks/new_results.txt
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running Evaluation of experiments")
-	@echo $(call FORMAT_MESSAGE,"experiments_eval","Copying experiments template (experiment-template.ipynb) to /artifacts/models/experiments directory.")
-	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
+	@echo $(call FORMAT_MESSAGE,"experiments_eval","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
+	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment__$(shell cat source/notebooks/new_results.txt).ipynb
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Setting the experiments yaml file name within the ipynb file.")
-	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat artifacts/models/experiments/new_results.txt)/g' source/notebooks/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
+	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat source/notebooks/new_results.txt)/g' source/notebooks/experiment__$(shell cat source/notebooks/new_results.txt).ipynb
 	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running the notebook and creating html.")
-	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/$(shell cat artifacts/models/experiments/new_results.txt).ipynb
-	mv source/notebooks/$(shell cat artifacts/models/experiments/new_results.txt).html output/models/experiments/$(shell cat artifacts/models/experiments/new_results.txt).html
-	rm -f artifacts/models/experiments/new_results.txt
+	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment__$(shell cat source/notebooks/new_results.txt).ipynb
+	mv source/notebooks/experiment__$(shell cat source/notebooks/new_results.txt).html output/models/experiments/experiment__$(shell cat source/notebooks/new_results.txt).html
+	rm -f source/notebooks/new_results.txt
 
 experiments: experiments_run experiments_eval
 	@echo $(call FORMAT_MESSAGE,"experiments","Done Running and Evaluating Experiments.")

@@ -4,7 +4,8 @@ import time
 import unittest
 import pandas as pd
 import source.library.classification_search_space as css
-from source.library.utilities import Timer, dataframe_to_pickle, dataframe_to_csv, object_to_pickle
+from source.library.utilities import Timer, dataframe_to_pickle, dataframe_to_csv, object_to_pickle, \
+    get_config
 from source.tests.helpers import get_test_file_path
 
 logging.config.fileConfig(get_test_file_path("test_logging.conf"),
@@ -32,6 +33,10 @@ class TestHelpers(unittest.TestCase):
             time.sleep(0.1)
 
         self.assertIsNotNone(timer._interval)
+
+    def test__get_config(self):
+        config = get_config(get_test_file_path('../../config/config.yaml'))
+        self.assertIsNotNone(config['OUTPUT']['DIRECTORY'])
 
     def test__dataframe_to_pickle(self):
         df = pd.DataFrame(['test'])

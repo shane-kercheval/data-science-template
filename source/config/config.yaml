@@ -1,0 +1,25 @@
+CONFIG:
+  DIRECTORY: 'source/config'
+
+OUTPUT:
+  DIRECTORY: 'output'
+
+DATA:
+  RAW_DIRECTORY: 'artifacts/data/raw'
+  INTERIM_DIRECTORY: 'artifacts/data/interim'
+  PROCESSED_DIRECTORY: 'artifacts/data/processed'
+  EXTERNAL_DIRECTORY: 'artifacts/data/external'
+
+EXPERIMENTS:
+  DIRECTORY: 'artifacts/models/experiments'
+  OUTPUT_DIRECTORY: 'output/experiments'
+
+NOTEBOOKS:
+  DIRECTORY: 'source/notebooks'
+
+DATABASE:
+  USERNAME: xyz
+  PASSWORD: xyz
+  HOST: 127.0.0.1
+  PORT: 5432
+  DB: xyz

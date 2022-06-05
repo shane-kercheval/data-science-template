@@ -1,39 +1,122 @@
-2022-06-04 17:54:18 - INFO     | FUNCTION: EXTRACT
-2022-06-04 17:54:18 - INFO     | Downloading credit data from https://www.openml.org/d/31
-2022-06-04 17:54:18 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
-2022-06-04 17:54:18 - INFO     | Done processing credit data.
-2022-06-04 17:54:18 - INFO     | Saving credit data to `artifacts/data/raw/credit.pkl`
-2022-06-04 17:54:20 - INFO     | FUNCTION: TRANSFORM
-2022-06-04 17:54:20 - INFO     | Transforming Data
-2022-06-04 17:54:21 - INFO     | FUNCTION: CREATE_TRAINING_TEST
-2022-06-04 17:54:21 - INFO     | Splitting training & test datasets
-2022-06-04 17:54:21 - INFO     | Creating `artifacts/data/processed/x_train.pkl`
-2022-06-04 17:54:21 - INFO     | Creating `artifacts/data/processed/x_test.pkl`
-2022-06-04 17:54:21 - INFO     | Creating `artifacts/data/processed/y_train.pkl`
-2022-06-04 17:54:21 - INFO     | Creating `artifacts/data/processed/y_test.pkl`
-2022-06-04 17:54:26 - INFO     | *****Timer Started: Loading Data
-2022-06-04 17:54:26 - INFO     | *****Timer Finished (0.00 seconds)
-2022-06-04 17:54:26 - INFO     | *****Timer Started: Loading training/test datasets
-2022-06-04 17:54:26 - INFO     | *****Timer Finished (0.00 seconds)
-2022-06-04 17:54:26 - INFO     | (800, 20)
-2022-06-04 17:54:26 - INFO     | 800
-2022-06-04 17:54:26 - INFO     | (200, 20)
-2022-06-04 17:54:26 - INFO     | 200
-2022-06-04 17:54:32 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-04 17:54:32 - INFO     | FUNCTION: EXPERIMENTS.RUN
-2022-06-04 17:54:32 - INFO     | PARAMS:
-2022-06-04 17:54:32 - INFO     |     input_directory: artifacts/data/processed
-2022-06-04 17:54:32 - INFO     |     output_directory: artifacts/models/experiments
-2022-06-04 17:54:32 - INFO     |     n_iterations: 4
-2022-06-04 17:54:32 - INFO     |     n_splits: 5
-2022-06-04 17:54:32 - INFO     |     n_repeats: 1
-2022-06-04 17:54:32 - INFO     |     score: roc_auc
-2022-06-04 17:54:32 - INFO     | Loading training/test sets from input directory artifacts/data/processed
-2022-06-04 17:54:32 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-04 17:54:51 - INFO     | *****Timer Finished (19.18 seconds)
-2022-06-04 17:54:51 - INFO     | Saving results of BayesSearchCV to: `artifacts/models/experiments/multi-model-BayesSearchCV-2022-06-04-17-54-51.yaml`
-2022-06-04 17:54:51 - INFO     | Saving the best_estimator of BayesSearchCV to: `artifacts/models/experiments/multi-model-BayesSearchCV-2022-06-04-17-54-51_best_estimator.pkl`
-2022-06-04 17:54:51 - INFO     | Best Score: 0.7668027026011365
-2022-06-04 17:54:51 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-06-04 17:54:55 - INFO     | Best Score: 0.7668027026011365
-2022-06-04 17:54:55 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
+2022-06-05 11:53:05 - INFO     | FUNCTION: EXTRACT
+2022-06-05 11:53:05 - INFO     | PARAMS:
+2022-06-05 11:53:05 - INFO     |     output_directory: artifacts/data/raw
+2022-06-05 11:53:05 - INFO     | Downloading credit data from https://www.openml.org/d/31
+2022-06-05 11:53:05 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
+2022-06-05 11:53:05 - INFO     | Saving credit data to `artifacts/data/raw/credit.pkl`
+2022-06-05 11:53:07 - INFO     | FUNCTION: EXTRACT
+2022-06-05 11:53:07 - INFO     | PARAMS:
+2022-06-05 11:53:07 - INFO     |     input_directory: artifacts/data/raw
+2022-06-05 11:53:07 - INFO     |     output_directory: artifacts/data/processed
+2022-06-05 11:53:07 - INFO     | FUNCTION: TRANSFORM
+2022-06-05 11:53:07 - INFO     | PARAMS:
+2022-06-05 11:53:07 - INFO     |     input_directory: artifacts/data/raw
+2022-06-05 11:53:07 - INFO     |     output_directory: artifacts/data/processed
+2022-06-05 11:53:07 - INFO     | Transforming Data
+2022-06-05 11:53:07 - INFO     | Done processing credit data.
+2022-06-05 11:53:07 - INFO     | Saving credit data to `artifacts/data/processed/credit.pkl`
+2022-06-05 11:53:09 - INFO     | *****Timer Started: Loading Data
+2022-06-05 11:53:09 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-05 11:53:10 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-05 11:53:10 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-05 11:54:24 - INFO     | *****Timer Started: Loading Data
+2022-06-05 11:54:24 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-05 11:54:24 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-05 11:54:24 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-05 11:56:04 - INFO     | *****Timer Started: Loading Data
+2022-06-05 11:56:04 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-05 11:56:35 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-05 11:56:35 - INFO     | FUNCTION: EXPERIMENTS.RUN
+2022-06-05 11:56:35 - INFO     | PARAMS:
+2022-06-05 11:56:35 - INFO     |     input_directory: artifacts/data/processed
+2022-06-05 11:56:35 - INFO     |     output_directory: artifacts/models/experiments
+2022-06-05 11:56:35 - INFO     |     n_iterations: 4
+2022-06-05 11:56:35 - INFO     |     n_splits: 5
+2022-06-05 11:56:35 - INFO     |     n_repeats: 1
+2022-06-05 11:56:35 - INFO     |     score: roc_auc
+2022-06-05 11:56:35 - INFO     | Saving data and results to `artifacts/models/experiments/experiment__2022_06_05_11_56_35`
+2022-06-05 11:56:35 - INFO     | Splitting training & test datasets
+2022-06-05 11:56:35 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_11_56_35/x_train.pkl`
+2022-06-05 11:56:35 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_11_56_35/x_test.pkl`
+2022-06-05 11:56:35 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_11_56_35/y_train.pkl`
+2022-06-05 11:56:35 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_11_56_35/y_test.pkl`
+2022-06-05 11:56:35 - INFO     | Loading training/test sets from input directory artifacts/data/processed
+2022-06-05 11:58:03 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-05 11:58:03 - INFO     | FUNCTION: EXPERIMENTS.RUN
+2022-06-05 11:58:03 - INFO     | PARAMS:
+2022-06-05 11:58:03 - INFO     |     input_directory: artifacts/data/processed
+2022-06-05 11:58:03 - INFO     |     output_directory: artifacts/models/experiments
+2022-06-05 11:58:03 - INFO     |     n_iterations: 4
+2022-06-05 11:58:03 - INFO     |     n_splits: 5
+2022-06-05 11:58:03 - INFO     |     n_repeats: 1
+2022-06-05 11:58:03 - INFO     |     score: roc_auc
+2022-06-05 11:58:03 - INFO     | Saving data and results to `artifacts/models/experiments/experiment__2022_06_05_11_58_03`
+2022-06-05 11:58:03 - INFO     | Splitting training & test datasets
+2022-06-05 11:58:03 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_11_58_03/x_train.pkl`
+2022-06-05 11:58:03 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_11_58_03/x_test.pkl`
+2022-06-05 11:58:03 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_11_58_03/y_train.pkl`
+2022-06-05 11:58:03 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_11_58_03/y_test.pkl`
+2022-06-05 11:58:03 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-05 11:58:23 - INFO     | *****Timer Finished (19.11 seconds)
+2022-06-05 11:58:23 - INFO     | Saving results of BayesSearchCV to: `artifacts/models/experiments/experiment__2022_06_05_11_58_03/experiment.yaml`
+2022-06-05 11:58:23 - INFO     | Saving the best_estimator of BayesSearchCV to: `artifacts/models/experiments/experiment__2022_06_05_11_58_03/experiment_best_estimator.pkl`
+2022-06-05 11:58:23 - INFO     | Best Score: 0.7668027026011365
+2022-06-05 11:58:23 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2022-06-05 12:07:53 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-05 12:07:53 - INFO     | FUNCTION: EXPERIMENTS.RUN
+2022-06-05 12:07:53 - INFO     | PARAMS:
+2022-06-05 12:07:53 - INFO     |     input_directory: artifacts/data/processed
+2022-06-05 12:07:53 - INFO     |     output_directory: artifacts/models/experiments
+2022-06-05 12:07:53 - INFO     |     n_iterations: 4
+2022-06-05 12:07:53 - INFO     |     n_splits: 5
+2022-06-05 12:07:53 - INFO     |     n_repeats: 1
+2022-06-05 12:07:53 - INFO     |     score: roc_auc
+2022-06-05 12:07:53 - INFO     | Saving data and results to `artifacts/models/experiments/experiment__2022_06_05_12_07_53`
+2022-06-05 12:07:53 - INFO     | Splitting training & test datasets
+2022-06-05 12:07:53 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_12_07_53/x_train.pkl`
+2022-06-05 12:07:53 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_12_07_53/x_test.pkl`
+2022-06-05 12:07:53 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_12_07_53/y_train.pkl`
+2022-06-05 12:07:53 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_12_07_53/y_test.pkl`
+2022-06-05 12:07:53 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-05 12:08:12 - INFO     | *****Timer Finished (18.91 seconds)
+2022-06-05 12:08:12 - INFO     | Saving results of BayesSearchCV to: `artifacts/models/experiments/experiment__2022_06_05_12_07_53/experiment.yaml`
+2022-06-05 12:08:12 - INFO     | Saving the best_estimator of BayesSearchCV to: `artifacts/models/experiments/experiment__2022_06_05_12_07_53/experiment_best_estimator.pkl`
+2022-06-05 12:08:12 - INFO     | Best Score: 0.7668027026011365
+2022-06-05 12:08:12 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2022-06-05 12:11:28 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-05 12:11:28 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-05 12:22:23 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-05 12:22:23 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-05 12:23:26 - INFO     | Experiment Directory: artifacts/models/experiments/experiments__2022_06_05_12_07_53
+2022-06-05 12:23:48 - INFO     | Experiment Directory: artifacts/models/experiments/experiments__2022_06_05_12_07_53
+2022-06-05 12:24:07 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-05 12:24:07 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-05 12:24:31 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-05 12:24:31 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-05 12:26:36 - INFO     | Experiment Directory: artifacts/models/experiments/experiment__2022_06_05_12_07_53
+2022-06-05 12:26:38 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-05 12:26:38 - INFO     | *****Timer Finished (0.01 seconds)
+2022-06-05 12:26:41 - INFO     | (800, 20)
+2022-06-05 12:26:41 - INFO     | 800
+2022-06-05 12:26:41 - INFO     | (200, 20)
+2022-06-05 12:26:41 - INFO     | 200
+2022-06-05 12:27:32 - INFO     | Best Score: 0.7668027026011365
+2022-06-05 12:27:51 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
+2022-06-05 12:29:55 - INFO     | Experiment Directory: artifacts/models/experiments/experiment__2022_06_05_12_07_53
+2022-06-05 12:29:55 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-05 12:29:55 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-05 12:29:55 - INFO     | (800, 20)
+2022-06-05 12:29:55 - INFO     | 800
+2022-06-05 12:29:55 - INFO     | (200, 20)
+2022-06-05 12:29:55 - INFO     | 200
+2022-06-05 12:29:55 - INFO     | Best Score: 0.7668027026011365
+2022-06-05 12:29:56 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
+2022-06-05 12:31:01 - INFO     | Experiment Directory: artifacts/models/experiments/experiment__2022_06_05_12_07_53
+2022-06-05 12:31:01 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-05 12:31:01 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-05 12:31:01 - INFO     | (800, 20)
+2022-06-05 12:31:01 - INFO     | 800
+2022-06-05 12:31:01 - INFO     | (200, 20)
+2022-06-05 12:31:01 - INFO     | 200
+2022-06-05 12:31:01 - INFO     | Best Score: 0.7668027026011365
+2022-06-05 12:31:01 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
