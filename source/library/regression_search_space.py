@@ -228,7 +228,8 @@ def create_search_space(iterations=50, random_state=42) -> list:
             {
                 'model': Categorical(
                     categories=(
-                        XGBRegressor(base_score=None, booster=None, colsample_bylevel=None,
+                        XGBRegressor(
+                            base_score=None, booster=None, colsample_bylevel=None,
                             colsample_bynode=None, colsample_bytree=None,
                             enable_categorical=False, eval_metric='rmse', gamma=None,
                             gpu_id=None, importance_type=None, interaction_constraints=None,
@@ -237,7 +238,8 @@ def create_search_space(iterations=50, random_state=42) -> list:
                             n_estimators=500, n_jobs=None, num_parallel_tree=None,
                             predictor=None, random_state=random_state, reg_alpha=None, reg_lambda=None,
                             scale_pos_weight=None, subsample=None, tree_method=None,
-                            use_label_encoder=False, validate_parameters=None, verbosity=None)
+                            use_label_encoder=False, validate_parameters=None, verbosity=None
+                        )
                     ),
                     prior=None
                 ),
