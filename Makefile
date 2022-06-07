@@ -128,10 +128,8 @@ ifneq ($(wildcard .venv/.*),)
 	. .venv/bin/activate && pip install -q -r requirements.txt
 else
 	@echo $(call FORMAT_MESSAGE,"environment_python","Did not find .venv directory. Creating virtual environment.")
-	python -m pip install --upgrade pip
-	python -m pip install -q virtualenv
-	@echo $(call FORMAT_MESSAGE,"environment_python","Installing virtualenv.")
-	virtualenv .venv --python=$(PYTHON_INTERPRETER)
+	$(PYTHON_INTERPRETER) -m pip install --upgrade pip
+	$(PYTHON_INTERPRETER) -m venv .venv
 	@echo $(call FORMAT_MESSAGE,"environment_python","NOTE: Creating environment at .venv.")
 	@echo $(call FORMAT_MESSAGE,"environment_python","NOTE: Run this command to activate virtual environment: 'source .venv/bin/activate'.")
 	@echo $(call FORMAT_MESSAGE,"environment_python","Activating virtual environment.")
