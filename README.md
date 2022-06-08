@@ -18,7 +18,7 @@ MLFlow UI - http://localhost:1234
 
 `make mlflow_server`
 
-
+https://github.com/mtpatter/mlflow-tutorial
 
 
 
