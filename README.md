@@ -10,6 +10,18 @@ The structure and documents were heavily influenced from:
 
 ---
 
+
+
+
+
+MLFlow UI - http://localhost:1234
+
+`make mlflow_server`
+
+
+
+
+
 This project contains python and R code that mimics a very slimmed down version of a DS/ML project.
 
 The `Makefile` runs all components of the project. You can think of it as containing the implicit DAG, or recipe, of the project.

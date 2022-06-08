@@ -182,6 +182,10 @@ vignettes/*.pdf
 renv/*
 .Rprofile
 
+mlruns
+mlflow.db
+mlflow-artifact-root
+
 # exclude data folders by default
 artifacts/data/interim/*
 artifacts/data/processed/*
