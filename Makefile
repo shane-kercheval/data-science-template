@@ -97,7 +97,23 @@ experiment_2: environment_python
 	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_2.ipynb
 	mv source/notebooks/experiment_2.html output/experiment_2.html
 
-experiments: experiment_1 experiment_2
+experiment_3: environment_python
+	@echo $(call FORMAT_MESSAGE,"experiment_3","Running Hyper-parameters experiments based on BayesianSearchCV.")
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py run-experiments \
+		-n_iterations=4 \
+		-n_splits=3 \
+		-n_repeats=1 \
+		-score='roc_auc' \
+		-tracking_uri='http://localhost:1234' \
+		-random_state=84
+
+	@echo $(call FORMAT_MESSAGE,"experiment_3","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
+	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_3.ipynb
+	@echo $(call FORMAT_MESSAGE,"experiment_3","Running the notebook and creating html.")
+	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_3.ipynb
+	mv source/notebooks/experiment_3.html output/experiment_3.html
+
+experiments: experiment_1 experiment_2 experiment_3
 	@echo $(call FORMAT_MESSAGE,"experiments","Done Running and Evaluating Experiments.")
 
 final_model: environment
