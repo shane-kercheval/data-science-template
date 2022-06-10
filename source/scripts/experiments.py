@@ -143,8 +143,7 @@ def run(input_directory: str,
             ml.log_pickle(obj=y_train, file_name='y_train.pkl')
             ml.log_pickle(obj=y_test, file_name='y_test.pkl')
 
-    # if we find a model that outperforms the current model in production by `1.025`
-
+    
     def transition_latest_model_to_production(ml_client: MlflowClient):
         """Get the latest version of credit_model and transitino stage to Production."""
         credit_model = ml_client.get_registered_model(name='credit_model')
@@ -159,11 +158,12 @@ def run(input_directory: str,
     client = MlflowClient(tracking_uri=tracking_uri)
     production_model = client.get_latest_versions(name='credit_model', stages=['Production'])
     if len(production_model) == 0:
-        # put current model into production
+        # we dont' currently have a model in production so put current model into production
         log_info("No models currently in production.")
         transition_latest_model_to_production(ml_client=client)
     else:
-        # put latest model into production after archiving model currently in production
+        # if the new model outputperforms the current model in production, then
+        # put the new model into production after archiving model currently in production
         assert len(production_model) == 1  # can only have one model in production
         production_model = production_model[0]
         production_score = client.get_run(run_id=production_model.run_id).data.metrics[score]
