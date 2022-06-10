@@ -6,19 +6,37 @@ import os
 import sys
 
 import mlflow
+import sklearn.base
+from helpsk.sklearn_eval import MLExperimentResults
+from helpsk.utility import read_pickle
 from mlflow.tracking import MlflowClient
 from sklearn.model_selection import RepeatedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 from skopt import BayesSearchCV  # noqa
 
-from helpsk.sklearn_eval import MLExperimentResults
-from helpsk.utility import read_pickle
-
 sys.path.append(os.getcwd())
 from source.library.utilities import Timer, log_info, log_func  # noqa
 import source.library.ml as ml  # noqa
 import source.library.classification_search_space as css  # noqa
+
+
+class SklearnModelWrapper(sklearn.base.BaseEstimator):
+    """
+    The predict method of various sklearn models returns a binary classification (0 or 1).
+    The following code creates a wrapper function, SklearnModelWrapper, that uses
+    the predict_proba method to return the probability that the observation belongs to each class.
+    Code from:
+    https://docs.azure.cn/en-us/databricks/_static/notebooks/mlflow/mlflow-end-to-end-example-azure.html
+    """
+    def __init__(self, model):
+        self.model = model
+
+    def predict(self, data):
+        return self.predict_proba(data=data)
+
+    def predict_proba(self, data):
+        return self.model.predict_proba(data)[:, 1]
 
 
 def run(input_directory: str,
@@ -35,13 +53,12 @@ def run(input_directory: str,
     Logic For Running Experiments. This function takes the full credit dataset in `input_directory`, and
     separates the dataset into training and test sets. The training set is used by BayesSearchCV to search for
     the best model.
-    
+
     The experiment results and corresponding training/tests sets are saved to the mlflow server with the
-    corresponding `tracking_uri` provided. The runs will be in an experiment called `experiment_name`. 
+    corresponding `tracking_uri` provided. The runs will be in an experiment called `experiment_name`.
     The best model found by BayesSearchCV will be registered as `registered_model_name` with a new version
     number. The best model will be put into production if it has a `required_performance_gain` percent
     increase compared with the current model in production.
-
 
     Args:
         input_directory:
@@ -99,7 +116,7 @@ def run(input_directory: str,
     # set up MLFlow
     mlflow.set_tracking_uri(tracking_uri)
     mlflow.set_experiment(experiment_name)
-    mlflow.sklearn.autolog(registered_model_name=registered_model_name)
+    # mlflow.sklearn.autolog(registered_model_name=registered_model_name)
     with Timer("Running Model Experiments (BayesSearchCV)"):
         with mlflow.start_run(run_name=timestamp,
                               description=timestamp,
@@ -127,28 +144,35 @@ def run(input_directory: str,
                 parameter_name_mappings=css.get_search_space_mappings(),
             )
             assert bayes_search.scoring == score
+
+            wrapped_model = SklearnModelWrapper(bayes_search.best_estimator_)
+            # Log the model with a signature that defines the schema of the model's inputs and outputs.
+            # When the model is deployed, this signature will be used to validate inputs.
+            mlflow.sklearn.log_model(
+                sk_model=wrapped_model,
+                artifact_path='model',
+            )
             mlflow.log_metric(score, bayes_search.best_score_)
-            # mlflow.log_params(bayes_search.best_params_)
+            params = bayes_search.best_params_.copy()
+            _ = params.pop('model', None)
+            mlflow.log_params(params=params)
 
-            file_name = 'experiment'
-            yaml_file_name = f'{file_name}.yaml'
-            model_file_name = f'{file_name}_best_estimator.pkl'
-
-            ml.log_ml_results(results=results, file_name=yaml_file_name)
-            ml.log_pickle(obj=bayes_search.best_estimator_, file_name=model_file_name)
+            ml.log_ml_results(results=results, file_name='experiment.yaml')
             ml.log_pickle(obj=x_train, file_name='x_train.pkl')
             ml.log_pickle(obj=x_test, file_name='x_test.pkl')
             ml.log_pickle(obj=y_train, file_name='y_train.pkl')
             ml.log_pickle(obj=y_test, file_name='y_test.pkl')
 
     def transition_latest_model_to_production(ml_client: MlflowClient):
-        """Get the latest version of credit_model and transitino stage to Production."""
-        credit_model = ml_client.get_registered_model(name='credit_model')
-        latest_version = max([int(x.version) for x in credit_model.latest_versions])
-        log_info(f"Transitioning latest `credit_model` (version {latest_version}) to Production")
+        """Register the model and transition stage to Production."""
+        result = mlflow.register_model(
+            model_uri=f"runs:/{mlflow.last_active_run().info.run_id}/model",
+            name=registered_model_name
+        )
+        log_info(f"Transitioning `{registered_model_name}` (version {result.version}) to Production")
         _ = ml_client.transition_model_version_stage(
-            name=production_model.name,
-            version=str(latest_version),
+            name=registered_model_name,
+            version=str(result.version),
             stage='Production'
         )
 
@@ -159,7 +183,7 @@ def run(input_directory: str,
         log_info("No models currently in production.")
         transition_latest_model_to_production(ml_client=client)
     else:
-        # if the new model outputperforms the current model in production, then
+        # if the new model outperforms the current model in production, then
         # put the new model into production after archiving model currently in production
         assert len(production_model) == 1  # can only have one model in production
         production_model = production_model[0]
@@ -179,23 +203,3 @@ def run(input_directory: str,
                      f"Current Production Score: {score} - {production_score}); Keeping Production Model")
 
     return timestamp
-
-
-# The predict method of sklearn's RandomForestClassifier returns a binary classification (0 or 1). 
-# The following code creates a wrapper function, SklearnModelWrapper, that uses 
-# the predict_proba method to return the probability that the observation belongs to each class. 
-# client.download_artifacts(run_id='d63ca93a86a846d5a9614d4e6c783011', path='experiment.yaml')
-class SklearnModelWrapper(mlflow.pyfunc.PythonModel):
-  def __init__(self, model):
-    self.model = model
-    
-  def predict(self, context, model_input):
-    return self.model.predict_proba(model_input)[:,1]
-
-
-# https://docs.azure.cn/en-us/databricks/_static/notebooks/mlflow/mlflow-end-to-end-example-azure.html
-# wrappedModel = SklearnModelWrapper(model)
-# # Log the model with a signature that defines the schema of the model's inputs and outputs. 
-# # When the model is deployed, this signature will be used to validate inputs.
-# signature = infer_signature(X_train, wrappedModel.predict(None, X_train))
-# mlflow.pyfunc.log_model("random_forest_model", python_model=wrappedModel, signature=signature)
