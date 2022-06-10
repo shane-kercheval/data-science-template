@@ -89,7 +89,7 @@ experiment_2: environment_python
 		-n_repeats=1 \
 		-score='roc_auc' \
 		-tracking_uri='http://localhost:1234' \
-		-random_state=84
+		-random_state=1
 
 	@echo $(call FORMAT_MESSAGE,"experiment_2","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
 	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_2.ipynb
