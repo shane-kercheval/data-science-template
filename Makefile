@@ -74,9 +74,9 @@ experiment_1: environment_python
 		-score='roc_auc' \
 		-tracking_uri='http://localhost:1234'
 
-	@echo $(call FORMAT_MESSAGE,"experiments_eval","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
+	@echo $(call FORMAT_MESSAGE,"experiment_1","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
 	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_1.ipynb
-	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running the notebook and creating html.")
+	@echo $(call FORMAT_MESSAGE,"experiment_1","Running the notebook and creating html.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_1.ipynb
 	mv source/notebooks/experiment_1.html output/models/experiments/experiment_1.html
 
@@ -93,7 +93,7 @@ remove_logs:
 	rm -f output/log.log
 
 ## Run entire workflow.
-all: environment tests linting remove_logs data exploration experiments experiments_eval final_model final_eval
+all: environment tests linting remove_logs data exploration experiments final_model final_eval
 	@echo $(call FORMAT_MESSAGE,"all","Finished running entire workflow.")
 
 ## Delete all generated files (e.g. virtual environment)
