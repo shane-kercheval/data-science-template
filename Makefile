@@ -79,7 +79,7 @@ experiment_1: environment_python
 	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_1.ipynb
 	@echo $(call FORMAT_MESSAGE,"experiment_1","Running the notebook and creating html.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_1.ipynb
-	mv source/notebooks/experiment_1.html output/models/experiments/experiment_1.html
+	mv source/notebooks/experiment_1.html output/experiment_1.html
 
 experiments: experiment_1
 	@echo $(call FORMAT_MESSAGE,"experiments","Done Running and Evaluating Experiments.")
