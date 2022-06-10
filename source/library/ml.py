@@ -12,11 +12,13 @@ def log_pickle(obj: object, file_name: str):
     storage.
     """
     temp_dir = '0946a999-6cdd-400a-8640-7b5e29788b4c'
-    Path(temp_dir).mkdir(exist_ok=False)
-    file_path = os.path.join(temp_dir, file_name)
-    to_pickle(obj=obj, path=file_path)
-    mlflow.log_artifact(local_path=file_path)
-    shutil.rmtree(temp_dir)
+    try:
+        Path(temp_dir).mkdir(exist_ok=False)
+        file_path = os.path.join(temp_dir, file_name)
+        to_pickle(obj=obj, path=file_path)
+        mlflow.log_artifact(local_path=file_path)
+    finally:
+        shutil.rmtree(temp_dir)
 
 
 def log_ml_results(results: MLExperimentResults, file_name: str):
