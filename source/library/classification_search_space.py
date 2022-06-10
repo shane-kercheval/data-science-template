@@ -1,4 +1,6 @@
+import helpsk as hlp
 import pandas as pd
+from helpsk.sklearn_pipeline import CustomOrdinalEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
 from sklearn.dummy import DummyClassifier
@@ -7,12 +9,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, OneHotEncoder
-from sklearn.svm import LinearSVC
 from skopt.space import Categorical, Real, Integer  # noqa
 from xgboost import XGBClassifier
-import helpsk as hlp
-
-from helpsk.sklearn_pipeline import CustomOrdinalEncoder
 
 
 def create_pipeline(data: pd.DataFrame) -> Pipeline:
@@ -93,51 +91,51 @@ def create_search_space(iterations=50, random_state=42) -> list:
             },
             iterations
         ),
-        (
-            {
-                'model':
-                    Categorical(categories=[LinearSVC(random_state=random_state)]),
-                'prep__numeric__imputer__transformer':
-                    Categorical(categories=[SimpleImputer()]),
-                'prep__numeric__scaler__transformer':
-                    Categorical(categories=[StandardScaler()]),
-                'prep__numeric__pca__transformer':
-                    Categorical(categories=[None]),
-                'prep__non_numeric__encoder__transformer':
-                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')])
-            },
-            1
-        ),
-        (
-            {
-                'model':
-                    Categorical(categories=[LinearSVC(random_state=random_state)]),
-                'model__C':
-                    Real(low=1e-06, high=100, prior='log-uniform', transform='identity'),
-                'prep__numeric__imputer__transformer':
-                    Categorical(
-                        categories=[
-                            SimpleImputer(),
-                            SimpleImputer(strategy='median'),
-                            SimpleImputer(strategy='most_frequent')
-                        ],
-                        prior=[0.5, 0.25, 0.25]
-                    ),
-                'prep__numeric__scaler__transformer':
-                    Categorical(categories=[StandardScaler(), MinMaxScaler()], prior=[0.65, 0.35]),
-                'prep__numeric__pca__transformer':
-                    Categorical(categories=[None, PCA(n_components='mle')]),
-                'prep__non_numeric__encoder__transformer':
-                    Categorical(
-                        categories=[
-                            OneHotEncoder(handle_unknown='ignore'),
-                            CustomOrdinalEncoder()
-                        ],
-                        prior=[0.65, 0.35]
-                    )
-            },
-            iterations
-        ),
+        # (
+        #     {
+        #         'model':
+        #             Categorical(categories=[LinearSVC(random_state=random_state)]),
+        #         'prep__numeric__imputer__transformer':
+        #             Categorical(categories=[SimpleImputer()]),
+        #         'prep__numeric__scaler__transformer':
+        #             Categorical(categories=[StandardScaler()]),
+        #         'prep__numeric__pca__transformer':
+        #             Categorical(categories=[None]),
+        #         'prep__non_numeric__encoder__transformer':
+        #             Categorical(categories=[OneHotEncoder(handle_unknown='ignore')])
+        #     },
+        #     1
+        # ),
+        # (
+        #     {
+        #         'model':
+        #             Categorical(categories=[LinearSVC(random_state=random_state)]),
+        #         'model__C':
+        #             Real(low=1e-06, high=100, prior='log-uniform', transform='identity'),
+        #         'prep__numeric__imputer__transformer':
+        #             Categorical(
+        #                 categories=[
+        #                     SimpleImputer(),
+        #                     SimpleImputer(strategy='median'),
+        #                     SimpleImputer(strategy='most_frequent')
+        #                 ],
+        #                 prior=[0.5, 0.25, 0.25]
+        #             ),
+        #         'prep__numeric__scaler__transformer':
+        #             Categorical(categories=[StandardScaler(), MinMaxScaler()], prior=[0.65, 0.35]),
+        #         'prep__numeric__pca__transformer':
+        #             Categorical(categories=[None, PCA(n_components='mle')]),
+        #         'prep__non_numeric__encoder__transformer':
+        #             Categorical(
+        #                 categories=[
+        #                     OneHotEncoder(handle_unknown='ignore'),
+        #                     CustomOrdinalEncoder()
+        #                 ],
+        #                 prior=[0.65, 0.35]
+        #             )
+        #     },
+        #     iterations
+        # ),
         (
             {
                 'model':
