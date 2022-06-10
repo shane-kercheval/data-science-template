@@ -29,7 +29,8 @@ def run(input_directory: str,
         tracking_uri: str,
         experiment_name: str = 'credit',
         registered_model_name: str = 'credit_model',
-        required_performance_gain: float = 0.025) -> str:
+        required_performance_gain: float = 0.025,
+        random_state: int = 42) -> str:
     """
     Logic For Running Experiments. The timestamp of the experiment is returned by the function.
 
@@ -63,12 +64,16 @@ def run(input_directory: str,
             Should match host/port in makefile `mlflow_server` command.
         experiment_name:
             The name of the experiment saved to MLFlow.
+        registered_model_name:
+            The name of the model to register with MLFlow.
         required_performance_gain:
             The required perforance gain, as percentage, compared with current model in production, required
             to put the new model (i.e. best model found by BayesSearchCV) into production. The default value
             is `0.025` meaning if the best model found by BayesSearchCV is >=2.5% better than the current
             model's performance, we will archive the current model in production and put the new model
             in production.
+        random_state:
+            random_state to pass to `train_test_split` and `BayesSearchCV`
     """
     log_func("experiments.run", params=dict(
         input_directory=input_directory,
@@ -89,7 +94,8 @@ def run(input_directory: str,
     # i.e. value of 0 is 'good' i.e. 'not default' and value of 1 is bad and what
     # we want to detect i.e. 'default'
     y_full = label_binarize(y_full, classes=['good', 'bad']).flatten()
-    x_train, x_test, y_train, y_test = train_test_split(x_full, y_full, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x_full, y_full, test_size=0.2,
+                                                        random_state=random_state)
 
     # set up MLFlow
     mlflow.set_tracking_uri(tracking_uri)
@@ -104,13 +110,13 @@ def run(input_directory: str,
             bayes_search = BayesSearchCV(
                 estimator=css.create_pipeline(data=x_train),
                 search_spaces=css.create_search_space(iterations=n_iterations),
-                cv=RepeatedKFold(n_splits=n_splits, n_repeats=n_repeats, random_state=42),
+                cv=RepeatedKFold(n_splits=n_splits, n_repeats=n_repeats, random_state=random_state),
                 scoring=score,
                 refit=True,
                 return_train_score=False,
                 n_jobs=-1,
                 verbose=1,
-                random_state=42,
+                random_state=random_state,
             )
             bayes_search.fit(x_train, y_train)
             log_info(f"Best Score: {bayes_search.best_score_}")
