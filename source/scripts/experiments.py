@@ -87,7 +87,7 @@ def run(input_directory: str,
             model's performance, we will archive the current model in production and put the new model
             in production.
         random_state:
-            random_state to pass to `train_test_split` and `BayesSearchCV`
+            random_state to pass to `BayesSearchCV`
     """
     log_func("run-experiments", params=dict(
         input_directory=input_directory,
@@ -102,7 +102,7 @@ def run(input_directory: str,
     ))
 
     timestamp = f'{datetime.datetime.now():%Y_%m_%d_%H_%M_%S}'
-    log_info("Splitting training & test datasets")
+    log_info(f"Splitting training & test datasets")
     credit_data = read_pickle(os.path.join(input_directory, 'credit.pkl'))
 
     y_full = credit_data['target']
@@ -111,8 +111,10 @@ def run(input_directory: str,
     # i.e. value of 0 is 'good' i.e. 'not default' and value of 1 is bad and what
     # we want to detect i.e. 'default'
     y_full = label_binarize(y_full, classes=['good', 'bad']).flatten()
-    x_train, x_test, y_train, y_test = train_test_split(x_full, y_full, test_size=0.2,
-                                                        random_state=random_state)
+    x_train, x_test, y_train, y_test = train_test_split(
+        x_full, y_full, test_size=0.2,
+        random_state=42  # keep this the same across experiments to compare apples to apples
+    )
 
     # set up MLFlow
     mlflow.set_tracking_uri(tracking_uri)
