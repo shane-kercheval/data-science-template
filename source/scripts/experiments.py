@@ -7,12 +7,15 @@ import sys
 
 import mlflow
 from mlflow.tracking import MlflowClient
-from helpsk.sklearn_eval import MLExperimentResults
-from helpsk.utility import read_pickle
 from sklearn.model_selection import RepeatedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 from skopt import BayesSearchCV  # noqa
+
+from helpsk.sklearn_eval import MLExperimentResults
+from helpsk.utility import read_pickle
+
+from source.library.utilities import get_config
 
 sys.path.append(os.getcwd())
 from source.library.utilities import Timer, log_info, log_func  # noqa
@@ -20,15 +23,17 @@ import source.library.ml as ml  # noqa
 import source.library.classification_search_space as css  # noqa
 
 
+config = get_config()
+
+
 def run(input_directory: str,
-        output_directory: str,
         n_iterations: int,
         n_splits: int,
         n_repeats: int,
         score: str,
         tracking_uri: str,
-        experiment_name: str = 'credit',
-        registered_model_name: str = 'credit_model',
+        experiment_name: str = config['MLFLOW']['EXPERIMENT_NAME'],
+        registered_model_name: str = config['MLFLOW']['MODEL_NAME'],
         required_performance_gain: float = 0.025,
         random_state: int = 42) -> str:
     """
@@ -47,9 +52,6 @@ def run(input_directory: str,
     Args:
         input_directory:
             the directory to find credit.pkl
-        output_directory:
-            the directory to save the results; the results will be saved ot a sub-folder within this directory
-            with the timestamp of the experiment
         n_iterations:
             the number of iterations for BayesSearchCV per model (i.e. the number of hyper-parameter
             combinations to search, per model.
@@ -77,14 +79,12 @@ def run(input_directory: str,
     """
     log_func("experiments.run", params=dict(
         input_directory=input_directory,
-        output_directory=output_directory,
         n_iterations=n_iterations,
         n_splits=n_splits,
         n_repeats=n_repeats,
         score=score,
     ))
     timestamp = f'{datetime.datetime.now():%Y_%m_%d_%H_%M_%S}'
-    log_info(f"Saving data and results to `{output_directory}`")
     log_info("Splitting training & test datasets")
     credit_data = read_pickle(os.path.join(input_directory, 'credit.pkl'))
 
@@ -143,7 +143,6 @@ def run(input_directory: str,
             ml.log_pickle(obj=y_train, file_name='y_train.pkl')
             ml.log_pickle(obj=y_test, file_name='y_test.pkl')
 
-    
     def transition_latest_model_to_production(ml_client: MlflowClient):
         """Get the latest version of credit_model and transitino stage to Production."""
         credit_model = ml_client.get_registered_model(name='credit_model')

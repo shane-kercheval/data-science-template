@@ -66,11 +66,9 @@ def run_experiments(n_iterations, n_splits, n_repeats, score, tracking_uri):
     log_func("run-experiments")
     config = get_config()
     input_directory = config['DATA']['PROCESSED_DIRECTORY']
-    output_directory = config['EXPERIMENTS']['DIRECTORY']
 
     results_directory = experiments.run(
         input_directory=input_directory,
-        output_directory=output_directory,
         n_iterations=n_iterations,
         n_splits=n_splits,
         n_repeats=n_repeats,
