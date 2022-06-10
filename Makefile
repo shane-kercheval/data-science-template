@@ -3,7 +3,7 @@
 #################################################################################
 .PHONY: clean_python clean_r clean environment_python environment_r environment tests_python tests_r tests \
 	data_extract data_transform data exploration_python exploration_r exploration experiment_1 \
-	final_model final_eval all
+	experiment_2 final_model final_eval all
 
 #################################################################################
 # GLOBALS
@@ -81,7 +81,23 @@ experiment_1: environment_python
 	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_1.ipynb
 	mv source/notebooks/experiment_1.html output/experiment_1.html
 
-experiments: experiment_1
+experiment_2: environment_python
+	@echo $(call FORMAT_MESSAGE,"experiment_2","Running Hyper-parameters experiments based on BayesianSearchCV.")
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py run-experiments \
+		-n_iterations=4 \
+		-n_splits=3 \
+		-n_repeats=1 \
+		-score='roc_auc' \
+		-tracking_uri='http://localhost:1234' \
+		-random_state=84
+
+	@echo $(call FORMAT_MESSAGE,"experiment_2","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
+	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_2.ipynb
+	@echo $(call FORMAT_MESSAGE,"experiment_2","Running the notebook and creating html.")
+	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_2.ipynb
+	mv source/notebooks/experiment_2.html output/experiment_2.html
+
+experiments: experiment_1 experiment_2
 	@echo $(call FORMAT_MESSAGE,"experiments","Done Running and Evaluating Experiments.")
 
 final_model: environment

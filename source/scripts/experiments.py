@@ -155,7 +155,7 @@ def run(input_directory: str,
     client = MlflowClient(tracking_uri=tracking_uri)
     production_model = client.get_latest_versions(name='credit_model', stages=['Production'])
     if len(production_model) == 0:
-        # we dont' currently have a model in production so put current model into production
+        # we don't currently have a model in production so put current model into production
         log_info("No models currently in production.")
         transition_latest_model_to_production(ml_client=client)
     else:
@@ -174,6 +174,9 @@ def run(input_directory: str,
                 stage='Archived'
             )
             transition_latest_model_to_production(ml_client=client)
+        else:
+            log_info(f"New Score: {score} - {bayes_search.best_score_} vs "
+                     f"Current Production Score: {score} - {production_score}); Keeping Production Model")
 
     return timestamp
 
