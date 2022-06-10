@@ -72,7 +72,8 @@ experiment_1: environment_python
 		-n_splits=3 \
 		-n_repeats=1 \
 		-score='roc_auc' \
-		-tracking_uri='http://localhost:1234'
+		-tracking_uri='http://localhost:1234' \
+		-random_state=42
 
 	@echo $(call FORMAT_MESSAGE,"experiment_1","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
 	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_1.ipynb

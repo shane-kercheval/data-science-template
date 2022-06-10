@@ -15,15 +15,10 @@ from skopt import BayesSearchCV  # noqa
 from helpsk.sklearn_eval import MLExperimentResults
 from helpsk.utility import read_pickle
 
-from source.library.utilities import get_config
-
 sys.path.append(os.getcwd())
 from source.library.utilities import Timer, log_info, log_func  # noqa
 import source.library.ml as ml  # noqa
 import source.library.classification_search_space as css  # noqa
-
-
-config = get_config()
 
 
 def run(input_directory: str,
@@ -32,17 +27,16 @@ def run(input_directory: str,
         n_repeats: int,
         score: str,
         tracking_uri: str,
-        experiment_name: str = config['MLFLOW']['EXPERIMENT_NAME'],
-        registered_model_name: str = config['MLFLOW']['MODEL_NAME'],
+        experiment_name: str,
+        registered_model_name: str,
         required_performance_gain: float = 0.025,
-        random_state: int = 42) -> str:
+        random_state: int = 42):
     """
-    Logic For Running Experiments. The timestamp of the experiment is returned by the function.
-
-    This function takes the full credit dataset in `input_directory`, and separates the dataset into training
-    and test sets. The training set is used by BayesSearchCV to search for the best model.
+    Logic For Running Experiments. This function takes the full credit dataset in `input_directory`, and
+    separates the dataset into training and test sets. The training set is used by BayesSearchCV to search for
+    the best model.
     
-    The experiment results and corresponding training/tests sets  are saved to the mlflow server with the
+    The experiment results and corresponding training/tests sets are saved to the mlflow server with the
     corresponding `tracking_uri` provided. The runs will be in an experiment called `experiment_name`. 
     The best model found by BayesSearchCV will be registered as `registered_model_name` with a new version
     number. The best model will be put into production if it has a `required_performance_gain` percent
