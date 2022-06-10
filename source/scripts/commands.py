@@ -66,7 +66,6 @@ def transform():
               show_default=True)
 def run_experiments(n_iterations, n_splits, n_repeats, score, tracking_uri, random_state):
     """This function runs an ML experiment according to the parameters provided."""
-    log_func("run-experiments")
     config = get_config()
     input_directory = config['DATA']['PROCESSED_DIRECTORY']
     experiment_name = config['MLFLOW']['EXPERIMENT_NAME']

@@ -63,7 +63,7 @@ def run(input_directory: str,
         registered_model_name:
             The name of the model to register with MLFlow.
         required_performance_gain:
-            The required perforance gain, as percentage, compared with current model in production, required
+            The required performance gain, as percentage, compared with current model in production, required
             to put the new model (i.e. best model found by BayesSearchCV) into production. The default value
             is `0.025` meaning if the best model found by BayesSearchCV is >=2.5% better than the current
             model's performance, we will archive the current model in production and put the new model
@@ -71,13 +71,18 @@ def run(input_directory: str,
         random_state:
             random_state to pass to `train_test_split` and `BayesSearchCV`
     """
-    log_func("experiments.run", params=dict(
+    log_func("run-experiments", params=dict(
         input_directory=input_directory,
         n_iterations=n_iterations,
         n_splits=n_splits,
         n_repeats=n_repeats,
         score=score,
+        tracking_uri=tracking_uri,
+        experiment_name=experiment_name,
+        registered_model_name=registered_model_name,
+        random_state=random_state,
     ))
+
     timestamp = f'{datetime.datetime.now():%Y_%m_%d_%H_%M_%S}'
     log_info("Splitting training & test datasets")
     credit_data = read_pickle(os.path.join(input_directory, 'credit.pkl'))
@@ -98,8 +103,7 @@ def run(input_directory: str,
     with Timer("Running Model Experiments (BayesSearchCV)"):
         with mlflow.start_run(run_name=timestamp,
                               description=timestamp,
-                              tags=dict(type='BayesSearchCV',
-                                        timestamp=timestamp)):
+                              tags=dict(type='BayesSearchCV')):
 
             bayes_search = BayesSearchCV(
                 estimator=css.create_pipeline(data=x_train),
