@@ -6,6 +6,7 @@ import os
 import sys
 
 import mlflow
+import mlflow.exceptions
 import sklearn.base
 from helpsk.sklearn_eval import MLExperimentResults
 from helpsk.utility import read_pickle
@@ -177,7 +178,11 @@ def run(input_directory: str,
         )
 
     client = MlflowClient(tracking_uri=tracking_uri)
-    production_model = client.get_latest_versions(name='credit_model', stages=['Production'])
+    try:
+        production_model = client.get_latest_versions(name=registered_model_name, stages=['Production'])
+    except mlflow.exceptions.RestException:
+        production_model = []
+
     if len(production_model) == 0:
         # we don't currently have a model in production so put current model into production
         log_info("No models currently in production.")

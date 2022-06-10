@@ -1,49 +1,78 @@
-2022-06-05 12:33:16 - INFO     | FUNCTION: EXTRACT
-2022-06-05 12:33:16 - INFO     | PARAMS:
-2022-06-05 12:33:16 - INFO     |     output_directory: artifacts/data/raw
-2022-06-05 12:33:16 - INFO     | Downloading credit data from https://www.openml.org/d/31
-2022-06-05 12:33:16 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
-2022-06-05 12:33:16 - INFO     | Saving credit data to `artifacts/data/raw/credit.pkl`
-2022-06-05 12:33:17 - INFO     | FUNCTION: EXTRACT
-2022-06-05 12:33:17 - INFO     | PARAMS:
-2022-06-05 12:33:17 - INFO     |     input_directory: artifacts/data/raw
-2022-06-05 12:33:17 - INFO     |     output_directory: artifacts/data/processed
-2022-06-05 12:33:17 - INFO     | FUNCTION: TRANSFORM
-2022-06-05 12:33:17 - INFO     | PARAMS:
-2022-06-05 12:33:17 - INFO     |     input_directory: artifacts/data/raw
-2022-06-05 12:33:17 - INFO     |     output_directory: artifacts/data/processed
-2022-06-05 12:33:17 - INFO     | Transforming Data
-2022-06-05 12:33:17 - INFO     | Done processing credit data.
-2022-06-05 12:33:17 - INFO     | Saving credit data to `artifacts/data/processed/credit.pkl`
-2022-06-05 12:33:20 - INFO     | *****Timer Started: Loading Data
-2022-06-05 12:33:20 - INFO     | *****Timer Finished (0.00 seconds)
-2022-06-05 12:33:24 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-05 12:33:24 - INFO     | FUNCTION: EXPERIMENTS.RUN
-2022-06-05 12:33:24 - INFO     | PARAMS:
-2022-06-05 12:33:24 - INFO     |     input_directory: artifacts/data/processed
-2022-06-05 12:33:24 - INFO     |     output_directory: artifacts/models/experiments
-2022-06-05 12:33:24 - INFO     |     n_iterations: 4
-2022-06-05 12:33:24 - INFO     |     n_splits: 5
-2022-06-05 12:33:24 - INFO     |     n_repeats: 1
-2022-06-05 12:33:24 - INFO     |     score: roc_auc
-2022-06-05 12:33:24 - INFO     | Saving data and results to `artifacts/models/experiments/experiment__2022_06_05_12_33_24`
-2022-06-05 12:33:24 - INFO     | Splitting training & test datasets
-2022-06-05 12:33:24 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_12_33_24/x_train.pkl`
-2022-06-05 12:33:24 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_12_33_24/x_test.pkl`
-2022-06-05 12:33:24 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_12_33_24/y_train.pkl`
-2022-06-05 12:33:24 - INFO     | Creating `artifacts/models/experiments/experiment__2022_06_05_12_33_24/y_test.pkl`
-2022-06-05 12:33:24 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-05 12:33:44 - INFO     | *****Timer Finished (20.28 seconds)
-2022-06-05 12:33:44 - INFO     | Saving results of BayesSearchCV to: `artifacts/models/experiments/experiment__2022_06_05_12_33_24/experiment.yaml`
-2022-06-05 12:33:44 - INFO     | Saving the best_estimator of BayesSearchCV to: `artifacts/models/experiments/experiment__2022_06_05_12_33_24/experiment_best_estimator.pkl`
-2022-06-05 12:33:44 - INFO     | Best Score: 0.7668027026011365
-2022-06-05 12:33:44 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-06-05 12:33:48 - INFO     | Experiment Directory: artifacts/models/experiments/experiment__2022_06_05_12_33_24
-2022-06-05 12:33:48 - INFO     | *****Timer Started: Loading training/test datasets
-2022-06-05 12:33:48 - INFO     | *****Timer Finished (0.00 seconds)
-2022-06-05 12:33:48 - INFO     | (800, 20)
-2022-06-05 12:33:48 - INFO     | 800
-2022-06-05 12:33:48 - INFO     | (200, 20)
-2022-06-05 12:33:48 - INFO     | 200
-2022-06-05 12:33:48 - INFO     | Best Score: 0.7668027026011365
-2022-06-05 12:33:48 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
+2022-06-10 16:16:58 - INFO     | FUNCTION: EXTRACT
+2022-06-10 16:16:58 - INFO     | PARAMS:
+2022-06-10 16:16:58 - INFO     |     output_directory: artifacts/data/raw
+2022-06-10 16:16:58 - INFO     | Downloading credit data from https://www.openml.org/d/31
+2022-06-10 16:16:58 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
+2022-06-10 16:16:58 - INFO     | Saving credit data to `artifacts/data/raw/credit.pkl`
+2022-06-10 16:17:00 - INFO     | FUNCTION: EXTRACT
+2022-06-10 16:17:00 - INFO     | PARAMS:
+2022-06-10 16:17:00 - INFO     |     input_directory: artifacts/data/raw
+2022-06-10 16:17:00 - INFO     |     output_directory: artifacts/data/processed
+2022-06-10 16:17:00 - INFO     | FUNCTION: TRANSFORM
+2022-06-10 16:17:00 - INFO     | PARAMS:
+2022-06-10 16:17:00 - INFO     |     input_directory: artifacts/data/raw
+2022-06-10 16:17:00 - INFO     |     output_directory: artifacts/data/processed
+2022-06-10 16:17:00 - INFO     | Transforming Data
+2022-06-10 16:17:00 - INFO     | Done processing credit data.
+2022-06-10 16:17:00 - INFO     | Saving credit data to `artifacts/data/processed/credit.pkl`
+2022-06-10 16:17:05 - INFO     | *****Timer Started: Loading Data
+2022-06-10 16:17:05 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-10 16:23:17 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-10 16:23:17 - INFO     | PARAMS:
+2022-06-10 16:23:17 - INFO     |     input_directory: artifacts/data/processed
+2022-06-10 16:23:17 - INFO     |     n_iterations: 4
+2022-06-10 16:23:17 - INFO     |     n_splits: 3
+2022-06-10 16:23:17 - INFO     |     n_repeats: 1
+2022-06-10 16:23:17 - INFO     |     score: roc_auc
+2022-06-10 16:23:17 - INFO     |     tracking_uri: http://localhost:1234
+2022-06-10 16:23:17 - INFO     |     experiment_name: credit
+2022-06-10 16:23:17 - INFO     |     registered_model_name: credit_model
+2022-06-10 16:23:17 - INFO     |     random_state: 42
+2022-06-10 16:23:17 - INFO     | Splitting training & test datasets
+2022-06-10 16:23:17 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-10 16:23:29 - INFO     | Best Score: 0.7626843675980791
+2022-06-10 16:23:29 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(criterion='entropy', max_depth=70,
+                       max_features=0.1142268477118407,
+                       max_samples=0.5483119512487002, min_samples_leaf=8,
+                       min_samples_split=12, n_estimators=553, random_state=42)), ('model__criterion', 'entropy'), ('model__max_depth', 70), ('model__max_features', 0.1142268477118407), ('model__max_samples', 0.5483119512487002), ('model__min_samples_leaf', 8), ('model__min_samples_split', 12), ('model__n_estimators', 553), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer(strategy='median')), ('prep__numeric__pca__transformer', PCA(n_components='mle')), ('prep__numeric__scaler__transformer', None)])
+2022-06-10 16:23:31 - INFO     | *****Timer Finished (14.12 seconds)
+2022-06-10 16:23:31 - INFO     | No models currently in production.
+2022-06-10 16:23:31 - INFO     | Transitioning `credit_model` (version 1) to Production
+2022-06-10 16:23:35 - INFO     | MLFlow URI: http://127.0.0.1:1234
+2022-06-10 16:23:35 - INFO     | Production Model Version: 1
+2022-06-10 16:23:35 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-10 16:23:35 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-10 16:23:35 - INFO     | (800, 20)
+2022-06-10 16:23:35 - INFO     | 800
+2022-06-10 16:23:35 - INFO     | (200, 20)
+2022-06-10 16:23:35 - INFO     | 200
+2022-06-10 16:23:35 - INFO     | Best Score: 0.7626843675980791
+2022-06-10 16:23:35 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'max_features': 0.1142268477118407, 'max_depth': 70, 'n_estimators': 553, 'min_samples_split': 12, 'min_samples_leaf': 8, 'max_samples': 0.5483119512487002, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'OneHotEncoder()'}
+2022-06-10 16:23:39 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-10 16:23:39 - INFO     | PARAMS:
+2022-06-10 16:23:39 - INFO     |     input_directory: artifacts/data/processed
+2022-06-10 16:23:39 - INFO     |     n_iterations: 4
+2022-06-10 16:23:39 - INFO     |     n_splits: 3
+2022-06-10 16:23:39 - INFO     |     n_repeats: 1
+2022-06-10 16:23:39 - INFO     |     score: roc_auc
+2022-06-10 16:23:39 - INFO     |     tracking_uri: http://localhost:1234
+2022-06-10 16:23:39 - INFO     |     experiment_name: credit
+2022-06-10 16:23:39 - INFO     |     registered_model_name: credit_model
+2022-06-10 16:23:39 - INFO     |     random_state: 1
+2022-06-10 16:23:39 - INFO     | Splitting training & test datasets
+2022-06-10 16:23:39 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-10 16:23:52 - INFO     | Best Score: 0.7832478083744058
+2022-06-10 16:23:52 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2022-06-10 16:23:54 - INFO     | *****Timer Finished (15.28 seconds)
+2022-06-10 16:23:54 - INFO     | Archiving previous model (version 1; roc_auc 0.7626843675980791) and placing new model into Production (roc_auc 0.7832478083744058)
+2022-06-10 16:23:54 - INFO     | Transitioning `credit_model` (version 2) to Production
+2022-06-10 16:23:57 - INFO     | MLFlow URI: http://127.0.0.1:1234
+2022-06-10 16:23:57 - INFO     | Production Model Version: 2
+2022-06-10 16:23:57 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-10 16:23:57 - INFO     | *****Timer Finished (0.00 seconds)
+2022-06-10 16:23:57 - INFO     | (800, 20)
+2022-06-10 16:23:57 - INFO     | 800
+2022-06-10 16:23:57 - INFO     | (200, 20)
+2022-06-10 16:23:57 - INFO     | 200
+2022-06-10 16:23:57 - INFO     | Best Score: 0.7832478083744058
+2022-06-10 16:23:57 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
