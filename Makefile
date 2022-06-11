@@ -1,7 +1,9 @@
 #################################################################################
 # File adapted from https://github.com/drivendata/cookiecutter-data-science
 #################################################################################
-.PHONY: clean_python clean_r clean environment_python environment_r environment tests_python tests_r tests data_extract data_transform data exploration_python exploration_r exploration experiments_run experiments_eval experiments_eval final_model final_eval all
+.PHONY: clean_python clean_r clean environment_python environment_r environment tests_python tests_r tests \
+	data_extract data_transform data exploration_python exploration_r exploration experiment_1 \
+	experiment_2 final_model final_eval all
 
 #################################################################################
 # GLOBALS
@@ -37,18 +39,18 @@ tests: tests_python tests_r
 	@echo $(call FORMAT_MESSAGE,"tests","Finished running unit tests.")
 
 ## Make Dataset
-data_extract: environment_python
+data_extract:
 	@echo $(call FORMAT_MESSAGE,"data_extract","Extracting data.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py extract
 
-data_transform: environment_python
+data_transform:
 	@echo $(call FORMAT_MESSAGE,"data_transform","Transforming data.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py transform
 
 data: data_extract data_transform
 	@echo $(call FORMAT_MESSAGE,"data","Finished running local ETL.")
 
-exploration_python: environment_python
+exploration_python:
 	@echo $(call FORMAT_MESSAGE,"exploration_python","Running exploratory jupyter notebooks and converting to .html files.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/data-profile.ipynb
 	mv source/notebooks/data-profile.html output/data/data-profile.html
@@ -63,26 +65,55 @@ exploration_r: environment_r
 exploration: exploration_python exploration_r
 	@echo $(call FORMAT_MESSAGE,"exploration","Finished running exploration notebooks.")
 
-experiments_run: environment_python
-	@echo $(call FORMAT_MESSAGE,"experiments_run","Running Hyper-parameters experiments based on BayesianSearchCV.")
+experiment_1:
+	@echo $(call FORMAT_MESSAGE,"experiment_1","Running Hyper-parameters experiments based on BayesianSearchCV.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py run-experiments \
 		-n_iterations=4 \
-		-n_splits=5 \
+		-n_splits=3 \
 		-n_repeats=1 \
-		-score='roc_auc'
+		-score='roc_auc' \
+		-tracking_uri='http://localhost:1234' \
+		-random_state=3
 
-experiments_eval: source/notebooks/new_results.txt
-	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running Evaluation of experiments")
-	@echo $(call FORMAT_MESSAGE,"experiments_eval","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
-	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment__$(shell cat source/notebooks/new_results.txt).ipynb
-	@echo $(call FORMAT_MESSAGE,"experiments_eval","Setting the experiments yaml file name within the ipynb file.")
-	sed -i '' 's/XXXXXXXXXXXXXXXX/$(shell cat source/notebooks/new_results.txt)/g' source/notebooks/experiment__$(shell cat source/notebooks/new_results.txt).ipynb
-	@echo $(call FORMAT_MESSAGE,"experiments_eval","Running the notebook and creating html.")
-	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment__$(shell cat source/notebooks/new_results.txt).ipynb
-	mv source/notebooks/experiment__$(shell cat source/notebooks/new_results.txt).html output/models/experiments/experiment__$(shell cat source/notebooks/new_results.txt).html
-	rm -f source/notebooks/new_results.txt
+	@echo $(call FORMAT_MESSAGE,"experiment_1","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
+	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_1.ipynb
+	@echo $(call FORMAT_MESSAGE,"experiment_1","Running the notebook and creating html.")
+	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_1.ipynb
+	mv source/notebooks/experiment_1.html output/experiment_1.html
 
-experiments: experiments_run experiments_eval
+experiment_2:
+	@echo $(call FORMAT_MESSAGE,"experiment_2","Running Hyper-parameters experiments based on BayesianSearchCV.")
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py run-experiments \
+		-n_iterations=4 \
+		-n_splits=3 \
+		-n_repeats=1 \
+		-score='roc_auc' \
+		-tracking_uri='http://localhost:1234' \
+		-random_state=42
+
+	@echo $(call FORMAT_MESSAGE,"experiment_2","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
+	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_2.ipynb
+	@echo $(call FORMAT_MESSAGE,"experiment_2","Running the notebook and creating html.")
+	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_2.ipynb
+	mv source/notebooks/experiment_2.html output/experiment_2.html
+
+experiment_3:
+	@echo $(call FORMAT_MESSAGE,"experiment_3","Running Hyper-parameters experiments based on BayesianSearchCV.")
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py run-experiments \
+		-n_iterations=4 \
+		-n_splits=3 \
+		-n_repeats=1 \
+		-score='roc_auc' \
+		-tracking_uri='http://localhost:1234' \
+		-random_state=10
+
+	@echo $(call FORMAT_MESSAGE,"experiment_3","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
+	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_3.ipynb
+	@echo $(call FORMAT_MESSAGE,"experiment_3","Running the notebook and creating html.")
+	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_3.ipynb
+	mv source/notebooks/experiment_3.html output/experiment_3.html
+
+experiments: experiment_1 experiment_2 experiment_3
 	@echo $(call FORMAT_MESSAGE,"experiments","Done Running and Evaluating Experiments.")
 
 final_model: environment
@@ -95,15 +126,33 @@ remove_logs:
 	rm -f output/log.log
 
 ## Run entire workflow.
-all: environment tests linting remove_logs data exploration experiments experiments_eval final_model final_eval
+all: environment tests linting remove_logs data exploration experiments final_model final_eval
 	@echo $(call FORMAT_MESSAGE,"all","Finished running entire workflow.")
 
 ## Delete all generated files (e.g. virtual environment)
-clean: clean_python clean_r
+clean: clean_python clean_r mlflow_clean
 	@echo $(call FORMAT_MESSAGE,"clean","Cleaning project files.")
 	rm -f artifacts/data/raw/*.pkl
 	rm -f artifacts/data/raw/*.csv
 	rm -f artifacts/data/processed/*
+
+mlflow_server:
+	. .venv/bin/activate && \
+		mlflow server \
+		--backend-store-uri sqlite:///mlflow.db \
+		--default-artifact-root ./mlflow-artifact-root \
+		--host 0.0.0.0 --port 1234
+
+mlflow_ui:
+	open http://127.0.0.1:1234
+
+mlflow_kill:
+	 pkill -f gunicorn
+
+mlflow_clean:
+	rm -rf mlruns
+	rm -f mlflow.db
+	rm -rf mlflow-artifact-root
 
 #################################################################################
 # Generic Commands
@@ -128,10 +177,8 @@ ifneq ($(wildcard .venv/.*),)
 	. .venv/bin/activate && pip install -q -r requirements.txt
 else
 	@echo $(call FORMAT_MESSAGE,"environment_python","Did not find .venv directory. Creating virtual environment.")
-	python -m pip install --upgrade pip
-	python -m pip install -q virtualenv
-	@echo $(call FORMAT_MESSAGE,"environment_python","Installing virtualenv.")
-	virtualenv .venv --python=$(PYTHON_INTERPRETER)
+	$(PYTHON_INTERPRETER) -m pip install --upgrade pip
+	$(PYTHON_INTERPRETER) -m venv .venv
 	@echo $(call FORMAT_MESSAGE,"environment_python","NOTE: Creating environment at .venv.")
 	@echo $(call FORMAT_MESSAGE,"environment_python","NOTE: Run this command to activate virtual environment: 'source .venv/bin/activate'.")
 	@echo $(call FORMAT_MESSAGE,"environment_python","Activating virtual environment.")

@@ -51,32 +51,36 @@ def transform():
 
 
 @main.command()
-@click.option('-n_iterations', default=50, help='the number of iterations for BayesSearchCV per model',
+@click.option('-n_iterations', default=4, help='the number of iterations for BayesSearchCV per model',
               show_default=True)
-@click.option('-n_splits', default=10, help='the number of cross validation splits ', show_default=True)
+@click.option('-n_splits', default=3, help='the number of cross validation splits ', show_default=True)
 @click.option('-n_repeats', default=1, help='the number of cross validation repeats', show_default=True)
 @click.option('-score', default='roc_auc',
               help='A string identifying the score to evaluate model performance, e.g. `roc_auc`.',
               show_default=True)
-def run_experiments(n_iterations, n_splits, n_repeats, score):
+@click.option('-tracking_uri', default='http://localhost:1234',
+              help='MLFlow tracking_uri',
+              show_default=True)
+@click.option('-random_state', default=42,
+              help='Random state/seed to generate consistent results.',
+              show_default=True)
+def run_experiments(n_iterations, n_splits, n_repeats, score, tracking_uri, random_state):
     """This function runs an ML experiment according to the parameters provided."""
-    log_func("run-experiments")
     config = get_config()
     input_directory = config['DATA']['PROCESSED_DIRECTORY']
-    output_directory = config['EXPERIMENTS']['DIRECTORY']
-
-    results_directory = experiments.run(
+    experiment_name = config['MLFLOW']['EXPERIMENT_NAME']
+    registered_model_name = config['MLFLOW']['MODEL_NAME']
+    experiments.run(
         input_directory=input_directory,
-        output_directory=output_directory,
         n_iterations=n_iterations,
         n_splits=n_splits,
         n_repeats=n_repeats,
-        score=score
+        score=score,
+        tracking_uri=tracking_uri,
+        experiment_name=experiment_name,
+        registered_model_name=registered_model_name,
+        random_state=random_state,
     )
-    # save the timestamp of the experiments, which can be read in by the notebook template and then deleted
-    file_path = os.path.join(config['NOTEBOOKS']['DIRECTORY'], 'new_results.txt')
-    with open(file_path, 'w') as text_file:
-        text_file.writelines(results_directory)
 
 
 if __name__ == '__main__':

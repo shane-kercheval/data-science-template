@@ -1,21 +1,23 @@
 CONFIG:
-  DIRECTORY: 'source/config'
+  DIRECTORY: source/config
 
 OUTPUT:
-  DIRECTORY: 'output'
+  DIRECTORY: output
 
 DATA:
-  RAW_DIRECTORY: 'artifacts/data/raw'
-  INTERIM_DIRECTORY: 'artifacts/data/interim'
-  PROCESSED_DIRECTORY: 'artifacts/data/processed'
-  EXTERNAL_DIRECTORY: 'artifacts/data/external'
-
-EXPERIMENTS:
-  DIRECTORY: 'artifacts/models/experiments'
-  OUTPUT_DIRECTORY: 'output/experiments'
+  RAW_DIRECTORY: artifacts/data/raw
+  INTERIM_DIRECTORY: artifacts/data/interim
+  PROCESSED_DIRECTORY: artifacts/data/processed
+  EXTERNAL_DIRECTORY: artifacts/data/external
 
 NOTEBOOKS:
-  DIRECTORY: 'source/notebooks'
+  DIRECTORY: source/notebooks
+
+MLFLOW:
+  URI: http://127.0.0.1:1234
+  EXPERIMENT_NAME: credit
+  MODEL_NAME: credit_model
+  
 
 DATABASE:
   USERNAME: xyz
