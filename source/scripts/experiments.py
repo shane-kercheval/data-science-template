@@ -102,7 +102,7 @@ def run(input_directory: str,
     ))
 
     timestamp = f'{datetime.datetime.now():%Y_%m_%d_%H_%M_%S}'
-    log_info(f"Splitting training & test datasets")
+    log_info("Splitting training & test datasets")
     credit_data = read_pickle(os.path.join(input_directory, 'credit.pkl'))
 
     y_full = credit_data['target']
