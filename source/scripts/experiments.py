@@ -48,7 +48,7 @@ def run(input_directory: str,
         tracking_uri: str,
         experiment_name: str,
         registered_model_name: str,
-        required_performance_gain: float = 0.025,
+        required_performance_gain: float = 0.02,
         random_state: int = 42):
     """
     Logic For Running Experiments. This function takes the full credit dataset in `input_directory`, and
@@ -83,7 +83,7 @@ def run(input_directory: str,
         required_performance_gain:
             The required performance gain, as percentage, compared with current model in production, required
             to put the new model (i.e. best model found by BayesSearchCV) into production. The default value
-            is `0.025` meaning if the best model found by BayesSearchCV is >=2.5% better than the current
+            is `0.02` meaning if the best model found by BayesSearchCV is >=2% better than the current
             model's performance, we will archive the current model in production and put the new model
             in production.
         random_state:

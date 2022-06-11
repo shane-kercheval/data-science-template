@@ -39,18 +39,18 @@ tests: tests_python tests_r
 	@echo $(call FORMAT_MESSAGE,"tests","Finished running unit tests.")
 
 ## Make Dataset
-data_extract: environment_python
+data_extract:
 	@echo $(call FORMAT_MESSAGE,"data_extract","Extracting data.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py extract
 
-data_transform: environment_python
+data_transform:
 	@echo $(call FORMAT_MESSAGE,"data_transform","Transforming data.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py transform
 
 data: data_extract data_transform
 	@echo $(call FORMAT_MESSAGE,"data","Finished running local ETL.")
 
-exploration_python: environment_python
+exploration_python:
 	@echo $(call FORMAT_MESSAGE,"exploration_python","Running exploratory jupyter notebooks and converting to .html files.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/data-profile.ipynb
 	mv source/notebooks/data-profile.html output/data/data-profile.html
@@ -65,8 +65,24 @@ exploration_r: environment_r
 exploration: exploration_python exploration_r
 	@echo $(call FORMAT_MESSAGE,"exploration","Finished running exploration notebooks.")
 
-experiment_1: environment_python
+experiment_1:
 	@echo $(call FORMAT_MESSAGE,"experiment_1","Running Hyper-parameters experiments based on BayesianSearchCV.")
+	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py run-experiments \
+		-n_iterations=4 \
+		-n_splits=3 \
+		-n_repeats=1 \
+		-score='roc_auc' \
+		-tracking_uri='http://localhost:1234' \
+		-random_state=3
+
+	@echo $(call FORMAT_MESSAGE,"experiment_1","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
+	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_1.ipynb
+	@echo $(call FORMAT_MESSAGE,"experiment_1","Running the notebook and creating html.")
+	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_1.ipynb
+	mv source/notebooks/experiment_1.html output/experiment_1.html
+
+experiment_2:
+	@echo $(call FORMAT_MESSAGE,"experiment_2","Running Hyper-parameters experiments based on BayesianSearchCV.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py run-experiments \
 		-n_iterations=4 \
 		-n_splits=3 \
@@ -75,29 +91,13 @@ experiment_1: environment_python
 		-tracking_uri='http://localhost:1234' \
 		-random_state=42
 
-	@echo $(call FORMAT_MESSAGE,"experiment_1","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
-	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_1.ipynb
-	@echo $(call FORMAT_MESSAGE,"experiment_1","Running the notebook and creating html.")
-	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_1.ipynb
-	mv source/notebooks/experiment_1.html output/experiment_1.html
-
-experiment_2: environment_python
-	@echo $(call FORMAT_MESSAGE,"experiment_2","Running Hyper-parameters experiments based on BayesianSearchCV.")
-	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py run-experiments \
-		-n_iterations=4 \
-		-n_splits=3 \
-		-n_repeats=1 \
-		-score='roc_auc' \
-		-tracking_uri='http://localhost:1234' \
-		-random_state=1
-
 	@echo $(call FORMAT_MESSAGE,"experiment_2","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
 	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_2.ipynb
 	@echo $(call FORMAT_MESSAGE,"experiment_2","Running the notebook and creating html.")
 	. .venv/bin/activate && jupyter nbconvert --execute --to html source/notebooks/experiment_2.ipynb
 	mv source/notebooks/experiment_2.html output/experiment_2.html
 
-experiment_3: environment_python
+experiment_3:
 	@echo $(call FORMAT_MESSAGE,"experiment_3","Running Hyper-parameters experiments based on BayesianSearchCV.")
 	. .venv/bin/activate && $(PYTHON_INTERPRETER) source/scripts/commands.py run-experiments \
 		-n_iterations=4 \
@@ -105,7 +105,7 @@ experiment_3: environment_python
 		-n_repeats=1 \
 		-score='roc_auc' \
 		-tracking_uri='http://localhost:1234' \
-		-random_state=84
+		-random_state=10
 
 	@echo $(call FORMAT_MESSAGE,"experiment_3","Copying experiments template (experiment-template.ipynb) to /source/notebooks directory.")
 	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_3.ipynb
@@ -130,7 +130,7 @@ all: environment tests linting remove_logs data exploration experiments final_mo
 	@echo $(call FORMAT_MESSAGE,"all","Finished running entire workflow.")
 
 ## Delete all generated files (e.g. virtual environment)
-clean: clean_python clean_r
+clean: clean_python clean_r mlflow_clean
 	@echo $(call FORMAT_MESSAGE,"clean","Cleaning project files.")
 	rm -f artifacts/data/raw/*.pkl
 	rm -f artifacts/data/raw/*.csv
@@ -146,8 +146,13 @@ mlflow_server:
 mlflow_ui:
 	open http://127.0.0.1:1234
 
-kill_mlflow:
+mlflow_kill:
 	 pkill -f gunicorn
+
+mlflow_clean:
+	rm -rf mlruns
+	rm -f mlflow.db
+	rm -rf mlflow-artifact-root
 
 #################################################################################
 # Generic Commands
@@ -155,9 +160,6 @@ kill_mlflow:
 clean_python:
 	@echo $(call FORMAT_MESSAGE,"clean_python","Cleaning Python files.")
 	rm -rf .venv
-	rm -rf mlruns
-	rm -f mlflow.db
-	rm -rf mlflow-artifact-root
 	find . \( -name __pycache__ \) -prune -exec rm -rf {} +
 	find . \( -name .ipynb_checkpoints \) -prune -exec rm -rf {} +
 
