@@ -3,7 +3,7 @@
 #################################################################################
 .PHONY: clean_python clean_r clean environment_python environment_r environment tests_python tests_r tests \
 	data_extract data_transform data exploration_python exploration_r exploration experiment_1 \
-	experiment_2 final_model final_eval all
+	experiment_2 drift all
 
 #################################################################################
 # GLOBALS
@@ -116,17 +116,14 @@ experiment_3:
 experiments: experiment_1 experiment_2 experiment_3
 	@echo $(call FORMAT_MESSAGE,"experiments","Done Running and Evaluating Experiments.")
 
-final_model: environment
-	@echo $(call FORMAT_MESSAGE,"final_model","Building final model from best model in experiment.")
-
-final_eval: environment
-	@echo $(call FORMAT_MESSAGE,"final_eval","Running evaluation of final model on test set.")
+drift: environment
+	@echo $(call FORMAT_MESSAGE,"drift","Running evaluation of final model on test set.")
 
 remove_logs:
 	rm -f output/log.log
 
 ## Run entire workflow.
-all: environment tests linting remove_logs data exploration experiments final_model final_eval
+all: environment tests linting remove_logs data exploration experiments drift
 	@echo $(call FORMAT_MESSAGE,"all","Finished running entire workflow.")
 
 ## Delete all generated files (e.g. virtual environment)
