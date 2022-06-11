@@ -13,9 +13,6 @@ PYTHON_VERSION_SHORT := $(subst .,,$(PYTHON_VERSION))
 PYTHON_INTERPRETER := python$(PYTHON_VERSION)
 SNOWFLAKE_VERSION := 2.7.4
 
-# PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-
-
 FORMAT_MESSAGE =  "\n[MAKE "$(1)"] >>>" $(2)
 
 #################################################################################
