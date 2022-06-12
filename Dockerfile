@@ -20,7 +20,3 @@ RUN R -e "install.packages('stringr',dependencies=TRUE, repos='http://cran.rstud
 RUN R -e "install.packages('testthat',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('tidyverse',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('withr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
-
-#COPY /source ./source
-#COPY /output ./output
-#COPY /artifacts ./artifacts
