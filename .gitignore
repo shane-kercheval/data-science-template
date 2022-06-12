@@ -185,6 +185,7 @@ renv/*
 mlruns
 mlflow.db
 mlflow-artifact-root
+mlflow_server\:1235/*
 
 # exclude data folders by default
 artifacts/data/interim/*

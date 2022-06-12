@@ -14,14 +14,6 @@ NOTEBOOKS:
   DIRECTORY: source/notebooks
 
 MLFLOW:
-  URI: http://127.0.0.1:1234
+  URI: http://mlflow_server:1235
   EXPERIMENT_NAME: credit
   MODEL_NAME: credit_model
-  
-
-DATABASE:
-  USERNAME: xyz
-  PASSWORD: xyz
-  HOST: 127.0.0.1
-  PORT: 5432
-  DB: xyz

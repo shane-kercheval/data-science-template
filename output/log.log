@@ -110,3 +110,207 @@
 2022-06-10 18:04:34 - INFO     | 200
 2022-06-10 18:04:34 - INFO     | Best Score: 0.7741786175986968
 2022-06-10 18:04:34 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'max_features': 0.031837350792579364, 'max_depth': 99, 'n_estimators': 1235, 'min_samples_split': 16, 'min_samples_leaf': 4, 'max_samples': 0.9248344222191298, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'CustomOrdinalEncoder()'}
+2022-06-12 01:48:02 - INFO     | FUNCTION: EXTRACT
+2022-06-12 01:48:02 - INFO     | PARAMS:
+2022-06-12 01:48:02 - INFO     |     output_directory: artifacts/data/raw
+2022-06-12 01:48:02 - INFO     | Downloading credit data from https://www.openml.org/d/31
+2022-06-12 01:48:10 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
+2022-06-12 01:48:10 - INFO     | Saving credit data to `artifacts/data/raw/credit.pkl`
+2022-06-12 01:49:08 - INFO     | FUNCTION: EXTRACT
+2022-06-12 01:49:08 - INFO     | PARAMS:
+2022-06-12 01:49:08 - INFO     |     input_directory: artifacts/data/raw
+2022-06-12 01:49:08 - INFO     |     output_directory: artifacts/data/processed
+2022-06-12 01:49:08 - INFO     | FUNCTION: TRANSFORM
+2022-06-12 01:49:08 - INFO     | PARAMS:
+2022-06-12 01:49:08 - INFO     |     input_directory: artifacts/data/raw
+2022-06-12 01:49:08 - INFO     |     output_directory: artifacts/data/processed
+2022-06-12 01:49:08 - INFO     | Transforming Data
+2022-06-12 01:49:08 - INFO     | Done processing credit data.
+2022-06-12 01:49:08 - INFO     | Saving credit data to `artifacts/data/processed/credit.pkl`
+2022-06-12 01:49:53 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-12 01:49:53 - INFO     | PARAMS:
+2022-06-12 01:49:53 - INFO     |     input_directory: artifacts/data/processed
+2022-06-12 01:49:53 - INFO     |     n_iterations: 4
+2022-06-12 01:49:53 - INFO     |     n_splits: 3
+2022-06-12 01:49:53 - INFO     |     n_repeats: 1
+2022-06-12 01:49:53 - INFO     |     score: roc_auc
+2022-06-12 01:49:53 - INFO     |     tracking_uri: http://localhost:1234
+2022-06-12 01:49:53 - INFO     |     experiment_name: credit
+2022-06-12 01:49:53 - INFO     |     registered_model_name: credit_model
+2022-06-12 01:49:53 - INFO     |     random_state: 3
+2022-06-12 01:49:53 - INFO     | Splitting training & test datasets
+2022-06-12 01:49:53 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9f3143a0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:49:57 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9f3146d0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:50:05 - WARNING  | Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9f31ca90>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:50:21 - WARNING  | Retrying (Retry(total=1, connect=1, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9f31cc70>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:50:52 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-12 01:50:52 - INFO     | PARAMS:
+2022-06-12 01:50:52 - INFO     |     input_directory: artifacts/data/processed
+2022-06-12 01:50:52 - INFO     |     n_iterations: 4
+2022-06-12 01:50:52 - INFO     |     n_splits: 3
+2022-06-12 01:50:52 - INFO     |     n_repeats: 1
+2022-06-12 01:50:52 - INFO     |     score: roc_auc
+2022-06-12 01:50:52 - INFO     |     tracking_uri: http://localhost:1234
+2022-06-12 01:50:52 - INFO     |     experiment_name: credit
+2022-06-12 01:50:52 - INFO     |     registered_model_name: credit_model
+2022-06-12 01:50:52 - INFO     |     random_state: 3
+2022-06-12 01:50:52 - INFO     | Splitting training & test datasets
+2022-06-12 01:50:52 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9e9b33a0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:50:56 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9e9b36d0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:51:04 - WARNING  | Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9e9bba90>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:51:20 - WARNING  | Retrying (Retry(total=1, connect=1, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9e9bbc70>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:51:26 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-12 01:51:26 - INFO     | PARAMS:
+2022-06-12 01:51:26 - INFO     |     input_directory: artifacts/data/processed
+2022-06-12 01:51:26 - INFO     |     n_iterations: 4
+2022-06-12 01:51:26 - INFO     |     n_splits: 3
+2022-06-12 01:51:26 - INFO     |     n_repeats: 1
+2022-06-12 01:51:26 - INFO     |     score: roc_auc
+2022-06-12 01:51:26 - INFO     |     tracking_uri: http://localhost:1235
+2022-06-12 01:51:26 - INFO     |     experiment_name: credit
+2022-06-12 01:51:26 - INFO     |     registered_model_name: credit_model
+2022-06-12 01:51:26 - INFO     |     random_state: 3
+2022-06-12 01:51:26 - INFO     | Splitting training & test datasets
+2022-06-12 01:51:26 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff815483a0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:51:30 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff815486d0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:51:38 - WARNING  | Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff81550a90>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:57:23 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-12 01:57:23 - INFO     | PARAMS:
+2022-06-12 01:57:23 - INFO     |     input_directory: artifacts/data/processed
+2022-06-12 01:57:23 - INFO     |     n_iterations: 4
+2022-06-12 01:57:23 - INFO     |     n_splits: 3
+2022-06-12 01:57:23 - INFO     |     n_repeats: 1
+2022-06-12 01:57:23 - INFO     |     score: roc_auc
+2022-06-12 01:57:23 - INFO     |     tracking_uri: http://localhost:1235
+2022-06-12 01:57:23 - INFO     |     experiment_name: credit
+2022-06-12 01:57:23 - INFO     |     registered_model_name: credit_model
+2022-06-12 01:57:23 - INFO     |     random_state: 3
+2022-06-12 01:57:23 - INFO     | Splitting training & test datasets
+2022-06-12 01:57:23 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff783ee1c0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:57:27 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff783ee670>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 01:57:50 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-12 01:57:50 - INFO     | PARAMS:
+2022-06-12 01:57:50 - INFO     |     input_directory: artifacts/data/processed
+2022-06-12 01:57:50 - INFO     |     n_iterations: 4
+2022-06-12 01:57:50 - INFO     |     n_splits: 3
+2022-06-12 01:57:50 - INFO     |     n_repeats: 1
+2022-06-12 01:57:50 - INFO     |     score: roc_auc
+2022-06-12 01:57:50 - INFO     |     tracking_uri: http://0.0.0.0:1235
+2022-06-12 01:57:50 - INFO     |     experiment_name: credit
+2022-06-12 01:57:50 - INFO     |     registered_model_name: credit_model
+2022-06-12 01:57:50 - INFO     |     random_state: 3
+2022-06-12 01:57:50 - INFO     | Splitting training & test datasets
+2022-06-12 01:57:50 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff759123a0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 02:01:17 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-12 02:01:17 - INFO     | PARAMS:
+2022-06-12 02:01:17 - INFO     |     input_directory: artifacts/data/processed
+2022-06-12 02:01:17 - INFO     |     n_iterations: 4
+2022-06-12 02:01:17 - INFO     |     n_splits: 3
+2022-06-12 02:01:17 - INFO     |     n_repeats: 1
+2022-06-12 02:01:17 - INFO     |     score: roc_auc
+2022-06-12 02:01:17 - INFO     |     tracking_uri: http://0.0.0.0:1235
+2022-06-12 02:01:17 - INFO     |     experiment_name: credit
+2022-06-12 02:01:17 - INFO     |     registered_model_name: credit_model
+2022-06-12 02:01:17 - INFO     |     random_state: 3
+2022-06-12 02:01:17 - INFO     | Splitting training & test datasets
+2022-06-12 02:01:17 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff62cf8340>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 02:01:21 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff62cf85b0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 02:01:29 - WARNING  | Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff62cf8a00>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 02:01:45 - WARNING  | Retrying (Retry(total=1, connect=1, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff62ce68e0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 02:02:18 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-12 02:02:18 - INFO     | PARAMS:
+2022-06-12 02:02:18 - INFO     |     input_directory: artifacts/data/processed
+2022-06-12 02:02:18 - INFO     |     n_iterations: 4
+2022-06-12 02:02:18 - INFO     |     n_splits: 3
+2022-06-12 02:02:18 - INFO     |     n_repeats: 1
+2022-06-12 02:02:18 - INFO     |     score: roc_auc
+2022-06-12 02:02:18 - INFO     |     tracking_uri: mlflow_server:1235
+2022-06-12 02:02:18 - INFO     |     experiment_name: credit
+2022-06-12 02:02:18 - INFO     |     registered_model_name: credit_model
+2022-06-12 02:02:18 - INFO     |     random_state: 3
+2022-06-12 02:02:18 - INFO     | Splitting training & test datasets
+2022-06-12 02:02:19 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-12 02:02:34 - INFO     | Best Score: 0.7566610156276207
+2022-06-12 02:02:34 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2022-06-12 02:02:40 - INFO     | *****Timer Finished (21.42 seconds)
+2022-06-12 02:03:20 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-12 02:03:20 - INFO     | PARAMS:
+2022-06-12 02:03:20 - INFO     |     input_directory: artifacts/data/processed
+2022-06-12 02:03:20 - INFO     |     n_iterations: 4
+2022-06-12 02:03:20 - INFO     |     n_splits: 3
+2022-06-12 02:03:20 - INFO     |     n_repeats: 1
+2022-06-12 02:03:20 - INFO     |     score: roc_auc
+2022-06-12 02:03:20 - INFO     |     tracking_uri: https://mlflow_server:1235
+2022-06-12 02:03:20 - INFO     |     experiment_name: credit
+2022-06-12 02:03:20 - INFO     |     registered_model_name: credit_model
+2022-06-12 02:03:20 - INFO     |     random_state: 3
+2022-06-12 02:03:20 - INFO     | Splitting training & test datasets
+2022-06-12 02:03:51 - WARNING  | Retrying (Retry(total=4, connect=5, read=5, redirect=5, status=5)) after connection broken by 'SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1129)'))': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 02:04:25 - WARNING  | Retrying (Retry(total=3, connect=5, read=5, redirect=5, status=5)) after connection broken by 'SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1129)'))': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
+2022-06-12 02:04:57 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-12 02:04:57 - INFO     | PARAMS:
+2022-06-12 02:04:57 - INFO     |     input_directory: artifacts/data/processed
+2022-06-12 02:04:57 - INFO     |     n_iterations: 4
+2022-06-12 02:04:57 - INFO     |     n_splits: 3
+2022-06-12 02:04:57 - INFO     |     n_repeats: 1
+2022-06-12 02:04:57 - INFO     |     score: roc_auc
+2022-06-12 02:04:57 - INFO     |     tracking_uri: mlflow_server:1235
+2022-06-12 02:04:57 - INFO     |     experiment_name: credit
+2022-06-12 02:04:57 - INFO     |     registered_model_name: credit_model
+2022-06-12 02:04:57 - INFO     |     random_state: 3
+2022-06-12 02:04:57 - INFO     | Splitting training & test datasets
+2022-06-12 02:04:57 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-12 02:05:12 - INFO     | Best Score: 0.7566610156276207
+2022-06-12 02:05:12 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2022-06-12 02:05:16 - INFO     | *****Timer Finished (18.60 seconds)
+2022-06-12 02:05:44 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-12 02:05:44 - INFO     | PARAMS:
+2022-06-12 02:05:44 - INFO     |     input_directory: artifacts/data/processed
+2022-06-12 02:05:44 - INFO     |     n_iterations: 4
+2022-06-12 02:05:44 - INFO     |     n_splits: 3
+2022-06-12 02:05:44 - INFO     |     n_repeats: 1
+2022-06-12 02:05:44 - INFO     |     score: roc_auc
+2022-06-12 02:05:44 - INFO     |     tracking_uri: http://mlflow_server:1235
+2022-06-12 02:05:44 - INFO     |     experiment_name: credit
+2022-06-12 02:05:44 - INFO     |     registered_model_name: credit_model
+2022-06-12 02:05:44 - INFO     |     random_state: 3
+2022-06-12 02:05:44 - INFO     | Splitting training & test datasets
+2022-06-12 02:05:44 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-12 02:05:58 - INFO     | Best Score: 0.7566610156276207
+2022-06-12 02:05:58 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2022-06-12 02:06:03 - INFO     | *****Timer Finished (18.65 seconds)
+2022-06-12 02:06:03 - INFO     | No models currently in production.
+2022-06-12 02:06:03 - INFO     | Transitioning `credit_model` (version 1) to Production
+2022-06-12 02:13:44 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-12 02:13:44 - INFO     | PARAMS:
+2022-06-12 02:13:44 - INFO     |     input_directory: artifacts/data/processed
+2022-06-12 02:13:44 - INFO     |     n_iterations: 4
+2022-06-12 02:13:44 - INFO     |     n_splits: 3
+2022-06-12 02:13:44 - INFO     |     n_repeats: 1
+2022-06-12 02:13:44 - INFO     |     score: roc_auc
+2022-06-12 02:13:44 - INFO     |     tracking_uri: http://mlflow_server:1235
+2022-06-12 02:13:44 - INFO     |     experiment_name: credit
+2022-06-12 02:13:44 - INFO     |     registered_model_name: credit_model
+2022-06-12 02:13:44 - INFO     |     random_state: 3
+2022-06-12 02:13:44 - INFO     | Splitting training & test datasets
+2022-06-12 02:13:44 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-12 02:13:58 - INFO     | Best Score: 0.7566610156276207
+2022-06-12 02:13:58 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2022-06-12 02:14:02 - INFO     | *****Timer Finished (17.97 seconds)
+2022-06-12 02:14:02 - INFO     | New Score: roc_auc - 0.7566610156276207 vs Current Production Score: roc_auc - 0.7566610156276207); Keeping Production Model
+2022-06-12 02:14:07 - INFO     | MLFlow URI: http://mlflow_server:1235
+2022-06-12 02:14:07 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff4d589940>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/registered-models/get-latest-versions
+2022-06-12 02:14:11 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff8c6c57f0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/registered-models/get-latest-versions
+2022-06-12 02:14:19 - WARNING  | Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff4d5e9be0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/registered-models/get-latest-versions
+2022-06-12 02:14:35 - WARNING  | Retrying (Retry(total=1, connect=1, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff4d5e9220>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/registered-models/get-latest-versions
+2022-06-12 02:15:07 - WARNING  | Retrying (Retry(total=0, connect=0, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff4d5e9a60>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/registered-models/get-latest-versions
+2022-06-12 02:18:24 - INFO     | MLFlow URI: http://mlflow_server:1235
+2022-06-12 02:18:25 - INFO     | Production Model Version: 1
+2022-06-12 02:18:25 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-12 02:18:25 - INFO     | *****Timer Finished (0.03 seconds)
+2022-06-12 02:18:25 - INFO     | (800, 20)
+2022-06-12 02:18:25 - INFO     | 800
+2022-06-12 02:18:25 - INFO     | (200, 20)
+2022-06-12 02:18:25 - INFO     | 200
+2022-06-12 02:18:25 - INFO     | Best Score: 0.7566610156276207
+2022-06-12 02:18:25 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
