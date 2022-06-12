@@ -4,6 +4,33 @@ image:
 compose:
 	docker compose -f docker-compose.yml up --build
 
+
+notebook:
+	open 'http://127.0.0.1:8888/?token=d4484563805c48c9b55f75eb8b28b3797c6757ad4871776d'
+
+
+mlflow_ui:
+	open 'http://127.0.0.1:1235'
+
+
+
+mlflow_server:
+	mlflow server \
+		--backend-store-uri sqlite:///mlflow.db \
+		--default-artifact-root ./mlflow-artifact-root \
+		--host 0.0.0.0 --port 1234
+
+mlflow_kill:
+	 pkill -f gunicorn
+
+mlflow_clean:
+	rm -rf mlruns
+	rm -f mlflow.db
+	rm -rf mlflow-artifact-root
+	rm -rf mlflow_server/1235
+
+
+
 tests_python: environment_python
 	rm -f source/tests/test_files/log.log
 	python -m unittest discover source/tests
@@ -94,20 +121,3 @@ clean: clean_python clean_r mlflow_clean
 	rm -f artifacts/data/raw/*.pkl
 	rm -f artifacts/data/raw/*.csv
 	rm -f artifacts/data/processed/*
-
-mlflow_server:
-	mlflow server \
-		--backend-store-uri sqlite:///mlflow.db \
-		--default-artifact-root ./mlflow-artifact-root \
-		--host 0.0.0.0 --port 1234
-
-mlflow_ui:
-	open http://127.0.0.1:1234
-
-mlflow_kill:
-	 pkill -f gunicorn
-
-mlflow_clean:
-	rm -rf mlruns
-	rm -f mlflow.db
-	rm -rf mlflow-artifact-root
