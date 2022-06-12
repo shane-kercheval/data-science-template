@@ -21,7 +21,7 @@ services:
       - 'mlflow_server'
     stdin_open: true # docker run -i
     tty: true        # docker run -t
-  docker:
+  jupyter:
     build: .
     working_dir: /code
     volumes:
