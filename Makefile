@@ -1,12 +1,14 @@
 image:
 	docker build -t data-science-template .
 
-compose:
+docker:
 	docker compose -f docker-compose.yml up --build
-
 
 notebook:
 	open 'http://127.0.0.1:8888/?token=d4484563805c48c9b55f75eb8b28b3797c6757ad4871776d'
+
+zsh:
+	docker exec -it data-science-template-bash-1 /bin/zsh
 
 
 mlflow_ui:
