@@ -106,3 +106,7 @@ class TestHelpers(unittest.TestCase):
         self.assertIsNotNone(mappings)
         with open(get_test_file_path('classification_get_search_space_mappings.txt'), 'w') as file:
             file.write(TestHelpers.to_string(mappings))
+
+
+if __name__ == '__main__':
+    unittest.main()

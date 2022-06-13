@@ -12,8 +12,6 @@ notebook:
 mlflow_ui:
 	open 'http://127.0.0.1:1235'
 
-
-
 mlflow_server:
 	mlflow server \
 		--backend-store-uri sqlite:///mlflow.db \
@@ -29,9 +27,7 @@ mlflow_clean:
 	rm -rf mlflow-artifact-root
 	rm -rf mlflow_server/1235
 
-
-
-tests_python: environment_python
+tests:
 	rm -f source/tests/test_files/log.log
 	python -m unittest discover source/tests
 
@@ -39,11 +35,6 @@ linting:
 	flake8 --max-line-length 110 source/scripts
 	flake8 --max-line-length 110 source/library
 	flake8 --max-line-length 110 source/tests
-
-tests_r: environment_r
-	R --quiet -e "testthat::test_dir('source/tests')"
-
-tests: tests_python tests_r
 
 ## Make Dataset
 data_extract:
@@ -54,17 +45,9 @@ data_transform:
 
 data: data_extract data_transform
 
-exploration_python:
+exploration:
 	jupyter nbconvert --execute --to html source/notebooks/data-profile.ipynb
 	mv source/notebooks/data-profile.html output/data/data-profile.html
-
-exploration_r: environment_r
-	Rscript -e "rmarkdown::render('source/notebooks/templates/r-markdown-template.Rmd')"
-	rm -rf output/data/r-markdown-template_files/
-	mv source/notebooks/templates/r-markdown-template.md output/data/r-markdown-template.md
-	mv source/notebooks/templates/r-markdown-template_files/ output/data/
-
-exploration: exploration_python exploration_r
 
 experiment_1:
 	python source/scripts/commands.py run-experiments \
