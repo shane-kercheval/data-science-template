@@ -16,10 +16,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 from skopt import BayesSearchCV  # noqa
 
-sys.path.append(os.getcwd())
-from source.library.utilities import Timer, log_info, log_func  # noqa
-import source.library.ml as ml  # noqa
-import source.library.classification_search_space as css  # noqa
+from source.library.utilities import Timer, log_info, log_func
+import source.library.ml as ml
+import source.library.classification_search_space as css
 
 
 class SklearnModelWrapper(sklearn.base.BaseEstimator):

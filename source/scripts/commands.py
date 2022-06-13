@@ -13,10 +13,9 @@ import sys
 
 import click
 
-sys.path.append(os.getcwd())
-from source.library.utilities import Timer, log_func, log_info, get_config  # noqa
-import source.scripts.experiments as experiments  # noqa
-import source.scripts.etl as etl  # noqa
+from source.library.utilities import Timer, log_func, log_info, get_config
+import source.scripts.experiments as experiments
+import source.scripts.etl as etl
 
 
 logging.config.fileConfig("source/config/logging_to_file.conf",
