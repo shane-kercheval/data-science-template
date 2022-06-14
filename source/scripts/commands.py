@@ -8,12 +8,9 @@ following examples:
     - `python3.9 source/scripts/commands.py extract --help`
 """
 import logging.config
-import os
-import sys
-
 import click
 
-from source.library.utilities import Timer, log_func, log_info, get_config
+from source.library.utilities import log_func, get_config
 import source.scripts.experiments as experiments
 import source.scripts.etl as etl
 
