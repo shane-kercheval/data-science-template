@@ -3,7 +3,6 @@ This file contains the logic for running ML experiments using BayesSearchCV.
 """
 import datetime
 import os
-import sys
 
 import mlflow
 import mlflow.exceptions
