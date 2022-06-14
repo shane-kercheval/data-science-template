@@ -91,17 +91,13 @@ experiment_3:
 
 experiments: experiment_1 experiment_2 experiment_3
 
-final_model: environment
-
-final_eval: environment
-
 remove_logs:
 	rm -f output/log.log
 
 ## Run entire workflow.
-all: environment tests linting remove_logs data exploration experiments final_model final_eval
+all: tests linting remove_logs data exploration experiments
 
-## Delete all generated files (e.g. virtual environment)
+## Delete all generated files (e.g. virtual)
 clean: clean_python clean_r mlflow_clean
 	rm -f artifacts/data/raw/*.pkl
 	rm -f artifacts/data/raw/*.csv

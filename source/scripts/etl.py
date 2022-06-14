@@ -2,7 +2,6 @@
 This file contains the logic for extracting and transforming the project data.
 """
 import os
-import sys
 import warnings
 
 import numpy as np
