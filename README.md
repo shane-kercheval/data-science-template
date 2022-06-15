@@ -45,6 +45,8 @@ make docker_run
 
 The `Makefile` runs all components of the project. You can think of it as containing the implicit DAG, or recipe, of the project.
 
+**Run make commands from terminal connected to container via `make docker_run` or `make zsh`**.
+
 If you want to run the entire project from start to finish, including unit tests and linting, run:
 
 ```
