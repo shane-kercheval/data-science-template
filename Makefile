@@ -1,3 +1,6 @@
+####
+# DOCKER
+####
 docker_compose:
 	# docker build -t data-science-template .
 	docker compose -f docker-compose.yml up --build
@@ -10,7 +13,9 @@ notebook:
 zsh:
 	docker exec -it data-science-template-bash-1 /bin/zsh
 
-# this is the
+####
+# MLFLOW
+####
 mlflow_ui:
 	open 'http://127.0.0.1:1235'
 
@@ -23,6 +28,9 @@ mlflow_clean:
 	rm -rf mlflow-artifact-root
 	rm -rf mlflow_server/1235
 
+####
+# Project
+####
 tests:
 	rm -f source/tests/test_files/log.log
 	python -m unittest discover source/tests
@@ -32,7 +40,6 @@ linting:
 	flake8 --max-line-length 110 source/library
 	flake8 --max-line-length 110 source/tests
 
-## Make Dataset
 data_extract:
 	python source/scripts/commands.py extract
 
