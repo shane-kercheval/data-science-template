@@ -5,23 +5,15 @@ OUTPUT:
   DIRECTORY: output
 
 DATA:
-  RAW_DIRECTORY: artifacts/data/raw
-  INTERIM_DIRECTORY: artifacts/data/interim
-  PROCESSED_DIRECTORY: artifacts/data/processed
-  EXTERNAL_DIRECTORY: artifacts/data/external
+  RAW_DIRECTORY: data/raw
+  INTERIM_DIRECTORY: data/interim
+  PROCESSED_DIRECTORY: data/processed
+  EXTERNAL_DIRECTORY: data/external
 
 NOTEBOOKS:
   DIRECTORY: source/notebooks
 
 MLFLOW:
-  URI: http://127.0.0.1:1234
+  URI: http://mlflow_server:1235
   EXPERIMENT_NAME: credit
   MODEL_NAME: credit_model
-  
-
-DATABASE:
-  USERNAME: xyz
-  PASSWORD: xyz
-  HOST: 127.0.0.1
-  PORT: 5432
-  DB: xyz

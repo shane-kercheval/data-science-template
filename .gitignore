@@ -185,15 +185,13 @@ renv/*
 mlruns
 mlflow.db
 mlflow-artifact-root
+mlflow_server\:1235/*
 
 # exclude data folders by default
-artifacts/data/interim/*
-artifacts/data/processed/*
-artifacts/data/raw/*
-!artifacts/data/external/*.csv
-
-!artifacts/models/current/*
-!artifacts/models/archive/*.pkl
+data/interim/*
+data/processed/*
+data/raw/*
+!data/external/*.csv
 
 !source/tests/test_files/log.log
 !output/log.log

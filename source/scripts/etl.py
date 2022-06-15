@@ -2,15 +2,13 @@
 This file contains the logic for extracting and transforming the project data.
 """
 import os
-import sys
 import warnings
 
 import numpy as np
 import pandas as pd
 from sklearn.datasets import fetch_openml
 
-sys.path.append(os.getcwd())
-from source.library.utilities import log_info, log_func  # noqa
+from source.library.utilities import log_info, log_func
 
 
 def extract(output_directory: str):
