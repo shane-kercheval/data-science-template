@@ -1,8 +1,8 @@
-image:
-	docker build -t data-science-template .
-
-docker:
+docker_compose:
+	# docker build -t data-science-template .
 	docker compose -f docker-compose.yml up --build
+
+docker_run: notebook mlflow_ui zsh
 
 notebook:
 	open 'http://127.0.0.1:8888/?token=d4484563805c48c9b55f75eb8b28b3797c6757ad4871776d'
@@ -10,15 +10,9 @@ notebook:
 zsh:
 	docker exec -it data-science-template-bash-1 /bin/zsh
 
-
+# this is the
 mlflow_ui:
 	open 'http://127.0.0.1:1235'
-
-mlflow_server:
-	mlflow server \
-		--backend-store-uri sqlite:///mlflow.db \
-		--default-artifact-root ./mlflow-artifact-root \
-		--host 0.0.0.0 --port 1234
 
 mlflow_kill:
 	 pkill -f gunicorn
