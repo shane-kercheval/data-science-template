@@ -5,10 +5,10 @@ OUTPUT:
   DIRECTORY: output
 
 DATA:
-  RAW_DIRECTORY: artifacts/data/raw
-  INTERIM_DIRECTORY: artifacts/data/interim
-  PROCESSED_DIRECTORY: artifacts/data/processed
-  EXTERNAL_DIRECTORY: artifacts/data/external
+  RAW_DIRECTORY: data/raw
+  INTERIM_DIRECTORY: data/interim
+  PROCESSED_DIRECTORY: data/processed
+  EXTERNAL_DIRECTORY: data/external
 
 NOTEBOOKS:
   DIRECTORY: source/notebooks
