@@ -1,427 +1,107 @@
-2022-06-10 18:03:04 - INFO     | FUNCTION: EXTRACT
-2022-06-10 18:03:04 - INFO     | PARAMS:
-2022-06-10 18:03:04 - INFO     |     output_directory: artifacts/data/raw
-2022-06-10 18:03:04 - INFO     | Downloading credit data from https://www.openml.org/d/31
-2022-06-10 18:03:04 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
-2022-06-10 18:03:04 - INFO     | Saving credit data to `artifacts/data/raw/credit.pkl`
-2022-06-10 18:03:05 - INFO     | FUNCTION: EXTRACT
-2022-06-10 18:03:05 - INFO     | PARAMS:
-2022-06-10 18:03:05 - INFO     |     input_directory: artifacts/data/raw
-2022-06-10 18:03:05 - INFO     |     output_directory: artifacts/data/processed
-2022-06-10 18:03:05 - INFO     | FUNCTION: TRANSFORM
-2022-06-10 18:03:05 - INFO     | PARAMS:
-2022-06-10 18:03:05 - INFO     |     input_directory: artifacts/data/raw
-2022-06-10 18:03:05 - INFO     |     output_directory: artifacts/data/processed
-2022-06-10 18:03:05 - INFO     | Transforming Data
-2022-06-10 18:03:05 - INFO     | Done processing credit data.
-2022-06-10 18:03:05 - INFO     | Saving credit data to `artifacts/data/processed/credit.pkl`
-2022-06-10 18:03:11 - INFO     | *****Timer Started: Loading Data
-2022-06-10 18:03:11 - INFO     | *****Timer Finished (0.00 seconds)
-2022-06-10 18:03:17 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-10 18:03:17 - INFO     | PARAMS:
-2022-06-10 18:03:17 - INFO     |     input_directory: artifacts/data/processed
-2022-06-10 18:03:17 - INFO     |     n_iterations: 4
-2022-06-10 18:03:17 - INFO     |     n_splits: 3
-2022-06-10 18:03:17 - INFO     |     n_repeats: 1
-2022-06-10 18:03:17 - INFO     |     score: roc_auc
-2022-06-10 18:03:17 - INFO     |     tracking_uri: http://localhost:1234
-2022-06-10 18:03:17 - INFO     |     experiment_name: credit
-2022-06-10 18:03:17 - INFO     |     registered_model_name: credit_model
-2022-06-10 18:03:17 - INFO     |     random_state: 3
-2022-06-10 18:03:17 - INFO     | Splitting training & test datasets
-2022-06-10 18:03:17 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x14bc75a90>: Failed to establish a new connection: [Errno 61] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-10 18:03:21 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x14bc75df0>: Failed to establish a new connection: [Errno 61] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-10 18:03:29 - WARNING  | Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x14bca8b80>: Failed to establish a new connection: [Errno 61] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-10 18:03:29 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-10 18:03:44 - INFO     | Best Score: 0.7575739729812215
-2022-06-10 18:03:44 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-06-10 18:03:46 - INFO     | *****Timer Finished (16.59 seconds)
-2022-06-10 18:03:46 - INFO     | No models currently in production.
-2022-06-10 18:03:46 - INFO     | Transitioning `credit_model` (version 1) to Production
-2022-06-10 18:03:49 - INFO     | MLFlow URI: http://127.0.0.1:1234
-2022-06-10 18:03:49 - INFO     | Production Model Version: 1
-2022-06-10 18:03:49 - INFO     | *****Timer Started: Loading training/test datasets
-2022-06-10 18:03:49 - INFO     | *****Timer Finished (0.00 seconds)
-2022-06-10 18:03:49 - INFO     | (800, 20)
-2022-06-10 18:03:49 - INFO     | 800
-2022-06-10 18:03:49 - INFO     | (200, 20)
-2022-06-10 18:03:49 - INFO     | 200
-2022-06-10 18:03:49 - INFO     | Best Score: 0.7575739729812215
-2022-06-10 18:03:49 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
-2022-06-10 18:03:53 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-10 18:03:53 - INFO     | PARAMS:
-2022-06-10 18:03:53 - INFO     |     input_directory: artifacts/data/processed
-2022-06-10 18:03:53 - INFO     |     n_iterations: 4
-2022-06-10 18:03:53 - INFO     |     n_splits: 3
-2022-06-10 18:03:53 - INFO     |     n_repeats: 1
-2022-06-10 18:03:53 - INFO     |     score: roc_auc
-2022-06-10 18:03:53 - INFO     |     tracking_uri: http://localhost:1234
-2022-06-10 18:03:53 - INFO     |     experiment_name: credit
-2022-06-10 18:03:53 - INFO     |     registered_model_name: credit_model
-2022-06-10 18:03:53 - INFO     |     random_state: 42
-2022-06-10 18:03:53 - INFO     | Splitting training & test datasets
-2022-06-10 18:03:53 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-10 18:04:06 - INFO     | Best Score: 0.7626843675980791
-2022-06-10 18:04:06 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(criterion='entropy', max_depth=70,
+2022-06-15 02:00:05 - INFO     | FUNCTION: EXTRACT
+2022-06-15 02:00:05 - INFO     | PARAMS:
+2022-06-15 02:00:05 - INFO     |     output_directory: artifacts/data/raw
+2022-06-15 02:00:05 - INFO     | Downloading credit data from https://www.openml.org/d/31
+2022-06-15 02:00:05 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
+2022-06-15 02:00:05 - INFO     | Saving credit data to `artifacts/data/raw/credit.pkl`
+2022-06-15 02:00:06 - INFO     | FUNCTION: EXTRACT
+2022-06-15 02:00:06 - INFO     | PARAMS:
+2022-06-15 02:00:06 - INFO     |     input_directory: artifacts/data/raw
+2022-06-15 02:00:06 - INFO     |     output_directory: artifacts/data/processed
+2022-06-15 02:00:06 - INFO     | FUNCTION: TRANSFORM
+2022-06-15 02:00:06 - INFO     | PARAMS:
+2022-06-15 02:00:06 - INFO     |     input_directory: artifacts/data/raw
+2022-06-15 02:00:06 - INFO     |     output_directory: artifacts/data/processed
+2022-06-15 02:00:06 - INFO     | Transforming Data
+2022-06-15 02:00:06 - INFO     | Done processing credit data.
+2022-06-15 02:00:06 - INFO     | Saving credit data to `artifacts/data/processed/credit.pkl`
+2022-06-15 02:00:09 - INFO     | *****Timer Started: Loading Data
+2022-06-15 02:00:10 - INFO     | *****Timer Finished (0.01 seconds)
+2022-06-15 02:00:12 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-15 02:00:12 - INFO     | PARAMS:
+2022-06-15 02:00:12 - INFO     |     input_directory: artifacts/data/processed
+2022-06-15 02:00:12 - INFO     |     n_iterations: 4
+2022-06-15 02:00:12 - INFO     |     n_splits: 3
+2022-06-15 02:00:12 - INFO     |     n_repeats: 1
+2022-06-15 02:00:12 - INFO     |     score: roc_auc
+2022-06-15 02:00:12 - INFO     |     tracking_uri: http://mlflow_server:1235
+2022-06-15 02:00:12 - INFO     |     experiment_name: credit
+2022-06-15 02:00:12 - INFO     |     registered_model_name: credit_model
+2022-06-15 02:00:12 - INFO     |     random_state: 3
+2022-06-15 02:00:12 - INFO     | Splitting training & test datasets
+2022-06-15 02:00:12 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-15 02:00:28 - INFO     | Best Score: 0.7566610156276207
+2022-06-15 02:00:28 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2022-06-15 02:00:32 - INFO     | *****Timer Finished (20.35 seconds)
+2022-06-15 02:00:33 - INFO     | New Score: roc_auc - 0.7566610156276207 vs Current Production Score: roc_auc - 0.7741159200200212); Keeping Production Model
+2022-06-15 02:00:38 - INFO     | MLFlow URI: http://mlflow_server:1235
+2022-06-15 02:00:39 - INFO     | Production Model Version: 2
+2022-06-15 02:00:39 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-15 02:00:39 - INFO     | *****Timer Finished (0.02 seconds)
+2022-06-15 02:00:39 - INFO     | (800, 20)
+2022-06-15 02:00:39 - INFO     | 800
+2022-06-15 02:00:39 - INFO     | (200, 20)
+2022-06-15 02:00:39 - INFO     | 200
+2022-06-15 02:00:39 - INFO     | Best Score: 0.7566610156276207
+2022-06-15 02:00:39 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
+2022-06-15 02:00:43 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-15 02:00:43 - INFO     | PARAMS:
+2022-06-15 02:00:43 - INFO     |     input_directory: artifacts/data/processed
+2022-06-15 02:00:43 - INFO     |     n_iterations: 4
+2022-06-15 02:00:43 - INFO     |     n_splits: 3
+2022-06-15 02:00:43 - INFO     |     n_repeats: 1
+2022-06-15 02:00:43 - INFO     |     score: roc_auc
+2022-06-15 02:00:43 - INFO     |     tracking_uri: http://mlflow_server:1235
+2022-06-15 02:00:43 - INFO     |     experiment_name: credit
+2022-06-15 02:00:43 - INFO     |     registered_model_name: credit_model
+2022-06-15 02:00:43 - INFO     |     random_state: 42
+2022-06-15 02:00:43 - INFO     | Splitting training & test datasets
+2022-06-15 02:00:43 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-15 02:00:57 - INFO     | Best Score: 0.762641790401041
+2022-06-15 02:00:57 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(criterion='entropy', max_depth=70,
                        max_features=0.1142268477118407,
                        max_samples=0.5483119512487002, min_samples_leaf=8,
                        min_samples_split=12, n_estimators=553, random_state=42)), ('model__criterion', 'entropy'), ('model__max_depth', 70), ('model__max_features', 0.1142268477118407), ('model__max_samples', 0.5483119512487002), ('model__min_samples_leaf', 8), ('model__min_samples_split', 12), ('model__n_estimators', 553), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer(strategy='median')), ('prep__numeric__pca__transformer', PCA(n_components='mle')), ('prep__numeric__scaler__transformer', None)])
-2022-06-10 18:04:08 - INFO     | *****Timer Finished (14.50 seconds)
-2022-06-10 18:04:08 - INFO     | New Score: roc_auc - 0.7626843675980791 vs Current Production Score: roc_auc - 0.7575739729812215); Keeping Production Model
-2022-06-10 18:04:11 - INFO     | MLFlow URI: http://127.0.0.1:1234
-2022-06-10 18:04:11 - INFO     | Production Model Version: 1
-2022-06-10 18:04:11 - INFO     | *****Timer Started: Loading training/test datasets
-2022-06-10 18:04:11 - INFO     | *****Timer Finished (0.00 seconds)
-2022-06-10 18:04:11 - INFO     | (800, 20)
-2022-06-10 18:04:11 - INFO     | 800
-2022-06-10 18:04:11 - INFO     | (200, 20)
-2022-06-10 18:04:11 - INFO     | 200
-2022-06-10 18:04:11 - INFO     | Best Score: 0.7626843675980791
-2022-06-10 18:04:11 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'max_features': 0.1142268477118407, 'max_depth': 70, 'n_estimators': 553, 'min_samples_split': 12, 'min_samples_leaf': 8, 'max_samples': 0.5483119512487002, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'OneHotEncoder()'}
-2022-06-10 18:04:14 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-10 18:04:14 - INFO     | PARAMS:
-2022-06-10 18:04:14 - INFO     |     input_directory: artifacts/data/processed
-2022-06-10 18:04:14 - INFO     |     n_iterations: 4
-2022-06-10 18:04:14 - INFO     |     n_splits: 3
-2022-06-10 18:04:14 - INFO     |     n_repeats: 1
-2022-06-10 18:04:14 - INFO     |     score: roc_auc
-2022-06-10 18:04:14 - INFO     |     tracking_uri: http://localhost:1234
-2022-06-10 18:04:14 - INFO     |     experiment_name: credit
-2022-06-10 18:04:14 - INFO     |     registered_model_name: credit_model
-2022-06-10 18:04:14 - INFO     |     random_state: 10
-2022-06-10 18:04:14 - INFO     | Splitting training & test datasets
-2022-06-10 18:04:14 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-10 18:04:28 - INFO     | Best Score: 0.7741786175986968
-2022-06-10 18:04:28 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(criterion='entropy', max_depth=99,
+2022-06-15 02:01:01 - INFO     | *****Timer Finished (17.43 seconds)
+2022-06-15 02:01:01 - INFO     | New Score: roc_auc - 0.762641790401041 vs Current Production Score: roc_auc - 0.7741159200200212); Keeping Production Model
+2022-06-15 02:01:06 - INFO     | MLFlow URI: http://mlflow_server:1235
+2022-06-15 02:01:06 - INFO     | Production Model Version: 2
+2022-06-15 02:01:07 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-15 02:01:07 - INFO     | *****Timer Finished (0.02 seconds)
+2022-06-15 02:01:07 - INFO     | (800, 20)
+2022-06-15 02:01:07 - INFO     | 800
+2022-06-15 02:01:07 - INFO     | (200, 20)
+2022-06-15 02:01:07 - INFO     | 200
+2022-06-15 02:01:07 - INFO     | Best Score: 0.762641790401041
+2022-06-15 02:01:07 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'max_features': 0.1142268477118407, 'max_depth': 70, 'n_estimators': 553, 'min_samples_split': 12, 'min_samples_leaf': 8, 'max_samples': 0.5483119512487002, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'OneHotEncoder()'}
+2022-06-15 02:01:11 - INFO     | FUNCTION: RUN-EXPERIMENTS
+2022-06-15 02:01:11 - INFO     | PARAMS:
+2022-06-15 02:01:11 - INFO     |     input_directory: artifacts/data/processed
+2022-06-15 02:01:11 - INFO     |     n_iterations: 4
+2022-06-15 02:01:11 - INFO     |     n_splits: 3
+2022-06-15 02:01:11 - INFO     |     n_repeats: 1
+2022-06-15 02:01:11 - INFO     |     score: roc_auc
+2022-06-15 02:01:11 - INFO     |     tracking_uri: http://mlflow_server:1235
+2022-06-15 02:01:11 - INFO     |     experiment_name: credit
+2022-06-15 02:01:11 - INFO     |     registered_model_name: credit_model
+2022-06-15 02:01:11 - INFO     |     random_state: 10
+2022-06-15 02:01:11 - INFO     | Splitting training & test datasets
+2022-06-15 02:01:11 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
+2022-06-15 02:01:27 - INFO     | Best Score: 0.7741159200200212
+2022-06-15 02:01:27 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(criterion='entropy', max_depth=99,
                        max_features=0.031837350792579364,
                        max_samples=0.9248344222191298, min_samples_leaf=4,
                        min_samples_split=16, n_estimators=1235,
                        random_state=42)), ('model__criterion', 'entropy'), ('model__max_depth', 99), ('model__max_features', 0.031837350792579364), ('model__max_samples', 0.9248344222191298), ('model__min_samples_leaf', 4), ('model__min_samples_split', 16), ('model__n_estimators', 1235), ('prep__non_numeric__encoder__transformer', CustomOrdinalEncoder()), ('prep__numeric__imputer__transformer', SimpleImputer(strategy='median')), ('prep__numeric__pca__transformer', PCA(n_components='mle')), ('prep__numeric__scaler__transformer', None)])
-2022-06-10 18:04:30 - INFO     | *****Timer Finished (15.88 seconds)
-2022-06-10 18:04:30 - INFO     | Archiving previous model (version 1; roc_auc 0.7575739729812215) and placing new model into Production (roc_auc 0.7741786175986968)
-2022-06-10 18:04:30 - INFO     | Transitioning `credit_model` (version 2) to Production
-2022-06-10 18:04:34 - INFO     | MLFlow URI: http://127.0.0.1:1234
-2022-06-10 18:04:34 - INFO     | Production Model Version: 2
-2022-06-10 18:04:34 - INFO     | *****Timer Started: Loading training/test datasets
-2022-06-10 18:04:34 - INFO     | *****Timer Finished (0.00 seconds)
-2022-06-10 18:04:34 - INFO     | (800, 20)
-2022-06-10 18:04:34 - INFO     | 800
-2022-06-10 18:04:34 - INFO     | (200, 20)
-2022-06-10 18:04:34 - INFO     | 200
-2022-06-10 18:04:34 - INFO     | Best Score: 0.7741786175986968
-2022-06-10 18:04:34 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'max_features': 0.031837350792579364, 'max_depth': 99, 'n_estimators': 1235, 'min_samples_split': 16, 'min_samples_leaf': 4, 'max_samples': 0.9248344222191298, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'CustomOrdinalEncoder()'}
-2022-06-12 01:48:02 - INFO     | FUNCTION: EXTRACT
-2022-06-12 01:48:02 - INFO     | PARAMS:
-2022-06-12 01:48:02 - INFO     |     output_directory: artifacts/data/raw
-2022-06-12 01:48:02 - INFO     | Downloading credit data from https://www.openml.org/d/31
-2022-06-12 01:48:10 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
-2022-06-12 01:48:10 - INFO     | Saving credit data to `artifacts/data/raw/credit.pkl`
-2022-06-12 01:49:08 - INFO     | FUNCTION: EXTRACT
-2022-06-12 01:49:08 - INFO     | PARAMS:
-2022-06-12 01:49:08 - INFO     |     input_directory: artifacts/data/raw
-2022-06-12 01:49:08 - INFO     |     output_directory: artifacts/data/processed
-2022-06-12 01:49:08 - INFO     | FUNCTION: TRANSFORM
-2022-06-12 01:49:08 - INFO     | PARAMS:
-2022-06-12 01:49:08 - INFO     |     input_directory: artifacts/data/raw
-2022-06-12 01:49:08 - INFO     |     output_directory: artifacts/data/processed
-2022-06-12 01:49:08 - INFO     | Transforming Data
-2022-06-12 01:49:08 - INFO     | Done processing credit data.
-2022-06-12 01:49:08 - INFO     | Saving credit data to `artifacts/data/processed/credit.pkl`
-2022-06-12 01:49:53 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 01:49:53 - INFO     | PARAMS:
-2022-06-12 01:49:53 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 01:49:53 - INFO     |     n_iterations: 4
-2022-06-12 01:49:53 - INFO     |     n_splits: 3
-2022-06-12 01:49:53 - INFO     |     n_repeats: 1
-2022-06-12 01:49:53 - INFO     |     score: roc_auc
-2022-06-12 01:49:53 - INFO     |     tracking_uri: http://localhost:1234
-2022-06-12 01:49:53 - INFO     |     experiment_name: credit
-2022-06-12 01:49:53 - INFO     |     registered_model_name: credit_model
-2022-06-12 01:49:53 - INFO     |     random_state: 3
-2022-06-12 01:49:53 - INFO     | Splitting training & test datasets
-2022-06-12 01:49:53 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9f3143a0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:49:57 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9f3146d0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:50:05 - WARNING  | Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9f31ca90>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:50:21 - WARNING  | Retrying (Retry(total=1, connect=1, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9f31cc70>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:50:52 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 01:50:52 - INFO     | PARAMS:
-2022-06-12 01:50:52 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 01:50:52 - INFO     |     n_iterations: 4
-2022-06-12 01:50:52 - INFO     |     n_splits: 3
-2022-06-12 01:50:52 - INFO     |     n_repeats: 1
-2022-06-12 01:50:52 - INFO     |     score: roc_auc
-2022-06-12 01:50:52 - INFO     |     tracking_uri: http://localhost:1234
-2022-06-12 01:50:52 - INFO     |     experiment_name: credit
-2022-06-12 01:50:52 - INFO     |     registered_model_name: credit_model
-2022-06-12 01:50:52 - INFO     |     random_state: 3
-2022-06-12 01:50:52 - INFO     | Splitting training & test datasets
-2022-06-12 01:50:52 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9e9b33a0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:50:56 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9e9b36d0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:51:04 - WARNING  | Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9e9bba90>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:51:20 - WARNING  | Retrying (Retry(total=1, connect=1, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff9e9bbc70>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:51:26 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 01:51:26 - INFO     | PARAMS:
-2022-06-12 01:51:26 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 01:51:26 - INFO     |     n_iterations: 4
-2022-06-12 01:51:26 - INFO     |     n_splits: 3
-2022-06-12 01:51:26 - INFO     |     n_repeats: 1
-2022-06-12 01:51:26 - INFO     |     score: roc_auc
-2022-06-12 01:51:26 - INFO     |     tracking_uri: http://localhost:1235
-2022-06-12 01:51:26 - INFO     |     experiment_name: credit
-2022-06-12 01:51:26 - INFO     |     registered_model_name: credit_model
-2022-06-12 01:51:26 - INFO     |     random_state: 3
-2022-06-12 01:51:26 - INFO     | Splitting training & test datasets
-2022-06-12 01:51:26 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff815483a0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:51:30 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff815486d0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:51:38 - WARNING  | Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff81550a90>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:57:23 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 01:57:23 - INFO     | PARAMS:
-2022-06-12 01:57:23 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 01:57:23 - INFO     |     n_iterations: 4
-2022-06-12 01:57:23 - INFO     |     n_splits: 3
-2022-06-12 01:57:23 - INFO     |     n_repeats: 1
-2022-06-12 01:57:23 - INFO     |     score: roc_auc
-2022-06-12 01:57:23 - INFO     |     tracking_uri: http://localhost:1235
-2022-06-12 01:57:23 - INFO     |     experiment_name: credit
-2022-06-12 01:57:23 - INFO     |     registered_model_name: credit_model
-2022-06-12 01:57:23 - INFO     |     random_state: 3
-2022-06-12 01:57:23 - INFO     | Splitting training & test datasets
-2022-06-12 01:57:23 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff783ee1c0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:57:27 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff783ee670>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 01:57:50 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 01:57:50 - INFO     | PARAMS:
-2022-06-12 01:57:50 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 01:57:50 - INFO     |     n_iterations: 4
-2022-06-12 01:57:50 - INFO     |     n_splits: 3
-2022-06-12 01:57:50 - INFO     |     n_repeats: 1
-2022-06-12 01:57:50 - INFO     |     score: roc_auc
-2022-06-12 01:57:50 - INFO     |     tracking_uri: http://0.0.0.0:1235
-2022-06-12 01:57:50 - INFO     |     experiment_name: credit
-2022-06-12 01:57:50 - INFO     |     registered_model_name: credit_model
-2022-06-12 01:57:50 - INFO     |     random_state: 3
-2022-06-12 01:57:50 - INFO     | Splitting training & test datasets
-2022-06-12 01:57:50 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff759123a0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 02:01:17 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 02:01:17 - INFO     | PARAMS:
-2022-06-12 02:01:17 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 02:01:17 - INFO     |     n_iterations: 4
-2022-06-12 02:01:17 - INFO     |     n_splits: 3
-2022-06-12 02:01:17 - INFO     |     n_repeats: 1
-2022-06-12 02:01:17 - INFO     |     score: roc_auc
-2022-06-12 02:01:17 - INFO     |     tracking_uri: http://0.0.0.0:1235
-2022-06-12 02:01:17 - INFO     |     experiment_name: credit
-2022-06-12 02:01:17 - INFO     |     registered_model_name: credit_model
-2022-06-12 02:01:17 - INFO     |     random_state: 3
-2022-06-12 02:01:17 - INFO     | Splitting training & test datasets
-2022-06-12 02:01:17 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff62cf8340>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 02:01:21 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff62cf85b0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 02:01:29 - WARNING  | Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff62cf8a00>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 02:01:45 - WARNING  | Retrying (Retry(total=1, connect=1, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff62ce68e0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 02:02:18 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 02:02:18 - INFO     | PARAMS:
-2022-06-12 02:02:18 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 02:02:18 - INFO     |     n_iterations: 4
-2022-06-12 02:02:18 - INFO     |     n_splits: 3
-2022-06-12 02:02:18 - INFO     |     n_repeats: 1
-2022-06-12 02:02:18 - INFO     |     score: roc_auc
-2022-06-12 02:02:18 - INFO     |     tracking_uri: mlflow_server:1235
-2022-06-12 02:02:18 - INFO     |     experiment_name: credit
-2022-06-12 02:02:18 - INFO     |     registered_model_name: credit_model
-2022-06-12 02:02:18 - INFO     |     random_state: 3
-2022-06-12 02:02:18 - INFO     | Splitting training & test datasets
-2022-06-12 02:02:19 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-12 02:02:34 - INFO     | Best Score: 0.7566610156276207
-2022-06-12 02:02:34 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-06-12 02:02:40 - INFO     | *****Timer Finished (21.42 seconds)
-2022-06-12 02:03:20 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 02:03:20 - INFO     | PARAMS:
-2022-06-12 02:03:20 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 02:03:20 - INFO     |     n_iterations: 4
-2022-06-12 02:03:20 - INFO     |     n_splits: 3
-2022-06-12 02:03:20 - INFO     |     n_repeats: 1
-2022-06-12 02:03:20 - INFO     |     score: roc_auc
-2022-06-12 02:03:20 - INFO     |     tracking_uri: https://mlflow_server:1235
-2022-06-12 02:03:20 - INFO     |     experiment_name: credit
-2022-06-12 02:03:20 - INFO     |     registered_model_name: credit_model
-2022-06-12 02:03:20 - INFO     |     random_state: 3
-2022-06-12 02:03:20 - INFO     | Splitting training & test datasets
-2022-06-12 02:03:51 - WARNING  | Retrying (Retry(total=4, connect=5, read=5, redirect=5, status=5)) after connection broken by 'SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1129)'))': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 02:04:25 - WARNING  | Retrying (Retry(total=3, connect=5, read=5, redirect=5, status=5)) after connection broken by 'SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1129)'))': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 02:04:57 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 02:04:57 - INFO     | PARAMS:
-2022-06-12 02:04:57 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 02:04:57 - INFO     |     n_iterations: 4
-2022-06-12 02:04:57 - INFO     |     n_splits: 3
-2022-06-12 02:04:57 - INFO     |     n_repeats: 1
-2022-06-12 02:04:57 - INFO     |     score: roc_auc
-2022-06-12 02:04:57 - INFO     |     tracking_uri: mlflow_server:1235
-2022-06-12 02:04:57 - INFO     |     experiment_name: credit
-2022-06-12 02:04:57 - INFO     |     registered_model_name: credit_model
-2022-06-12 02:04:57 - INFO     |     random_state: 3
-2022-06-12 02:04:57 - INFO     | Splitting training & test datasets
-2022-06-12 02:04:57 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-12 02:05:12 - INFO     | Best Score: 0.7566610156276207
-2022-06-12 02:05:12 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-06-12 02:05:16 - INFO     | *****Timer Finished (18.60 seconds)
-2022-06-12 02:05:44 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 02:05:44 - INFO     | PARAMS:
-2022-06-12 02:05:44 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 02:05:44 - INFO     |     n_iterations: 4
-2022-06-12 02:05:44 - INFO     |     n_splits: 3
-2022-06-12 02:05:44 - INFO     |     n_repeats: 1
-2022-06-12 02:05:44 - INFO     |     score: roc_auc
-2022-06-12 02:05:44 - INFO     |     tracking_uri: http://mlflow_server:1235
-2022-06-12 02:05:44 - INFO     |     experiment_name: credit
-2022-06-12 02:05:44 - INFO     |     registered_model_name: credit_model
-2022-06-12 02:05:44 - INFO     |     random_state: 3
-2022-06-12 02:05:44 - INFO     | Splitting training & test datasets
-2022-06-12 02:05:44 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-12 02:05:58 - INFO     | Best Score: 0.7566610156276207
-2022-06-12 02:05:58 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-06-12 02:06:03 - INFO     | *****Timer Finished (18.65 seconds)
-2022-06-12 02:06:03 - INFO     | No models currently in production.
-2022-06-12 02:06:03 - INFO     | Transitioning `credit_model` (version 1) to Production
-2022-06-12 02:13:44 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 02:13:44 - INFO     | PARAMS:
-2022-06-12 02:13:44 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 02:13:44 - INFO     |     n_iterations: 4
-2022-06-12 02:13:44 - INFO     |     n_splits: 3
-2022-06-12 02:13:44 - INFO     |     n_repeats: 1
-2022-06-12 02:13:44 - INFO     |     score: roc_auc
-2022-06-12 02:13:44 - INFO     |     tracking_uri: http://mlflow_server:1235
-2022-06-12 02:13:44 - INFO     |     experiment_name: credit
-2022-06-12 02:13:44 - INFO     |     registered_model_name: credit_model
-2022-06-12 02:13:44 - INFO     |     random_state: 3
-2022-06-12 02:13:44 - INFO     | Splitting training & test datasets
-2022-06-12 02:13:44 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-12 02:13:58 - INFO     | Best Score: 0.7566610156276207
-2022-06-12 02:13:58 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-06-12 02:14:02 - INFO     | *****Timer Finished (17.97 seconds)
-2022-06-12 02:14:02 - INFO     | New Score: roc_auc - 0.7566610156276207 vs Current Production Score: roc_auc - 0.7566610156276207); Keeping Production Model
-2022-06-12 02:14:07 - INFO     | MLFlow URI: http://mlflow_server:1235
-2022-06-12 02:14:07 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff4d589940>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/registered-models/get-latest-versions
-2022-06-12 02:14:11 - WARNING  | Retrying (Retry(total=3, connect=3, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff8c6c57f0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/registered-models/get-latest-versions
-2022-06-12 02:14:19 - WARNING  | Retrying (Retry(total=2, connect=2, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff4d5e9be0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/registered-models/get-latest-versions
-2022-06-12 02:14:35 - WARNING  | Retrying (Retry(total=1, connect=1, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff4d5e9220>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/registered-models/get-latest-versions
-2022-06-12 02:15:07 - WARNING  | Retrying (Retry(total=0, connect=0, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff4d5e9a60>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/registered-models/get-latest-versions
-2022-06-12 02:18:24 - INFO     | MLFlow URI: http://mlflow_server:1235
-2022-06-12 02:18:25 - INFO     | Production Model Version: 1
-2022-06-12 02:18:25 - INFO     | *****Timer Started: Loading training/test datasets
-2022-06-12 02:18:25 - INFO     | *****Timer Finished (0.03 seconds)
-2022-06-12 02:18:25 - INFO     | (800, 20)
-2022-06-12 02:18:25 - INFO     | 800
-2022-06-12 02:18:25 - INFO     | (200, 20)
-2022-06-12 02:18:25 - INFO     | 200
-2022-06-12 02:18:25 - INFO     | Best Score: 0.7566610156276207
-2022-06-12 02:18:25 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
-2022-06-12 02:27:10 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 02:27:10 - INFO     | PARAMS:
-2022-06-12 02:27:10 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 02:27:10 - INFO     |     n_iterations: 4
-2022-06-12 02:27:10 - INFO     |     n_splits: 3
-2022-06-12 02:27:10 - INFO     |     n_repeats: 1
-2022-06-12 02:27:10 - INFO     |     score: roc_auc
-2022-06-12 02:27:10 - INFO     |     tracking_uri: http://mlflow_server:1235
-2022-06-12 02:27:10 - INFO     |     experiment_name: credit
-2022-06-12 02:27:10 - INFO     |     registered_model_name: credit_model
-2022-06-12 02:27:10 - INFO     |     random_state: 3
-2022-06-12 02:27:10 - INFO     | Splitting training & test datasets
-2022-06-12 02:27:10 - WARNING  | Retrying (Retry(total=4, connect=4, read=5, redirect=5, status=5)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffff5e606c40>: Failed to establish a new connection: [Errno -2] Name or service not known')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=credit
-2022-06-12 02:28:28 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 02:28:28 - INFO     | PARAMS:
-2022-06-12 02:28:28 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 02:28:28 - INFO     |     n_iterations: 4
-2022-06-12 02:28:28 - INFO     |     n_splits: 3
-2022-06-12 02:28:28 - INFO     |     n_repeats: 1
-2022-06-12 02:28:28 - INFO     |     score: roc_auc
-2022-06-12 02:28:28 - INFO     |     tracking_uri: http://mlflow_server:1235
-2022-06-12 02:28:28 - INFO     |     experiment_name: credit
-2022-06-12 02:28:28 - INFO     |     registered_model_name: credit_model
-2022-06-12 02:28:28 - INFO     |     random_state: 3
-2022-06-12 02:28:28 - INFO     | Splitting training & test datasets
-2022-06-12 02:28:28 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-12 02:28:44 - INFO     | Best Score: 0.7566610156276207
-2022-06-12 02:28:44 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-06-12 02:28:49 - INFO     | *****Timer Finished (21.46 seconds)
-2022-06-12 02:28:50 - INFO     | New Score: roc_auc - 0.7566610156276207 vs Current Production Score: roc_auc - 0.7566610156276207); Keeping Production Model
-2022-06-12 02:28:54 - INFO     | MLFlow URI: http://mlflow_server:1235
-2022-06-12 02:28:55 - INFO     | Production Model Version: 1
-2022-06-12 02:28:55 - INFO     | *****Timer Started: Loading training/test datasets
-2022-06-12 02:28:55 - INFO     | *****Timer Finished (0.02 seconds)
-2022-06-12 02:28:55 - INFO     | (800, 20)
-2022-06-12 02:28:55 - INFO     | 800
-2022-06-12 02:28:55 - INFO     | (200, 20)
-2022-06-12 02:28:55 - INFO     | 200
-2022-06-12 02:28:55 - INFO     | Best Score: 0.7566610156276207
-2022-06-12 02:28:55 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
-2022-06-12 02:28:59 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 02:28:59 - INFO     | PARAMS:
-2022-06-12 02:28:59 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 02:28:59 - INFO     |     n_iterations: 4
-2022-06-12 02:28:59 - INFO     |     n_splits: 3
-2022-06-12 02:28:59 - INFO     |     n_repeats: 1
-2022-06-12 02:28:59 - INFO     |     score: roc_auc
-2022-06-12 02:28:59 - INFO     |     tracking_uri: http://mlflow_server:1235
-2022-06-12 02:28:59 - INFO     |     experiment_name: credit
-2022-06-12 02:28:59 - INFO     |     registered_model_name: credit_model
-2022-06-12 02:28:59 - INFO     |     random_state: 42
-2022-06-12 02:28:59 - INFO     | Splitting training & test datasets
-2022-06-12 02:29:00 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-12 02:29:11 - INFO     | Best Score: 0.762641790401041
-2022-06-12 02:29:11 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(criterion='entropy', max_depth=70,
-                       max_features=0.1142268477118407,
-                       max_samples=0.5483119512487002, min_samples_leaf=8,
-                       min_samples_split=12, n_estimators=553, random_state=42)), ('model__criterion', 'entropy'), ('model__max_depth', 70), ('model__max_features', 0.1142268477118407), ('model__max_samples', 0.5483119512487002), ('model__min_samples_leaf', 8), ('model__min_samples_split', 12), ('model__n_estimators', 553), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer(strategy='median')), ('prep__numeric__pca__transformer', PCA(n_components='mle')), ('prep__numeric__scaler__transformer', None)])
-2022-06-12 02:29:14 - INFO     | *****Timer Finished (14.93 seconds)
-2022-06-12 02:29:15 - INFO     | New Score: roc_auc - 0.762641790401041 vs Current Production Score: roc_auc - 0.7566610156276207); Keeping Production Model
-2022-06-12 02:29:19 - INFO     | MLFlow URI: http://mlflow_server:1235
-2022-06-12 02:29:19 - INFO     | Production Model Version: 1
-2022-06-12 02:29:19 - INFO     | *****Timer Started: Loading training/test datasets
-2022-06-12 02:29:20 - INFO     | *****Timer Finished (0.02 seconds)
-2022-06-12 02:29:20 - INFO     | (800, 20)
-2022-06-12 02:29:20 - INFO     | 800
-2022-06-12 02:29:20 - INFO     | (200, 20)
-2022-06-12 02:29:20 - INFO     | 200
-2022-06-12 02:29:20 - INFO     | Best Score: 0.762641790401041
-2022-06-12 02:29:20 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'max_features': 0.1142268477118407, 'max_depth': 70, 'n_estimators': 553, 'min_samples_split': 12, 'min_samples_leaf': 8, 'max_samples': 0.5483119512487002, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'OneHotEncoder()'}
-2022-06-12 02:29:23 - INFO     | FUNCTION: RUN-EXPERIMENTS
-2022-06-12 02:29:23 - INFO     | PARAMS:
-2022-06-12 02:29:23 - INFO     |     input_directory: artifacts/data/processed
-2022-06-12 02:29:23 - INFO     |     n_iterations: 4
-2022-06-12 02:29:23 - INFO     |     n_splits: 3
-2022-06-12 02:29:23 - INFO     |     n_repeats: 1
-2022-06-12 02:29:23 - INFO     |     score: roc_auc
-2022-06-12 02:29:23 - INFO     |     tracking_uri: http://mlflow_server:1235
-2022-06-12 02:29:23 - INFO     |     experiment_name: credit
-2022-06-12 02:29:23 - INFO     |     registered_model_name: credit_model
-2022-06-12 02:29:23 - INFO     |     random_state: 10
-2022-06-12 02:29:23 - INFO     | Splitting training & test datasets
-2022-06-12 02:29:23 - INFO     | *****Timer Started: Running Model Experiments (BayesSearchCV)
-2022-06-12 02:29:38 - INFO     | Best Score: 0.7741159200200212
-2022-06-12 02:29:38 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(criterion='entropy', max_depth=99,
-                       max_features=0.031837350792579364,
-                       max_samples=0.9248344222191298, min_samples_leaf=4,
-                       min_samples_split=16, n_estimators=1235,
-                       random_state=42)), ('model__criterion', 'entropy'), ('model__max_depth', 99), ('model__max_features', 0.031837350792579364), ('model__max_samples', 0.9248344222191298), ('model__min_samples_leaf', 4), ('model__min_samples_split', 16), ('model__n_estimators', 1235), ('prep__non_numeric__encoder__transformer', CustomOrdinalEncoder()), ('prep__numeric__imputer__transformer', SimpleImputer(strategy='median')), ('prep__numeric__pca__transformer', PCA(n_components='mle')), ('prep__numeric__scaler__transformer', None)])
-2022-06-12 02:29:43 - INFO     | *****Timer Finished (19.31 seconds)
-2022-06-12 02:29:43 - INFO     | Archiving previous model (version 1; roc_auc 0.7566610156276207) and placing new model into Production (roc_auc 0.7741159200200212)
-2022-06-12 02:29:43 - INFO     | Transitioning `credit_model` (version 2) to Production
-2022-06-12 02:29:48 - INFO     | MLFlow URI: http://mlflow_server:1235
-2022-06-12 02:29:48 - INFO     | Production Model Version: 2
-2022-06-12 02:29:48 - INFO     | *****Timer Started: Loading training/test datasets
-2022-06-12 02:29:48 - INFO     | *****Timer Finished (0.01 seconds)
-2022-06-12 02:29:48 - INFO     | (800, 20)
-2022-06-12 02:29:48 - INFO     | 800
-2022-06-12 02:29:48 - INFO     | (200, 20)
-2022-06-12 02:29:48 - INFO     | 200
-2022-06-12 02:29:48 - INFO     | Best Score: 0.7741159200200212
-2022-06-12 02:29:48 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'max_features': 0.031837350792579364, 'max_depth': 99, 'n_estimators': 1235, 'min_samples_split': 16, 'min_samples_leaf': 4, 'max_samples': 0.9248344222191298, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'CustomOrdinalEncoder()'}
-2022-06-12 16:02:01 - INFO     | MLFlow URI: http://mlflow_server:1235
-2022-06-12 16:02:09 - INFO     | MLFlow URI: http://mlflow_server:1235
-2022-06-12 16:02:13 - INFO     | Production Model Version: 2
-2022-06-12 16:03:08 - INFO     | *****Timer Started: Loading training/test datasets
-2022-06-12 16:03:08 - INFO     | *****Timer Finished (0.10 seconds)
-2022-06-12 16:03:08 - INFO     | (800, 20)
-2022-06-12 16:03:08 - INFO     | 800
-2022-06-12 16:03:08 - INFO     | (200, 20)
-2022-06-12 16:03:08 - INFO     | 200
+2022-06-15 02:01:30 - INFO     | *****Timer Finished (19.71 seconds)
+2022-06-15 02:01:30 - INFO     | New Score: roc_auc - 0.7741159200200212 vs Current Production Score: roc_auc - 0.7741159200200212); Keeping Production Model
+2022-06-15 02:01:36 - INFO     | MLFlow URI: http://mlflow_server:1235
+2022-06-15 02:01:36 - INFO     | Production Model Version: 2
+2022-06-15 02:01:37 - INFO     | *****Timer Started: Loading training/test datasets
+2022-06-15 02:01:37 - INFO     | *****Timer Finished (0.04 seconds)
+2022-06-15 02:01:37 - INFO     | (800, 20)
+2022-06-15 02:01:37 - INFO     | 800
+2022-06-15 02:01:37 - INFO     | (200, 20)
+2022-06-15 02:01:37 - INFO     | 200
+2022-06-15 02:01:37 - INFO     | Best Score: 0.7741159200200212
+2022-06-15 02:01:37 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'max_features': 0.031837350792579364, 'max_depth': 99, 'n_estimators': 1235, 'min_samples_split': 16, 'min_samples_leaf': 4, 'max_samples': 0.9248344222191298, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'CustomOrdinalEncoder()'}
