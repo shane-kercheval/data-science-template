@@ -99,7 +99,7 @@ remove_logs:
 all: tests linting remove_logs data exploration experiments
 
 ## Delete all generated files (e.g. virtual)
-clean: clean_python clean_r mlflow_clean
+clean: mlflow_clean
 	rm -f data/raw/*.pkl
 	rm -f data/raw/*.csv
 	rm -f data/processed/*
