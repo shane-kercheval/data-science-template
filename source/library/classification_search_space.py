@@ -11,6 +11,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, OneHotEncoder
 from skopt.space import Categorical, Real, Integer  # noqa
 from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
 
 
 def create_pipeline(data: pd.DataFrame) -> Pipeline:
@@ -307,6 +308,53 @@ def create_search_space(iterations=50, random_state=42) -> list:
                     Real(low=0.0001, high=1, prior='log-uniform', transform='identity'),
                 'model__reg_lambda':
                     Real(low=1, high=4, prior='log-uniform', transform='identity'),
+                'prep__numeric__imputer__transformer':
+                    Categorical(
+                        categories=[
+                            SimpleImputer(),
+                            SimpleImputer(strategy='median'),
+                            SimpleImputer(strategy='most_frequent')],
+                        prior=[0.5, 0.25, 0.25]
+                    ),
+                'prep__numeric__scaler__transformer':
+                    Categorical(categories=[None]),
+                'prep__numeric__pca__transformer':
+                    Categorical(categories=[None, PCA(n_components='mle')]),
+                'prep__non_numeric__encoder__transformer':
+                    Categorical(
+                        categories=[
+                            OneHotEncoder(handle_unknown='ignore'),
+                            CustomOrdinalEncoder()],
+                        prior=[0.65, 0.35]
+                    )
+            },
+            iterations
+        ),
+        (
+            {
+                'model':
+                    Categorical(categories=[
+                        LGBMClassifier(random_state=random_state)
+                    ]),
+                'prep__numeric__imputer__transformer': Categorical(categories=[SimpleImputer()]),
+                'prep__numeric__scaler__transformer': Categorical(categories=[None]),
+                'prep__numeric__pca__transformer': Categorical(categories=[None]),
+                'prep__non_numeric__encoder__transformer':
+                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')])
+            },
+            1
+        ),
+        (
+            {
+                'model':
+                    Categorical(categories=[
+                        LGBMClassifier(random_state=random_state)
+                    ]),
+                'model__num_leaves': Integer(low=2, high=500, prior='uniform'),
+                'model__subsample': Real(low=0.3, high=1, prior='uniform', transform='identity'),
+                'model__colsample_bytree': Real(low=0.2, high=1, prior='uniform', transform='identity'),
+                'model__reg_alpha': Real(low=0.0001, high=20, prior='uniform', transform='identity'),
+                'model__reg_lambda': Real(low=0.0001, high=50, prior='uniform', transform='identity'),
                 'prep__numeric__imputer__transformer':
                     Categorical(
                         categories=[

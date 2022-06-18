@@ -96,6 +96,7 @@ def run(input_directory: str,
         tracking_uri=tracking_uri,
         experiment_name=experiment_name,
         registered_model_name=registered_model_name,
+        required_performance_gain=required_performance_gain,
         random_state=random_state,
     ))
 

@@ -5,6 +5,9 @@ docker_compose:
 	# docker build -t data-science-template .
 	docker compose -f docker-compose.yml up --build
 
+docker_bash:
+	docker compose -f docker-compose.yml up --build bash
+
 docker_run: notebook mlflow_ui zsh
 
 notebook:
@@ -84,6 +87,7 @@ experiment_3:
 		-n_repeats=1 \
 		-score='roc_auc' \
 		-tracking_uri='http://mlflow_server:1235' \
+		-required_performance_gain=0.01 \
 		-random_state=10
 
 	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_3.ipynb

@@ -15,6 +15,7 @@
 'model__colsample_bylevel': 'colsample_bylevel',
 'model__reg_alpha': 'reg_alpha',
 'model__reg_lambda': 'reg_lambda',
+'model__num_leaves': 'num_leaves',
 'prep__numeric__imputer__transformer': 'imputer',
 'prep__numeric__scaler__transformer': 'scaler',
 'prep__numeric__pca__transformer': 'pca',
