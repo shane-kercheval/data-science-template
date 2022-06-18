@@ -57,10 +57,20 @@ def transform():
 @click.option('-tracking_uri', default='http://localhost:1234',
               help='MLFlow tracking_uri',
               show_default=True)
+@click.option('-required_performance_gain',
+              default=0.03,
+              help='The percent increase required to accept best model into production.',
+              show_default=True)
 @click.option('-random_state', default=42,
               help='Random state/seed to generate consistent results.',
               show_default=True)
-def run_experiments(n_iterations, n_splits, n_repeats, score, tracking_uri, random_state):
+def run_experiments(n_iterations: int,
+                    n_splits: int,
+                    n_repeats: int,
+                    score: str,
+                    tracking_uri: str,
+                    required_performance_gain: float,
+                    random_state):
     """This function runs an ML experiment according to the parameters provided."""
     config = get_config()
     input_directory = config['DATA']['PROCESSED_DIRECTORY']
@@ -75,6 +85,7 @@ def run_experiments(n_iterations, n_splits, n_repeats, score, tracking_uri, rand
         tracking_uri=tracking_uri,
         experiment_name=experiment_name,
         registered_model_name=registered_model_name,
+        required_performance_gain=required_performance_gain,
         random_state=random_state,
     )
 
