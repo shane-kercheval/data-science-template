@@ -5,6 +5,9 @@ docker_compose:
 	# docker build -t data-science-template .
 	docker compose -f docker-compose.yml up --build
 
+docker_bash:
+	docker compose -f docker-compose.yml up --build bash
+
 docker_run: notebook mlflow_ui zsh
 
 notebook:
