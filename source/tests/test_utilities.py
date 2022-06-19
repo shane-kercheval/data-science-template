@@ -4,8 +4,8 @@ import time
 import unittest
 import pandas as pd
 import source.library.classification_search_space as css
-from source.library.utilities import Timer, dataframe_to_pickle, dataframe_to_csv, object_to_pickle, \
-    get_config
+from source.library.utilities import Timer, dataframe_to_pickle, dataframe_to_csv, log_function, \
+    object_to_pickle, get_config
 from source.tests.helpers import get_test_file_path
 
 logging.config.fileConfig(get_test_file_path("test_logging.conf"),
@@ -33,6 +33,25 @@ class TestHelpers(unittest.TestCase):
             time.sleep(0.1)
 
         self.assertIsNotNone(timer._interval)
+
+    def test__log_function(self):
+        @log_function
+        def my_function_1(param_1, param_2):
+            return param_1, param_2
+
+        @log_function
+        def my_function_2():
+            return 'value'
+
+        value = my_function_2()
+        self.assertEqual(value, 'value')
+
+        a, b = my_function_1(1, param_2=2)
+        self.assertEqual(a, 1)
+        self.assertEqual(b, 2)
+        a, b = my_function_1(param_1='value-1', param_2='value-2')
+        self.assertEqual(a, 'value-1')
+        self.assertEqual(b, 'value-2')
 
     def test__get_config(self):
         config = get_config(get_test_file_path('../../config/config.yaml'))

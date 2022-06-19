@@ -1,4 +1,13 @@
+INFO     | FUNCTION: MY_FUNCTION_2
+INFO     | FUNCTION: MY_FUNCTION_1
+INFO     | PARAMS:
+INFO     |     args: (1,)
+INFO     |     param_2: 2
+INFO     | FUNCTION: MY_FUNCTION_1
+INFO     | PARAMS:
+INFO     |     param_1: value-1
+INFO     |     param_2: value-2
 INFO     | *****Timer Started: testing timer
-INFO     | *****Timer Finished (0.05 seconds)
+INFO     | *****Timer Finished (0.06 seconds)
 INFO     | *****Timer Started: testing another timer
-INFO     | *****Timer Finished (0.11 seconds)
+INFO     | *****Timer Finished (0.10 seconds)

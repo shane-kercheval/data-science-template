@@ -29,7 +29,24 @@ def log_info(message: str):
     logging.info(message)
 
 
-def log_func(func_name: str, params: Union[dict, None] = None):
+def log_function(function):
+    def wrap_function(*args, **kwargs):
+        function.__name__
+        if len(args) == 0 and len(kwargs) == 0:
+            _log_func(func_name=function.__name__, params=None)
+        else:
+            parameters = dict()
+            if len(args) > 0:
+                parameters['args'] = args
+            if len(kwargs) > 0:
+                parameters.update(kwargs)
+            _log_func(func_name=function.__name__, params=parameters)
+
+        return function(*args, **kwargs)
+    return wrap_function
+
+
+def _log_func(func_name: str, params: Union[dict, None] = None):
     """
     This function is meant to be used at the start of the calling function; calls log_info and passes the
     name of the function and optional parameter names/values.
