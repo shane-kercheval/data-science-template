@@ -41,20 +41,20 @@ def log_function_call(function: Callable) -> Callable:
     def wrap_function(*args, **kwargs):
         function.__name__
         if len(args) == 0 and len(kwargs) == 0:
-            _log_func(func_name=function.__name__, params=None)
+            _log_function(function_name=function.__name__, params=None)
         else:
             parameters = dict()
             if len(args) > 0:
                 parameters['args'] = args
             if len(kwargs) > 0:
                 parameters.update(kwargs)
-            _log_func(func_name=function.__name__, params=parameters)
+            _log_function(function_name=function.__name__, params=parameters)
 
         return function(*args, **kwargs)
     return wrap_function
 
 
-def _log_func(func_name: str, params: Union[dict, None] = None):
+def _log_function(function_name: str, params: Union[dict, None] = None):
     """
     This function is meant to be used at the start of the calling function; calls log_info and passes the
     name of the function and optional parameter names/values.
@@ -66,7 +66,7 @@ def _log_func(func_name: str, params: Union[dict, None] = None):
             a dictionary containing the names of the function parameters (as dictionary keys) and the
             parameter values (as dictionary values).
     """
-    log_info(f"FUNCTION: {func_name.upper()}")
+    log_info(f"FUNCTION: {function_name.upper()}")
     if params is not None:
         log_info("PARAMS:")
         for key, value in params.items():
@@ -143,5 +143,13 @@ class Timer:
         self._interval = self._end - self._start
         log_info(f'*****Timer Finished ({self._interval.total_seconds():.2f} seconds)')
 
-def timer(function: Callable) -> Callable:
-    pass
+def timer(func: Callable) -> Callable:
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = perf_counter()
+        results = func(*args, **kwargs)
+        end = perf_counter()
+        run_time = end - start
+        return results, run_time
+
+    return wrapper
