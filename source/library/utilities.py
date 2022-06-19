@@ -38,7 +38,7 @@ def log_function_call(function: Callable) -> Callable:
     Args: function that is decorated
     """
     @wraps(function)
-    def wrap_function(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         function.__name__
         if len(args) == 0 and len(kwargs) == 0:
             _log_function(function_name=function.__name__, params=None)
@@ -51,7 +51,7 @@ def log_function_call(function: Callable) -> Callable:
             _log_function(function_name=function.__name__, params=parameters)
 
         return function(*args, **kwargs)
-    return wrap_function
+    return wrapper
 
 
 def _log_function(function_name: str, params: Union[dict, None] = None):
@@ -125,15 +125,16 @@ class Timer:
     """
     This class provides way to time the duration of code within the context manager.
     """
-    def __init__(self, message):
+    def __init__(self, message, include_message_at_finish=False):
         self._message = message
+        self._include_message_at_finish = include_message_at_finish
 
     def __enter__(self):
         # log_info()(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} - Starting Timer: {self._message}\n"
         #              f"                          ======")
         # "2022-05-26-11:19:46 - INFO     | Finished (10.82 seconds)"
         logging.basicConfig()
-        log_info(f'*****Timer Started: {self._message}')
+        log_info(f'Timer Started: {self._message}')
         self._start = datetime.datetime.now()
 
         return self
@@ -141,15 +142,18 @@ class Timer:
     def __exit__(self, *args):
         self._end = datetime.datetime.now()
         self._interval = self._end - self._start
-        log_info(f'*****Timer Finished ({self._interval.total_seconds():.2f} seconds)')
+        message = ''
+        if self._include_message_at_finish:
+            message = self._message + " "
 
-def timer(func: Callable) -> Callable:
-    @wraps(func)
+        log_info(f'Timer Finished: {message}({self._interval.total_seconds():.2f} seconds)')
+
+
+def log_timer(function: Callable) -> Callable:
+    @wraps(function)
     def wrapper(*args, **kwargs):
-        start = perf_counter()
-        results = func(*args, **kwargs)
-        end = perf_counter()
-        run_time = end - start
-        return results, run_time
+        with Timer(f"FUNCTION={function.__name__}", include_message_at_finish=True):
+            results = function(*args, **kwargs)
+        return results
 
     return wrapper
