@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 from skopt import BayesSearchCV  # noqa
 
-from source.library.utilities import Timer, log_function_call, log_info
+from source.library.utilities import Timer, log_function_call, log_info, log_timer
 import source.library.ml as ml
 import source.library.classification_search_space as css
 
@@ -39,6 +39,7 @@ class SklearnModelWrapper(sklearn.base.BaseEstimator):
 
 
 @log_function_call
+@log_timer
 def run(input_directory: str,
         n_iterations: int,
         n_splits: int,

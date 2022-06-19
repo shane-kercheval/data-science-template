@@ -8,10 +8,11 @@ import numpy as np
 import pandas as pd
 from sklearn.datasets import fetch_openml
 
-from source.library.utilities import log_function_call, log_info
+from source.library.utilities import log_function_call, log_info, log_timer
 
 
 @log_function_call
+@log_timer
 def extract(output_directory: str):
     """This function downloads the credit data from openml.org."""
     log_info("Downloading credit data from https://www.openml.org/d/31")
@@ -26,6 +27,7 @@ def extract(output_directory: str):
 
 
 @log_function_call
+@log_timer
 def transform(input_directory: str, output_directory: str):
     """
     This function transforms the credit data.
