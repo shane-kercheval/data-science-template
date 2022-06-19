@@ -29,7 +29,13 @@ def log_info(message: str):
     logging.info(message)
 
 
-def log_function(function):
+def log_function_call(function):
+    """
+    This function should be used as a decorator to log the function name and paramters of the function when
+    called.
+
+    Args: function that is decorated
+    """
     def wrap_function(*args, **kwargs):
         function.__name__
         if len(args) == 0 and len(kwargs) == 0:

@@ -4,7 +4,7 @@ import time
 import unittest
 import pandas as pd
 import source.library.classification_search_space as css
-from source.library.utilities import Timer, dataframe_to_pickle, dataframe_to_csv, log_function, \
+from source.library.utilities import Timer, dataframe_to_pickle, dataframe_to_csv, log_function_call, \
     object_to_pickle, get_config
 from source.tests.helpers import get_test_file_path
 
@@ -35,11 +35,11 @@ class TestHelpers(unittest.TestCase):
         self.assertIsNotNone(timer._interval)
 
     def test__log_function(self):
-        @log_function
+        @log_function_call
         def my_function_1(param_1, param_2):
             return param_1, param_2
 
-        @log_function
+        @log_function_call
         def my_function_2():
             return 'value'
 

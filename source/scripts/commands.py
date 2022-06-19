@@ -10,7 +10,7 @@ following examples:
 import logging.config
 import click
 
-from source.library.utilities import log_func, get_config
+from source.library.utilities import get_config
 import source.scripts.experiments as experiments
 import source.scripts.etl as etl
 
@@ -32,7 +32,6 @@ def main():
 def extract():
     """This function downloads the credit data from openml.org."""
     output_directory = get_config()['DATA']['RAW_DIRECTORY']
-    log_func("extract", params=dict(output_directory=output_directory))
     etl.extract(output_directory=output_directory)
 
 
@@ -42,7 +41,6 @@ def transform():
     config = get_config()
     input_directory = config['DATA']['RAW_DIRECTORY']
     output_directory = config['DATA']['PROCESSED_DIRECTORY']
-    log_func("extract", params=dict(input_directory=input_directory, output_directory=output_directory))
     etl.transform(input_directory=input_directory, output_directory=output_directory)
 
 

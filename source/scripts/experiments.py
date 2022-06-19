@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 from skopt import BayesSearchCV  # noqa
 
-from source.library.utilities import Timer, log_info, log_func
+from source.library.utilities import Timer, log_function_call, log_info
 import source.library.ml as ml
 import source.library.classification_search_space as css
 
@@ -38,6 +38,7 @@ class SklearnModelWrapper(sklearn.base.BaseEstimator):
         return self.model.predict_proba(data)[:, 1]
 
 
+@log_function_call
 def run(input_directory: str,
         n_iterations: int,
         n_splits: int,
@@ -87,19 +88,6 @@ def run(input_directory: str,
         random_state:
             random_state to pass to `BayesSearchCV`
     """
-    log_func("run-experiments", params=dict(
-        input_directory=input_directory,
-        n_iterations=n_iterations,
-        n_splits=n_splits,
-        n_repeats=n_repeats,
-        score=score,
-        tracking_uri=tracking_uri,
-        experiment_name=experiment_name,
-        registered_model_name=registered_model_name,
-        required_performance_gain=required_performance_gain,
-        random_state=random_state,
-    ))
-
     timestamp = f'{datetime.datetime.now():%Y_%m_%d_%H_%M_%S}'
     log_info("Splitting training & test datasets")
     credit_data = read_pickle(os.path.join(input_directory, 'credit.pkl'))
