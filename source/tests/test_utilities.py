@@ -43,6 +43,10 @@ class TestHelpers(unittest.TestCase):
         def my_function_2():
             return 'value'
 
+        # make sure we call the @wraps function
+        self.assertEqual(my_function_1.__name__, 'my_function_1')
+        self.assertEqual(my_function_2.__name__, 'my_function_2')
+
         value = my_function_2()
         self.assertEqual(value, 'value')
 

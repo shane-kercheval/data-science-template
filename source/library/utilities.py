@@ -2,11 +2,12 @@
 This file provides general helper functions such as logging and saving/pickling objects.
 """
 import datetime
+from functools import wraps
 import logging
 import logging.config
 import os
 from pathlib import Path
-from typing import Union
+from typing import Callable, Union
 import yaml
 
 import pandas as pd
@@ -29,13 +30,14 @@ def log_info(message: str):
     logging.info(message)
 
 
-def log_function_call(function):
+def log_function_call(function: Callable) -> Callable:
     """
     This function should be used as a decorator to log the function name and paramters of the function when
     called.
 
     Args: function that is decorated
     """
+    @wraps(function)
     def wrap_function(*args, **kwargs):
         function.__name__
         if len(args) == 0 and len(kwargs) == 0:
@@ -140,3 +142,6 @@ class Timer:
         self._end = datetime.datetime.now()
         self._interval = self._end - self._start
         log_info(f'*****Timer Finished ({self._interval.total_seconds():.2f} seconds)')
+
+def timer(function: Callable) -> Callable:
+    pass
