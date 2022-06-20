@@ -1,111 +1,111 @@
-2022-06-20 02:27:27 - INFO     | FUNCTION: EXTRACT
-2022-06-20 02:27:27 - INFO     | PARAMS:
-2022-06-20 02:27:27 - INFO     |     output_directory: data/raw
-2022-06-20 02:27:27 - INFO     | Timer Started: FUNCTION=extract
-2022-06-20 02:27:27 - INFO     | Downloading credit data from https://www.openml.org/d/31
-2022-06-20 02:27:27 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
-2022-06-20 02:27:27 - INFO     | Saving credit data to `data/raw/credit.pkl`
-2022-06-20 02:27:27 - INFO     | Timer Finished: FUNCTION=extract (0.06 seconds)
-2022-06-20 02:27:29 - INFO     | FUNCTION: TRANSFORM
-2022-06-20 02:27:29 - INFO     | PARAMS:
-2022-06-20 02:27:29 - INFO     |     input_directory: data/raw
-2022-06-20 02:27:29 - INFO     |     output_directory: data/processed
-2022-06-20 02:27:29 - INFO     | Timer Started: FUNCTION=transform
-2022-06-20 02:27:29 - INFO     | Transforming Data
-2022-06-20 02:27:29 - INFO     | Done processing credit data.
-2022-06-20 02:27:29 - INFO     | Saving credit data to `data/processed/credit.pkl`
-2022-06-20 02:27:29 - INFO     | Timer Finished: FUNCTION=transform (0.10 seconds)
-2022-06-20 02:27:32 - INFO     | Timer Started: Loading Data
-2022-06-20 02:27:32 - INFO     | Timer Finished: (0.01 seconds)
-2022-06-20 02:27:37 - INFO     | FUNCTION: RUN
-2022-06-20 02:27:37 - INFO     | PARAMS:
-2022-06-20 02:27:37 - INFO     |     input_directory: data/processed
-2022-06-20 02:27:37 - INFO     |     n_iterations: 4
-2022-06-20 02:27:37 - INFO     |     n_splits: 3
-2022-06-20 02:27:37 - INFO     |     n_repeats: 1
-2022-06-20 02:27:37 - INFO     |     score: roc_auc
-2022-06-20 02:27:37 - INFO     |     tracking_uri: http://mlflow_server:1235
-2022-06-20 02:27:37 - INFO     |     experiment_name: credit
-2022-06-20 02:27:37 - INFO     |     registered_model_name: credit_model
-2022-06-20 02:27:37 - INFO     |     required_performance_gain: 0.03
-2022-06-20 02:27:37 - INFO     |     random_state: 3
-2022-06-20 02:27:37 - INFO     | Timer Started: FUNCTION=run
-2022-06-20 02:27:37 - INFO     | Splitting training & test datasets
-2022-06-20 02:27:58 - INFO     | Best Score: 0.7566610156276207
-2022-06-20 02:27:58 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-06-20 02:28:03 - INFO     | No models currently in production.
-2022-06-20 02:28:04 - INFO     | Transitioning `credit_model` (version 1) to Production
-2022-06-20 02:28:04 - INFO     | Timer Finished: FUNCTION=run (26.57 seconds)
-2022-06-20 02:28:09 - INFO     | MLFlow URI: http://mlflow_server:1235
-2022-06-20 02:28:10 - INFO     | Production Model Version: 1
-2022-06-20 02:28:10 - INFO     | Timer Started: Loading training/test datasets
-2022-06-20 02:28:10 - INFO     | Timer Finished: (0.02 seconds)
-2022-06-20 02:28:10 - INFO     | (800, 20)
-2022-06-20 02:28:10 - INFO     | 800
-2022-06-20 02:28:10 - INFO     | (200, 20)
-2022-06-20 02:28:10 - INFO     | 200
-2022-06-20 02:28:10 - INFO     | Best Score: 0.7566610156276207
-2022-06-20 02:28:10 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
-2022-06-20 02:28:14 - INFO     | FUNCTION: RUN
-2022-06-20 02:28:14 - INFO     | PARAMS:
-2022-06-20 02:28:14 - INFO     |     input_directory: data/processed
-2022-06-20 02:28:14 - INFO     |     n_iterations: 4
-2022-06-20 02:28:14 - INFO     |     n_splits: 3
-2022-06-20 02:28:14 - INFO     |     n_repeats: 1
-2022-06-20 02:28:14 - INFO     |     score: roc_auc
-2022-06-20 02:28:14 - INFO     |     tracking_uri: http://mlflow_server:1235
-2022-06-20 02:28:14 - INFO     |     experiment_name: credit
-2022-06-20 02:28:14 - INFO     |     registered_model_name: credit_model
-2022-06-20 02:28:14 - INFO     |     required_performance_gain: 0.03
-2022-06-20 02:28:14 - INFO     |     random_state: 42
-2022-06-20 02:28:14 - INFO     | Timer Started: FUNCTION=run
-2022-06-20 02:28:14 - INFO     | Splitting training & test datasets
-2022-06-20 02:28:30 - INFO     | Best Score: 0.762641790401041
-2022-06-20 02:28:30 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(criterion='entropy', max_depth=70,
+2022-06-20 02:41:19 - INFO     | FUNCTION: EXTRACT
+2022-06-20 02:41:19 - INFO     | PARAMS:
+2022-06-20 02:41:19 - INFO     |     output_directory: data/raw
+2022-06-20 02:41:19 - INFO     | Timer Started: FUNCTION=source.scripts.etl:extract
+2022-06-20 02:41:19 - INFO     | Downloading credit data from https://www.openml.org/d/31
+2022-06-20 02:41:19 - INFO     | Credit data downloaded with 1000 rows and 21 columns.
+2022-06-20 02:41:19 - INFO     | Saving credit data to `data/raw/credit.pkl`
+2022-06-20 02:41:19 - INFO     | Timer Finished: FUNCTION=source.scripts.etl:extract (0.05 seconds)
+2022-06-20 02:41:21 - INFO     | FUNCTION: TRANSFORM
+2022-06-20 02:41:21 - INFO     | PARAMS:
+2022-06-20 02:41:21 - INFO     |     input_directory: data/raw
+2022-06-20 02:41:21 - INFO     |     output_directory: data/processed
+2022-06-20 02:41:21 - INFO     | Timer Started: FUNCTION=source.scripts.etl:transform
+2022-06-20 02:41:21 - INFO     | Transforming Data
+2022-06-20 02:41:21 - INFO     | Done processing credit data.
+2022-06-20 02:41:21 - INFO     | Saving credit data to `data/processed/credit.pkl`
+2022-06-20 02:41:21 - INFO     | Timer Finished: FUNCTION=source.scripts.etl:transform (0.12 seconds)
+2022-06-20 02:41:24 - INFO     | Timer Started: Loading Data
+2022-06-20 02:41:24 - INFO     | Timer Finished: (0.01 seconds)
+2022-06-20 02:41:26 - INFO     | FUNCTION: RUN
+2022-06-20 02:41:26 - INFO     | PARAMS:
+2022-06-20 02:41:26 - INFO     |     input_directory: data/processed
+2022-06-20 02:41:26 - INFO     |     n_iterations: 4
+2022-06-20 02:41:26 - INFO     |     n_splits: 3
+2022-06-20 02:41:26 - INFO     |     n_repeats: 1
+2022-06-20 02:41:26 - INFO     |     score: roc_auc
+2022-06-20 02:41:26 - INFO     |     tracking_uri: http://mlflow_server:1235
+2022-06-20 02:41:26 - INFO     |     experiment_name: credit
+2022-06-20 02:41:26 - INFO     |     registered_model_name: credit_model
+2022-06-20 02:41:26 - INFO     |     required_performance_gain: 0.03
+2022-06-20 02:41:26 - INFO     |     random_state: 3
+2022-06-20 02:41:26 - INFO     | Timer Started: FUNCTION=source.scripts.experiments:run
+2022-06-20 02:41:26 - INFO     | Splitting training & test datasets
+2022-06-20 02:41:49 - INFO     | Best Score: 0.7566610156276207
+2022-06-20 02:41:49 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2022-06-20 02:41:53 - INFO     | No models currently in production.
+2022-06-20 02:41:54 - INFO     | Transitioning `credit_model` (version 1) to Production
+2022-06-20 02:41:54 - INFO     | Timer Finished: FUNCTION=source.scripts.experiments:run (27.77 seconds)
+2022-06-20 02:41:59 - INFO     | MLFlow URI: http://mlflow_server:1235
+2022-06-20 02:41:59 - INFO     | Production Model Version: 1
+2022-06-20 02:42:00 - INFO     | Timer Started: Loading training/test datasets
+2022-06-20 02:42:00 - INFO     | Timer Finished: (0.02 seconds)
+2022-06-20 02:42:00 - INFO     | (800, 20)
+2022-06-20 02:42:00 - INFO     | 800
+2022-06-20 02:42:00 - INFO     | (200, 20)
+2022-06-20 02:42:00 - INFO     | 200
+2022-06-20 02:42:00 - INFO     | Best Score: 0.7566610156276207
+2022-06-20 02:42:00 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'imputer': 'SimpleImputer()', 'scaler': 'None', 'pca': 'None', 'encoder': 'OneHotEncoder()'}
+2022-06-20 02:42:03 - INFO     | FUNCTION: RUN
+2022-06-20 02:42:03 - INFO     | PARAMS:
+2022-06-20 02:42:03 - INFO     |     input_directory: data/processed
+2022-06-20 02:42:03 - INFO     |     n_iterations: 4
+2022-06-20 02:42:03 - INFO     |     n_splits: 3
+2022-06-20 02:42:03 - INFO     |     n_repeats: 1
+2022-06-20 02:42:04 - INFO     |     score: roc_auc
+2022-06-20 02:42:04 - INFO     |     tracking_uri: http://mlflow_server:1235
+2022-06-20 02:42:04 - INFO     |     experiment_name: credit
+2022-06-20 02:42:04 - INFO     |     registered_model_name: credit_model
+2022-06-20 02:42:04 - INFO     |     required_performance_gain: 0.03
+2022-06-20 02:42:04 - INFO     |     random_state: 42
+2022-06-20 02:42:04 - INFO     | Timer Started: FUNCTION=source.scripts.experiments:run
+2022-06-20 02:42:04 - INFO     | Splitting training & test datasets
+2022-06-20 02:42:19 - INFO     | Best Score: 0.762641790401041
+2022-06-20 02:42:19 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(criterion='entropy', max_depth=70,
                        max_features=0.1142268477118407,
                        max_samples=0.5483119512487002, min_samples_leaf=8,
                        min_samples_split=12, n_estimators=553, random_state=42)), ('model__criterion', 'entropy'), ('model__max_depth', 70), ('model__max_features', 0.1142268477118407), ('model__max_samples', 0.5483119512487002), ('model__min_samples_leaf', 8), ('model__min_samples_split', 12), ('model__n_estimators', 553), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer(strategy='median')), ('prep__numeric__pca__transformer', PCA(n_components='mle')), ('prep__numeric__scaler__transformer', None)])
-2022-06-20 02:28:33 - INFO     | New Score: roc_auc - 0.762641790401041 vs Current Production Score: roc_auc - 0.7566610156276207); Keeping Production Model
-2022-06-20 02:28:33 - INFO     | Timer Finished: FUNCTION=run (18.95 seconds)
-2022-06-20 02:28:39 - INFO     | MLFlow URI: http://mlflow_server:1235
-2022-06-20 02:28:39 - INFO     | Production Model Version: 1
-2022-06-20 02:28:40 - INFO     | Timer Started: Loading training/test datasets
-2022-06-20 02:28:40 - INFO     | Timer Finished: (0.02 seconds)
-2022-06-20 02:28:40 - INFO     | (800, 20)
-2022-06-20 02:28:40 - INFO     | 800
-2022-06-20 02:28:40 - INFO     | (200, 20)
-2022-06-20 02:28:40 - INFO     | 200
-2022-06-20 02:28:40 - INFO     | Best Score: 0.762641790401041
-2022-06-20 02:28:40 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'max_features': 0.1142268477118407, 'max_depth': 70, 'n_estimators': 553, 'min_samples_split': 12, 'min_samples_leaf': 8, 'max_samples': 0.5483119512487002, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'OneHotEncoder()'}
-2022-06-20 02:28:43 - INFO     | FUNCTION: RUN
-2022-06-20 02:28:43 - INFO     | PARAMS:
-2022-06-20 02:28:43 - INFO     |     input_directory: data/processed
-2022-06-20 02:28:43 - INFO     |     n_iterations: 4
-2022-06-20 02:28:43 - INFO     |     n_splits: 3
-2022-06-20 02:28:43 - INFO     |     n_repeats: 1
-2022-06-20 02:28:43 - INFO     |     score: roc_auc
-2022-06-20 02:28:43 - INFO     |     tracking_uri: http://mlflow_server:1235
-2022-06-20 02:28:43 - INFO     |     experiment_name: credit
-2022-06-20 02:28:43 - INFO     |     registered_model_name: credit_model
-2022-06-20 02:28:43 - INFO     |     required_performance_gain: 0.01
-2022-06-20 02:28:43 - INFO     |     random_state: 10
-2022-06-20 02:28:43 - INFO     | Timer Started: FUNCTION=run
-2022-06-20 02:28:43 - INFO     | Splitting training & test datasets
-2022-06-20 02:29:01 - INFO     | Best Score: 0.7700760706900486
-2022-06-20 02:29:01 - INFO     | Best Params: OrderedDict([('model', ExtraTreesClassifier(bootstrap=True, criterion='entropy', max_depth=99,
+2022-06-20 02:42:22 - INFO     | New Score: roc_auc - 0.762641790401041 vs Current Production Score: roc_auc - 0.7566610156276207); Keeping Production Model
+2022-06-20 02:42:22 - INFO     | Timer Finished: FUNCTION=source.scripts.experiments:run (18.87 seconds)
+2022-06-20 02:42:28 - INFO     | MLFlow URI: http://mlflow_server:1235
+2022-06-20 02:42:28 - INFO     | Production Model Version: 1
+2022-06-20 02:42:28 - INFO     | Timer Started: Loading training/test datasets
+2022-06-20 02:42:28 - INFO     | Timer Finished: (0.01 seconds)
+2022-06-20 02:42:28 - INFO     | (800, 20)
+2022-06-20 02:42:28 - INFO     | 800
+2022-06-20 02:42:28 - INFO     | (200, 20)
+2022-06-20 02:42:28 - INFO     | 200
+2022-06-20 02:42:28 - INFO     | Best Score: 0.762641790401041
+2022-06-20 02:42:28 - INFO     | Best Params: {'model': 'RandomForestClassifier()', 'max_features': 0.1142268477118407, 'max_depth': 70, 'n_estimators': 553, 'min_samples_split': 12, 'min_samples_leaf': 8, 'max_samples': 0.5483119512487002, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'OneHotEncoder()'}
+2022-06-20 02:42:32 - INFO     | FUNCTION: RUN
+2022-06-20 02:42:32 - INFO     | PARAMS:
+2022-06-20 02:42:32 - INFO     |     input_directory: data/processed
+2022-06-20 02:42:32 - INFO     |     n_iterations: 4
+2022-06-20 02:42:32 - INFO     |     n_splits: 3
+2022-06-20 02:42:32 - INFO     |     n_repeats: 1
+2022-06-20 02:42:32 - INFO     |     score: roc_auc
+2022-06-20 02:42:32 - INFO     |     tracking_uri: http://mlflow_server:1235
+2022-06-20 02:42:32 - INFO     |     experiment_name: credit
+2022-06-20 02:42:32 - INFO     |     registered_model_name: credit_model
+2022-06-20 02:42:32 - INFO     |     required_performance_gain: 0.01
+2022-06-20 02:42:32 - INFO     |     random_state: 10
+2022-06-20 02:42:32 - INFO     | Timer Started: FUNCTION=source.scripts.experiments:run
+2022-06-20 02:42:32 - INFO     | Splitting training & test datasets
+2022-06-20 02:42:49 - INFO     | Best Score: 0.7700760706900486
+2022-06-20 02:42:49 - INFO     | Best Params: OrderedDict([('model', ExtraTreesClassifier(bootstrap=True, criterion='entropy', max_depth=99,
                      max_features=0.031837350792579364,
                      max_samples=0.9248344222191298, min_samples_leaf=4,
                      min_samples_split=16, n_estimators=1235, random_state=42)), ('model__criterion', 'entropy'), ('model__max_depth', 99), ('model__max_features', 0.031837350792579364), ('model__max_samples', 0.9248344222191298), ('model__min_samples_leaf', 4), ('model__min_samples_split', 16), ('model__n_estimators', 1235), ('prep__non_numeric__encoder__transformer', CustomOrdinalEncoder()), ('prep__numeric__imputer__transformer', SimpleImputer(strategy='median')), ('prep__numeric__pca__transformer', PCA(n_components='mle')), ('prep__numeric__scaler__transformer', None)])
-2022-06-20 02:29:04 - INFO     | Archiving previous model (version 1; roc_auc 0.7566610156276207) and placing new model into Production (roc_auc 0.7700760706900486)
-2022-06-20 02:29:04 - INFO     | Transitioning `credit_model` (version 2) to Production
-2022-06-20 02:29:04 - INFO     | Timer Finished: FUNCTION=run (20.94 seconds)
-2022-06-20 02:29:10 - INFO     | MLFlow URI: http://mlflow_server:1235
-2022-06-20 02:29:10 - INFO     | Production Model Version: 2
-2022-06-20 02:29:11 - INFO     | Timer Started: Loading training/test datasets
-2022-06-20 02:29:11 - INFO     | Timer Finished: (0.02 seconds)
-2022-06-20 02:29:11 - INFO     | (800, 20)
-2022-06-20 02:29:11 - INFO     | 800
-2022-06-20 02:29:11 - INFO     | (200, 20)
-2022-06-20 02:29:11 - INFO     | 200
-2022-06-20 02:29:11 - INFO     | Best Score: 0.7700760706900486
-2022-06-20 02:29:11 - INFO     | Best Params: {'model': 'ExtraTreesClassifier()', 'max_features': 0.031837350792579364, 'max_depth': 99, 'n_estimators': 1235, 'min_samples_split': 16, 'min_samples_leaf': 4, 'max_samples': 0.9248344222191298, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'CustomOrdinalEncoder()'}
+2022-06-20 02:42:53 - INFO     | Archiving previous model (version 1; roc_auc 0.7566610156276207) and placing new model into Production (roc_auc 0.7700760706900486)
+2022-06-20 02:42:53 - INFO     | Transitioning `credit_model` (version 2) to Production
+2022-06-20 02:42:53 - INFO     | Timer Finished: FUNCTION=source.scripts.experiments:run (21.20 seconds)
+2022-06-20 02:42:59 - INFO     | MLFlow URI: http://mlflow_server:1235
+2022-06-20 02:42:59 - INFO     | Production Model Version: 2
+2022-06-20 02:42:59 - INFO     | Timer Started: Loading training/test datasets
+2022-06-20 02:42:59 - INFO     | Timer Finished: (0.02 seconds)
+2022-06-20 02:42:59 - INFO     | (800, 20)
+2022-06-20 02:42:59 - INFO     | 800
+2022-06-20 02:42:59 - INFO     | (200, 20)
+2022-06-20 02:42:59 - INFO     | 200
+2022-06-20 02:42:59 - INFO     | Best Score: 0.7700760706900486
+2022-06-20 02:42:59 - INFO     | Best Params: {'model': 'ExtraTreesClassifier()', 'max_features': 0.031837350792579364, 'max_depth': 99, 'n_estimators': 1235, 'min_samples_split': 16, 'min_samples_leaf': 4, 'max_samples': 0.9248344222191298, 'criterion': 'entropy', 'imputer': "SimpleImputer(strategy='median')", 'scaler': 'None', 'pca': "PCA('mle')", 'encoder': 'CustomOrdinalEncoder()'}

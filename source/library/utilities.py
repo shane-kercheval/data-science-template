@@ -152,7 +152,7 @@ class Timer:
 def log_timer(function: Callable) -> Callable:
     @wraps(function)
     def wrapper(*args, **kwargs):
-        with Timer(f"FUNCTION={function.__name__}", include_message_at_finish=True):
+        with Timer(f"FUNCTION={function.__module__}:{function.__name__}", include_message_at_finish=True):
             results = function(*args, **kwargs)
         return results
 

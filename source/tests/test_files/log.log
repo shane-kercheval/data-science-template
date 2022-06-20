@@ -8,12 +8,12 @@ INFO     | PARAMS:
 INFO     |     param_1: value-1
 INFO     |     param_2: value-2
 INFO     | Timer Started: testing timer
-INFO     | Timer Finished: (0.05 seconds)
+INFO     | Timer Finished: (0.06 seconds)
 INFO     | Timer Started: testing another timer
 INFO     | Timer Finished: (0.10 seconds)
-INFO     | Timer Started: FUNCTION=my_function_2
-INFO     | Timer Finished: FUNCTION=my_function_2 (0.10 seconds)
-INFO     | Timer Started: FUNCTION=my_function_1
-INFO     | Timer Finished: FUNCTION=my_function_1 (0.10 seconds)
-INFO     | Timer Started: FUNCTION=my_function_1
-INFO     | Timer Finished: FUNCTION=my_function_1 (0.10 seconds)
+INFO     | Timer Started: FUNCTION=test_utilities:my_function_2
+INFO     | Timer Finished: FUNCTION=test_utilities:my_function_2 (0.10 seconds)
+INFO     | Timer Started: FUNCTION=test_utilities:my_function_1
+INFO     | Timer Finished: FUNCTION=test_utilities:my_function_1 (0.10 seconds)
+INFO     | Timer Started: FUNCTION=test_utilities:my_function_1
+INFO     | Timer Finished: FUNCTION=test_utilities:my_function_1 (0.10 seconds)
