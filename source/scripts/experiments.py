@@ -6,7 +6,6 @@ import os
 
 import mlflow
 import mlflow.exceptions
-import sklearn.base
 from helpsk.sklearn_eval import MLExperimentResults
 from helpsk.utility import read_pickle
 from mlflow.tracking import MlflowClient
@@ -18,24 +17,6 @@ from skopt import BayesSearchCV
 from source.library.utilities import log_function_call, log_info, log_timer
 import source.library.ml as ml
 import source.library.classification_search_space as css
-
-
-class SklearnModelWrapper(sklearn.base.BaseEstimator):
-    """
-    The predict method of various sklearn models returns a binary classification (0 or 1).
-    The following code creates a wrapper function, SklearnModelWrapper, that uses
-    the predict_proba method to return the probability that the observation belongs to each class.
-    Code from:
-    https://docs.azure.cn/en-us/databricks/_static/notebooks/mlflow/mlflow-end-to-end-example-azure.html
-    """
-    def __init__(self, model):
-        self.model = model
-
-    def predict(self, data):
-        return self.predict_proba(data=data)
-
-    def predict_proba(self, data):
-        return self.model.predict_proba(data)[:, 1]
 
 
 @log_function_call
@@ -128,7 +109,7 @@ def run(input_directory: str,
         )
         assert bayes_search.scoring == score
 
-        wrapped_model = SklearnModelWrapper(bayes_search.best_estimator_)
+        wrapped_model = ml.SklearnModelWrapper(bayes_search.best_estimator_)
         # Log the model with a signature that defines the schema of the model's inputs and outputs.
         # When the model is deployed, this signature will be used to validate inputs.
         mlflow.sklearn.log_model(

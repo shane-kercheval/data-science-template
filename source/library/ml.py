@@ -4,6 +4,7 @@ from pathlib import Path
 import mlflow
 from mlflow.tracking import MlflowClient
 from mlflow.entities.model_registry import ModelVersion
+import sklearn.base
 
 from helpsk.sklearn_eval import MLExperimentResults
 from helpsk.utility import to_pickle
@@ -66,3 +67,21 @@ def transition_last_model(ml_client: MlflowClient, model_name: str, stage: str) 
         stage=stage,
     )
     return model_version
+
+
+class SklearnModelWrapper(sklearn.base.BaseEstimator):
+    """
+    The predict method of various sklearn models returns a binary classification (0 or 1).
+    The following code creates a wrapper function, SklearnModelWrapper, that uses
+    the predict_proba method to return the probability that the observation belongs to each class.
+    Code from:
+    https://docs.azure.cn/en-us/databricks/_static/notebooks/mlflow/mlflow-end-to-end-example-azure.html
+    """
+    def __init__(self, model):
+        self.model = model
+
+    def predict(self, data):
+        return self.predict_proba(data=data)
+
+    def predict_proba(self, data):
+        return self.model.predict_proba(data)[:, 1]
