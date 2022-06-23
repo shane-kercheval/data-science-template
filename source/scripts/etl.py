@@ -8,9 +8,11 @@ import numpy as np
 import pandas as pd
 from sklearn.datasets import fetch_openml
 
-from source.library.utilities import log_info, log_func
+from source.library.utilities import log_function_call, log_info, log_timer
 
 
+@log_function_call
+@log_timer
 def extract(output_directory: str):
     """This function downloads the credit data from openml.org."""
     log_info("Downloading credit data from https://www.openml.org/d/31")
@@ -24,6 +26,8 @@ def extract(output_directory: str):
     credit_data.to_pickle(output_file)
 
 
+@log_function_call
+@log_timer
 def transform(input_directory: str, output_directory: str):
     """
     This function transforms the credit data.
@@ -32,11 +36,6 @@ def transform(input_directory: str, output_directory: str):
         input_directory: the directory to find credit.pkl
         output_directory: the directory to save the modified credit.pkl to
     """
-    log_func("transform", params=dict(
-        input_directory=input_directory,
-        output_directory=output_directory,
-    ))
-
     credit_data = pd.read_pickle(os.path.join(input_directory, 'credit.pkl'))
     log_info("Transforming Data")
 

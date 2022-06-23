@@ -6,38 +6,21 @@ import os
 
 import mlflow
 import mlflow.exceptions
-import sklearn.base
 from helpsk.sklearn_eval import MLExperimentResults
 from helpsk.utility import read_pickle
 from mlflow.tracking import MlflowClient
 from sklearn.model_selection import RepeatedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
-from skopt import BayesSearchCV  # noqa
+from skopt import BayesSearchCV
 
-from source.library.utilities import Timer, log_info, log_func
+from source.library.utilities import log_function_call, log_info, log_timer
 import source.library.ml as ml
 import source.library.classification_search_space as css
 
 
-class SklearnModelWrapper(sklearn.base.BaseEstimator):
-    """
-    The predict method of various sklearn models returns a binary classification (0 or 1).
-    The following code creates a wrapper function, SklearnModelWrapper, that uses
-    the predict_proba method to return the probability that the observation belongs to each class.
-    Code from:
-    https://docs.azure.cn/en-us/databricks/_static/notebooks/mlflow/mlflow-end-to-end-example-azure.html
-    """
-    def __init__(self, model):
-        self.model = model
-
-    def predict(self, data):
-        return self.predict_proba(data=data)
-
-    def predict_proba(self, data):
-        return self.model.predict_proba(data)[:, 1]
-
-
+@log_function_call
+@log_timer
 def run(input_directory: str,
         n_iterations: int,
         n_splits: int,
@@ -87,96 +70,61 @@ def run(input_directory: str,
         random_state:
             random_state to pass to `BayesSearchCV`
     """
-    log_func("run-experiments", params=dict(
-        input_directory=input_directory,
-        n_iterations=n_iterations,
-        n_splits=n_splits,
-        n_repeats=n_repeats,
-        score=score,
-        tracking_uri=tracking_uri,
-        experiment_name=experiment_name,
-        registered_model_name=registered_model_name,
-        required_performance_gain=required_performance_gain,
-        random_state=random_state,
-    ))
-
     timestamp = f'{datetime.datetime.now():%Y_%m_%d_%H_%M_%S}'
     log_info("Splitting training & test datasets")
     credit_data = read_pickle(os.path.join(input_directory, 'credit.pkl'))
-
     y_full = credit_data['target']
     x_full = credit_data.drop(columns='target')
-
     # i.e. value of 0 is 'good' i.e. 'not default' and value of 1 is bad and what
     # we want to detect i.e. 'default'
     y_full = label_binarize(y_full, classes=['good', 'bad']).flatten()
-    x_train, x_test, y_train, y_test = train_test_split(
-        x_full, y_full, test_size=0.2,
-        random_state=42  # keep this the same across experiments to compare apples to apples
-    )
+    # keep random_state the same across experiments to compare apples to apples
+    x_train, x_test, y_train, y_test = train_test_split(x_full, y_full, test_size=0.2, random_state=42)
 
-    # set up MLFlow
-    mlflow.set_tracking_uri(tracking_uri)
-    mlflow.set_experiment(experiment_name)
-    # mlflow.sklearn.autolog(registered_model_name=registered_model_name)
-    with Timer("Running Model Experiments (BayesSearchCV)"):
-        with mlflow.start_run(run_name=timestamp,
-                              description=timestamp,
-                              tags=dict(type='BayesSearchCV')):
+    ml.initialize_mlflow(tracking_uri=tracking_uri, experiment_name=experiment_name)
+    with mlflow.start_run(run_name=timestamp,
+                          description=timestamp,
+                          tags=dict(type='BayesSearchCV')):
 
-            bayes_search = BayesSearchCV(
-                estimator=css.create_pipeline(data=x_train),
-                search_spaces=css.create_search_space(iterations=n_iterations),
-                cv=RepeatedKFold(n_splits=n_splits, n_repeats=n_repeats, random_state=random_state),
-                scoring=score,
-                refit=True,
-                return_train_score=False,
-                n_jobs=-1,
-                verbose=1,
-                random_state=random_state,
-            )
-            bayes_search.fit(x_train, y_train)
-            log_info(f"Best Score: {bayes_search.best_score_}")
-            log_info(f"Best Params: {bayes_search.best_params_}")
-
-            results = MLExperimentResults.from_sklearn_search_cv(
-                searcher=bayes_search,
-                higher_score_is_better=True,
-                description='BayesSearchCV',
-                parameter_name_mappings=css.get_search_space_mappings(),
-            )
-            assert bayes_search.scoring == score
-
-            wrapped_model = SklearnModelWrapper(bayes_search.best_estimator_)
-            # Log the model with a signature that defines the schema of the model's inputs and outputs.
-            # When the model is deployed, this signature will be used to validate inputs.
-            mlflow.sklearn.log_model(
-                sk_model=wrapped_model,
-                artifact_path='model',
-            )
-            mlflow.log_metric(score, bayes_search.best_score_)
-            params = bayes_search.best_params_.copy()
-            _ = params.pop('model', None)
-            mlflow.log_params(params=params)
-
-            ml.log_ml_results(results=results, file_name='experiment.yaml')
-            ml.log_pickle(obj=x_train, file_name='x_train.pkl')
-            ml.log_pickle(obj=x_test, file_name='x_test.pkl')
-            ml.log_pickle(obj=y_train, file_name='y_train.pkl')
-            ml.log_pickle(obj=y_test, file_name='y_test.pkl')
-
-    def transition_latest_model_to_production(ml_client: MlflowClient):
-        """Register the model and transition stage to Production."""
-        result = mlflow.register_model(
-            model_uri=f"runs:/{mlflow.last_active_run().info.run_id}/model",
-            name=registered_model_name
+        bayes_search = BayesSearchCV(
+            estimator=css.create_pipeline(data=x_train),
+            search_spaces=css.create_search_space(iterations=n_iterations),
+            cv=RepeatedKFold(n_splits=n_splits, n_repeats=n_repeats, random_state=random_state),
+            scoring=score,
+            refit=True,
+            return_train_score=False,
+            n_jobs=-1,
+            verbose=1,
+            random_state=random_state,
         )
-        log_info(f"Transitioning `{registered_model_name}` (version {result.version}) to Production")
-        _ = ml_client.transition_model_version_stage(
-            name=registered_model_name,
-            version=str(result.version),
-            stage='Production'
+        bayes_search.fit(x_train, y_train)
+        log_info(f"Best Score: {bayes_search.best_score_}")
+        log_info(f"Best Params: {bayes_search.best_params_}")
+
+        results = MLExperimentResults.from_sklearn_search_cv(
+            searcher=bayes_search,
+            higher_score_is_better=True,
+            description='BayesSearchCV',
+            parameter_name_mappings=css.get_search_space_mappings(),
         )
+        assert bayes_search.scoring == score
+
+        wrapped_model = ml.SklearnModelWrapper(bayes_search.best_estimator_)
+        # Log the model with a signature that defines the schema of the model's inputs and outputs.
+        # When the model is deployed, this signature will be used to validate inputs.
+        mlflow.sklearn.log_model(
+            sk_model=wrapped_model,
+            artifact_path='model',
+        )
+        mlflow.log_metric(score, bayes_search.best_score_)
+        params = bayes_search.best_params_.copy()
+        _ = params.pop('model', None)
+        mlflow.log_params(params=params)
+        ml.log_ml_results(results=results, file_name='experiment.yaml')
+        ml.log_pickle(obj=x_train, file_name='x_train.pkl')
+        ml.log_pickle(obj=x_test, file_name='x_test.pkl')
+        ml.log_pickle(obj=y_train, file_name='y_train.pkl')
+        ml.log_pickle(obj=y_test, file_name='y_test.pkl')
 
     client = MlflowClient(tracking_uri=tracking_uri)
     try:
@@ -187,7 +135,12 @@ def run(input_directory: str,
     if len(production_model) == 0:
         # we don't currently have a model in production so put current model into production
         log_info("No models currently in production.")
-        transition_latest_model_to_production(ml_client=client)
+        model_version = ml.transition_last_model(
+            ml_client=client,
+            model_name=registered_model_name,
+            stage='Production',
+        )
+        log_info(f"Transitioning `{registered_model_name}` (version {model_version.version}) to Production")
     else:
         # if the new model outperforms the current model in production, then
         # put the new model into production after archiving model currently in production
@@ -203,7 +156,13 @@ def run(input_directory: str,
                 version=production_model.version,
                 stage='Archived'
             )
-            transition_latest_model_to_production(ml_client=client)
+            model_version = ml.transition_last_model(
+                ml_client=client,
+                model_name=registered_model_name,
+                stage='Production',
+            )
+            log_info(f"Transitioning `{registered_model_name}` "
+                     f"(version {model_version.version}) to Production")
         else:
             log_info(f"New Score: {score} - {bayes_search.best_score_} vs "
                      f"Current Production Score: {score} - {production_score}); Keeping Production Model")

@@ -10,7 +10,7 @@ following examples:
 import logging.config
 import click
 
-from source.library.utilities import log_func, get_config
+from source.library.utilities import get_config
 import source.scripts.experiments as experiments
 import source.scripts.etl as etl
 
@@ -32,7 +32,6 @@ def main():
 def extract():
     """This function downloads the credit data from openml.org."""
     output_directory = get_config()['DATA']['RAW_DIRECTORY']
-    log_func("extract", params=dict(output_directory=output_directory))
     etl.extract(output_directory=output_directory)
 
 
@@ -42,23 +41,24 @@ def transform():
     config = get_config()
     input_directory = config['DATA']['RAW_DIRECTORY']
     output_directory = config['DATA']['PROCESSED_DIRECTORY']
-    log_func("extract", params=dict(input_directory=input_directory, output_directory=output_directory))
     etl.transform(input_directory=input_directory, output_directory=output_directory)
 
 
 @main.command()
-@click.option('-n_iterations', default=4, help='the number of iterations for BayesSearchCV per model',
+@click.option('-n_iterations', default=4,
+              help='the number of iterations for BayesSearchCV per model',
               show_default=True)
-@click.option('-n_splits', default=3, help='the number of cross validation splits ', show_default=True)
-@click.option('-n_repeats', default=1, help='the number of cross validation repeats', show_default=True)
+@click.option('-n_splits', default=3,
+              help='the number of cross validation splits ', show_default=True)
+@click.option('-n_repeats', default=1,
+              help='the number of cross validation repeats', show_default=True)
 @click.option('-score', default='roc_auc',
               help='A string identifying the score to evaluate model performance, e.g. `roc_auc`.',
               show_default=True)
 @click.option('-tracking_uri', default='http://localhost:1234',
               help='MLFlow tracking_uri',
               show_default=True)
-@click.option('-required_performance_gain',
-              default=0.03,
+@click.option('-required_performance_gain', default=0.03,
               help='The percent increase required to accept best model into production.',
               show_default=True)
 @click.option('-random_state', default=42,
@@ -73,18 +73,15 @@ def run_experiments(n_iterations: int,
                     random_state):
     """This function runs an ML experiment according to the parameters provided."""
     config = get_config()
-    input_directory = config['DATA']['PROCESSED_DIRECTORY']
-    experiment_name = config['MLFLOW']['EXPERIMENT_NAME']
-    registered_model_name = config['MLFLOW']['MODEL_NAME']
     experiments.run(
-        input_directory=input_directory,
+        input_directory=config['DATA']['PROCESSED_DIRECTORY'],
         n_iterations=n_iterations,
         n_splits=n_splits,
         n_repeats=n_repeats,
         score=score,
         tracking_uri=tracking_uri,
-        experiment_name=experiment_name,
-        registered_model_name=registered_model_name,
+        experiment_name=config['MLFLOW']['EXPERIMENT_NAME'],
+        registered_model_name=config['MLFLOW']['MODEL_NAME'],
         required_performance_gain=required_performance_gain,
         random_state=random_state,
     )
