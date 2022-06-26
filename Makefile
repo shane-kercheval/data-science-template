@@ -2,7 +2,6 @@
 # DOCKER
 ####
 docker_compose:
-	# docker build -t data-science-template .
 	docker compose -f docker-compose.yml up --build
 
 docker_bash:
