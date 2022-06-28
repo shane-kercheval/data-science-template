@@ -1,8 +1,14 @@
 ####
 # DOCKER
 ####
-docker_compose:
-	docker compose -f docker-compose.yml up --build
+docker_build:
+	docker compose -f docker-compose.yml build
+
+docker_run: docker_build
+	docker compose -f docker-compose.yml up
+
+docker_rebuild:
+	docker compose -f docker-compose.yml build --no-cache
 
 docker_bash:
 	docker compose -f docker-compose.yml up --build bash
