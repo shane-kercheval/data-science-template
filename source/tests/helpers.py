@@ -1,5 +1,4 @@
 import os
-from helpsk.utility import is_debugging
 
 
 def get_test_file_path(file_path) -> str:
@@ -7,8 +6,4 @@ def get_test_file_path(file_path) -> str:
     debugging vs running from command line.
     """
     path = os.getcwd()
-    if not is_debugging():
-        path = os.path.join(path, 'source/tests')
-
-    path = os.path.join(path, 'test_files', file_path)
-    return path
+    return os.path.join(path, 'source/tests/test_files', file_path)

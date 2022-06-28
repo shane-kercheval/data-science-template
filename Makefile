@@ -13,7 +13,7 @@ docker_rebuild:
 docker_bash:
 	docker compose -f docker-compose.yml up --build bash
 
-docker_run: notebook mlflow_ui zsh
+docker_open: notebook mlflow_ui zsh
 
 notebook:
 	open 'http://127.0.0.1:8888/?token=d4484563805c48c9b55f75eb8b28b3797c6757ad4871776d'
@@ -39,14 +39,14 @@ mlflow_clean:
 ####
 # Project
 ####
-tests:
-	rm -f source/tests/test_files/log.log
-	python -m unittest discover source/tests
-
 linting:
 	flake8 --max-line-length 110 source/scripts
 	flake8 --max-line-length 110 source/library
 	flake8 --max-line-length 110 source/tests
+
+tests: linting
+	rm -f source/tests/test_files/log.log
+	python -m unittest discover source/tests
 
 data_extract:
 	python source/scripts/commands.py extract
@@ -105,7 +105,7 @@ remove_logs:
 	rm -f output/log.log
 
 ## Run entire workflow.
-all: tests linting remove_logs data exploration experiments
+all: tests remove_logs data exploration experiments
 
 ## Delete all generated files (e.g. virtual)
 clean: mlflow_clean

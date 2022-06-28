@@ -1,3 +1,4 @@
+# flake8: noqa
 import logging
 import logging.config
 import pandas as pd
@@ -16,9 +17,13 @@ import plotly.io as pio
 
 pio.renderers.default='notebook'
 
-logging.config.fileConfig("source/config/logging_to_file.conf",
-                          defaults={'logfilename': 'output/log.log'},
-                          disable_existing_loggers=False)
+os.chdir('/code')
+
+logging.config.fileConfig(
+    "source/config/logging_to_file.conf",
+    defaults={'logfilename': 'output/log.log'},
+    disable_existing_loggers=False
+)
 
 # https://pandas.pydata.org/pandas-docs/stable/user_guide/options.html#available-options
 pd.options.display.max_columns = 30 # default 20
