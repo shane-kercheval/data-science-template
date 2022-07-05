@@ -3,6 +3,7 @@ This file contains the logic for running ML experiments using BayesSearchCV.
 """
 import datetime
 import os
+import logging
 
 import mlflow
 import mlflow.exceptions
@@ -14,7 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 from skopt import BayesSearchCV
 
-from source.library.utilities import log_function_call, log_info, log_timer
+from helpsk.logging import log_function_call, log_timer
 import source.library.ml as ml
 import source.library.classification_search_space as css
 
@@ -71,7 +72,7 @@ def run(input_directory: str,
             random_state to pass to `BayesSearchCV`
     """
     timestamp = f'{datetime.datetime.now():%Y_%m_%d_%H_%M_%S}'
-    log_info("Splitting training & test datasets")
+    logging.info("Splitting training & test datasets")
     credit_data = read_pickle(os.path.join(input_directory, 'credit.pkl'))
     y_full = credit_data['target']
     x_full = credit_data.drop(columns='target')
@@ -98,8 +99,8 @@ def run(input_directory: str,
             random_state=random_state,
         )
         bayes_search.fit(x_train, y_train)
-        log_info(f"Best Score: {bayes_search.best_score_}")
-        log_info(f"Best Params: {bayes_search.best_params_}")
+        logging.info(f"Best Score: {bayes_search.best_score_}")
+        logging.info(f"Best Params: {bayes_search.best_params_}")
 
         results = MLExperimentResults.from_sklearn_search_cv(
             searcher=bayes_search,
@@ -134,13 +135,16 @@ def run(input_directory: str,
 
     if len(production_model) == 0:
         # we don't currently have a model in production so put current model into production
-        log_info("No models currently in production.")
+        logging.info("No models currently in production.")
         model_version = ml.transition_last_model(
             ml_client=client,
             model_name=registered_model_name,
             stage='Production',
         )
-        log_info(f"Transitioning `{registered_model_name}` (version {model_version.version}) to Production")
+        logging.info(
+            f"Transitioning `{registered_model_name}` "
+            "(version {model_version.version}) to Production"
+        )
     else:
         # if the new model outperforms the current model in production, then
         # put the new model into production after archiving model currently in production
@@ -148,9 +152,11 @@ def run(input_directory: str,
         production_model = production_model[0]
         production_score = client.get_run(run_id=production_model.run_id).data.metrics[score]
         if bayes_search.best_score_ > production_score * (1 + required_performance_gain):
-            log_info(f"Archiving previous model "
-                     f"(version {production_model.version}; {score} {production_score}) and placing new "
-                     f"model into Production ({score} {bayes_search.best_score_})")
+            logging.info(
+                f"Archiving previous model "
+                f"(version {production_model.version}; {score} {production_score}) and placing new "
+                f"model into Production ({score} {bayes_search.best_score_})"
+            )
             _ = client.transition_model_version_stage(
                 name=production_model.name,
                 version=production_model.version,
@@ -161,10 +167,14 @@ def run(input_directory: str,
                 model_name=registered_model_name,
                 stage='Production',
             )
-            log_info(f"Transitioning `{registered_model_name}` "
-                     f"(version {model_version.version}) to Production")
+            logging.info(
+                f"Transitioning `{registered_model_name}` "
+                f"(version {model_version.version}) to Production"
+            )
         else:
-            log_info(f"New Score: {score} - {bayes_search.best_score_} vs "
-                     f"Current Production Score: {score} - {production_score}); Keeping Production Model")
+            logging.info(
+                f"New Score: {score} - {bayes_search.best_score_} vs "
+                f"Current Production Score: {score} - {production_score}); Keeping Production Model"
+            )
 
     return timestamp

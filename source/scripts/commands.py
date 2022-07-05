@@ -10,14 +10,16 @@ following examples:
 import logging.config
 import click
 
-from source.library.utilities import get_config
 import source.scripts.experiments as experiments
 import source.scripts.etl as etl
+from source.library.utility import get_config
 
 
-logging.config.fileConfig("source/config/logging_to_file.conf",
-                          defaults={'logfilename': 'output/log.log'},
-                          disable_existing_loggers=False)
+logging.config.fileConfig(
+    "source/config/logging_to_file.conf",
+    defaults={'logfilename': 'output/log.log'},
+    disable_existing_loggers=False
+)
 
 
 @click.group()
