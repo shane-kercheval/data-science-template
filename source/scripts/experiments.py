@@ -33,28 +33,30 @@ def run(input_directory: str,
         required_performance_gain: float = 0.02,
         random_state: int = 42):
     """
-    Logic For Running Experiments. This function takes the full credit dataset in `input_directory`, and
-    separates the dataset into training and test sets. The training set is used by BayesSearchCV to search for
-    the best model.
+    Logic For Running Experiments. This function takes the full credit dataset in
+    `input_directory`, and separates the dataset into training and test sets. The training set is
+    used by BayesSearchCV to search for the best model.
 
-    The experiment results and corresponding training/tests sets are saved to the mlflow server with the
-    corresponding `tracking_uri` provided. The runs will be in an experiment called `experiment_name`.
-    The best model found by BayesSearchCV will be registered as `registered_model_name` with a new version
-    number. The best model will be put into production if it has a `required_performance_gain` percent
-    increase compared with the current model in production.
+    The experiment results and corresponding training/tests sets are saved to the mlflow server
+    with the corresponding `tracking_uri` provided. The runs will be in an experiment called
+    `experiment_name`. The best model found by BayesSearchCV will be registered as
+    `registered_model_name` with a new version number. The best model will be put into production
+    if it has a `required_performance_gain` percent increase compared with the current model in
+    production.
 
     Args:
         input_directory:
             the directory to find credit.pkl
         n_iterations:
-            the number of iterations for BayesSearchCV per model (i.e. the number of hyper-parameter
-            combinations to search, per model.
+            the number of iterations for BayesSearchCV per model (i.e. the number of
+            hyper-parameter combinations to search, per model.
         n_splits:
             The number of cross validation splits (e.g. 10-split 2-repeat cross validation).
         n_repeats:
             The number of cross validation repeats (e.g. 10-split 2-repeat cross validation).
         score:
-            A string identifying the score to evaluate model performance, e.g. `roc_auc`, `average_precision`,
+            A string identifying the score to evaluate model performance, e.g. `roc_auc`,
+            `average_precision`,
         tracking_uri:
             MLFlow tracking URI e.g. http://localhost:1234
             Should match host/port in makefile `mlflow_server` command.
@@ -63,11 +65,11 @@ def run(input_directory: str,
         registered_model_name:
             The name of the model to register with MLFlow.
         required_performance_gain:
-            The required performance gain, as percentage, compared with current model in production, required
-            to put the new model (i.e. best model found by BayesSearchCV) into production. The default value
-            is `0.02` meaning if the best model found by BayesSearchCV is >=2% better than the current
-            model's performance, we will archive the current model in production and put the new model
-            in production.
+            The required performance gain, as percentage, compared with current model in
+            production, required to put the new model (i.e. best model found by BayesSearchCV) into
+            production. The default value is `0.02` meaning if the best model found by
+            BayesSearchCV is >=2% better than the current model's performance, we will archive the
+            current model in production and put the new model in production.
         random_state:
             random_state to pass to `BayesSearchCV`
     """
@@ -80,12 +82,16 @@ def run(input_directory: str,
     # we want to detect i.e. 'default'
     y_full = label_binarize(y_full, classes=['good', 'bad']).flatten()
     # keep random_state the same across experiments to compare apples to apples
-    x_train, x_test, y_train, y_test = train_test_split(x_full, y_full, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(
+        x_full, y_full,
+        test_size=0.2, random_state=42
+    )
 
     ml.initialize_mlflow(tracking_uri=tracking_uri, experiment_name=experiment_name)
-    with mlflow.start_run(run_name=timestamp,
-                          description=timestamp,
-                          tags=dict(type='BayesSearchCV')):
+    with mlflow.start_run(
+            run_name=timestamp,
+            description=timestamp,
+            tags=dict(type='BayesSearchCV')):
 
         bayes_search = BayesSearchCV(
             estimator=css.create_pipeline(data=x_train),
@@ -129,7 +135,9 @@ def run(input_directory: str,
 
     client = MlflowClient(tracking_uri=tracking_uri)
     try:
-        production_model = client.get_latest_versions(name=registered_model_name, stages=['Production'])
+        production_model = client.get_latest_versions(
+            name=registered_model_name, stages=['Production']
+        )
     except mlflow.exceptions.RestException:
         production_model = []
 
@@ -154,8 +162,8 @@ def run(input_directory: str,
         if bayes_search.best_score_ > production_score * (1 + required_performance_gain):
             logging.info(
                 f"Archiving previous model "
-                f"(version {production_model.version}; {score} {production_score}) and placing new "
-                f"model into Production ({score} {bayes_search.best_score_})"
+                f"(version {production_model.version}; {score} {production_score}) and placing "
+                f"new model into Production ({score} {bayes_search.best_score_})"
             )
             _ = client.transition_model_version_stage(
                 name=production_model.name,
@@ -173,8 +181,8 @@ def run(input_directory: str,
             )
         else:
             logging.info(
-                f"New Score: {score} - {bayes_search.best_score_} vs "
-                f"Current Production Score: {score} - {production_score}); Keeping Production Model"
+                f"New Score: {score} - {bayes_search.best_score_} vs Current "
+                f"Production Score: {score} - {production_score}); Keeping Production Model"
             )
 
     return timestamp

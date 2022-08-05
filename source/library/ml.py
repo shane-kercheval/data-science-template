@@ -20,8 +20,8 @@ def initialize_mlflow(tracking_uri: str, experiment_name: str):
 
 def log_pickle(obj: object, file_name: str):
     """
-    This method provides a convenient way to log to mlflow without having to manually save the file to local
-    storage.
+    This method provides a convenient way to log to mlflow without having to manually save the file
+    to local storage.
     """
     temp_dir = '0946a999-6cdd-400a-8640-7b5e29788b4c'
     try:
@@ -35,8 +35,8 @@ def log_pickle(obj: object, file_name: str):
 
 def log_ml_results(results: MLExperimentResults, file_name: str):
     """
-    This method provides a convenient way to log to mlflow without having to manually save the file to local
-    storage.
+    This method provides a convenient way to log to mlflow without having to manually save the file
+    to local storage.
     """
     temp_dir = '0946a999-6cdd-400a-8640-7b5e29788b4c'
     Path(temp_dir).mkdir(exist_ok=False)

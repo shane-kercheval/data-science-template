@@ -1,9 +1,9 @@
 """
-This file contains the functions for the command line interface. The makefile calls the commands defined in
-this file.
+This file contains the functions for the command line interface. The makefile calls the commands
+defined in this file.
 
-For help in terminal, navigate to the project directory, activate the virtual environment, and run the
-following examples:
+For help in terminal, navigate to the project directory, activate the virtual environment, and run
+the following examples:
     - `python3.9 source/scripts/commands.py --help`
     - `python3.9 source/scripts/commands.py extract --help`
 """
