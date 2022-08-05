@@ -50,7 +50,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
         (
             {
                 'model':
-                    Categorical(categories=[LogisticRegression(max_iter=1000, random_state=random_state)]),
+                    Categorical(
+                        categories=[LogisticRegression(max_iter=1000, random_state=random_state)]
+                    ),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=[SimpleImputer()]),
                 'prep__numeric__scaler__transformer':
@@ -65,7 +67,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
         (
             {
                 'model':
-                    Categorical(categories=[LogisticRegression(max_iter=1000, random_state=random_state)]),
+                    Categorical(
+                        categories=[LogisticRegression(max_iter=1000, random_state=random_state)]
+                    ),
                 'model__C':
                     Real(low=1e-06, high=100, prior='log-uniform', transform='identity'),
                 'prep__numeric__imputer__transformer':
@@ -123,7 +127,8 @@ def create_search_space(iterations=50, random_state=42) -> list:
         #                 prior=[0.5, 0.25, 0.25]
         #             ),
         #         'prep__numeric__scaler__transformer':
-        #             Categorical(categories=[StandardScaler(), MinMaxScaler()], prior=[0.65, 0.35]),
+        #             Categorical(
+        #                   categories=[StandardScaler(), MinMaxScaler()], prior=[0.65, 0.35]),
         #         'prep__numeric__pca__transformer':
         #             Categorical(categories=[None, PCA(n_components='mle')]),
         #         'prep__non_numeric__encoder__transformer':
@@ -141,7 +146,11 @@ def create_search_space(iterations=50, random_state=42) -> list:
             {
                 'model':
                     Categorical(categories=[
-                        ExtraTreesClassifier(bootstrap=True, n_estimators=500, random_state=random_state)
+                        ExtraTreesClassifier(
+                            bootstrap=True,
+                            n_estimators=500,
+                            random_state=random_state
+                        )
                     ]),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=[SimpleImputer()]),
@@ -158,7 +167,11 @@ def create_search_space(iterations=50, random_state=42) -> list:
             {
                 'model':
                     Categorical(categories=[
-                        ExtraTreesClassifier(bootstrap=True, n_estimators=500, random_state=random_state)
+                        ExtraTreesClassifier(
+                            bootstrap=True,
+                            n_estimators=500,
+                            random_state=random_state
+                        )
                     ]),
                 'model__max_features':
                     Real(low=0.01, high=0.95, prior='uniform', transform='identity'),
@@ -352,9 +365,12 @@ def create_search_space(iterations=50, random_state=42) -> list:
                     ]),
                 'model__num_leaves': Integer(low=2, high=500, prior='uniform'),
                 'model__subsample': Real(low=0.3, high=1, prior='uniform', transform='identity'),
-                'model__colsample_bytree': Real(low=0.2, high=1, prior='uniform', transform='identity'),
-                'model__reg_alpha': Real(low=0.0001, high=20, prior='uniform', transform='identity'),
-                'model__reg_lambda': Real(low=0.0001, high=50, prior='uniform', transform='identity'),
+                'model__colsample_bytree':
+                    Real(low=0.2, high=1, prior='uniform', transform='identity'),
+                'model__reg_alpha':
+                    Real(low=0.0001, high=20, prior='uniform', transform='identity'),
+                'model__reg_lambda':
+                    Real(low=0.0001, high=50, prior='uniform', transform='identity'),
                 'prep__numeric__imputer__transformer':
                     Categorical(
                         categories=[
@@ -382,14 +398,15 @@ def create_search_space(iterations=50, random_state=42) -> list:
 
 def get_search_space_mappings():
     """
-    This function returns a dictionary, with the keys being the paths from the `sklearn.pipeline.Pipeline`
-    returned by the `create_pipeline()` function (e.g. "prep__numeric__imputer") and transforms the
-    path into a 'friendlier' value (e.g. "imputer"), returned as the value in the dictionary.
+    This function returns a dictionary, with the keys being the paths from the
+    `sklearn.pipeline.Pipeline` returned by the `create_pipeline()` function (e.g.
+    "prep__numeric__imputer") and transforms the path into a 'friendlier' value (e.g. "imputer"),
+    returned as the value in the dictionary.
 
     The dictionary returned by this function can be used, for example, by passing it to the
-    `parameter_name_mappings` parameter in the `MLExperimentResults.from_sklearn_search_cv()` function.
-    This will allow the `MLExperimentResults` to use the friendlier names in the output (e.g. tables and
-    graphs) and will make the output more readable.
+    `parameter_name_mappings` parameter in the `MLExperimentResults.from_sklearn_search_cv()`
+    function. This will allow the `MLExperimentResults` to use the friendlier names in the output
+    (e.g. tables and graphs) and will make the output more readable.
     """
     mappings = {}
     for space in create_search_space():
@@ -408,6 +425,6 @@ def get_search_space_mappings():
                 else:
                     mappings[param] = param
 
-    ordered_mappings = {key: value for key, value in mappings.items() if not key.startswith('prep__')}
-    ordered_mappings.update({key: value for key, value in mappings.items() if key.startswith('prep__')})
-    return ordered_mappings
+    ordered = {key: value for key, value in mappings.items() if not key.startswith('prep__')}
+    ordered.update({key: value for key, value in mappings.items() if key.startswith('prep__')})
+    return ordered

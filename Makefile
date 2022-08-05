@@ -40,9 +40,9 @@ mlflow_clean:
 # Project
 ####
 linting:
-	flake8 --max-line-length 110 source/scripts
-	flake8 --max-line-length 110 source/library
-	flake8 --max-line-length 110 source/tests
+	flake8 --max-line-length 99 source/scripts
+	flake8 --max-line-length 99 source/library
+	flake8 --max-line-length 99 source/tests
 
 tests: linting
 	rm -f source/tests/test_files/log.log
