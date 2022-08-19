@@ -16,8 +16,8 @@ from sklearn.preprocessing import label_binarize
 from skopt import BayesSearchCV
 
 from helpsk.logging import log_function_call, log_timer
-import source.library.ml as ml
-import source.library.classification_search_space as css
+import source.service.ml as ml
+import source.domain.classification_search_space as css
 
 
 @log_function_call

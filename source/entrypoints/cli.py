@@ -2,17 +2,17 @@
 This file contains the functions for the command line interface. The makefile calls the commands
 defined in this file.
 
-For help in terminal, navigate to the project directory, activate the virtual environment, and run
-the following examples:
+For help in terminal, navigate to the project directory, run the docker container, and from within
+the container run the following examples:
     - `python3.9 source/scripts/commands.py --help`
     - `python3.9 source/scripts/commands.py extract --help`
 """
 import logging.config
 import click
 
-import source.scripts.experiments as experiments
-import source.scripts.etl as etl
-from source.library.utility import get_config
+import source.domain.experiments as experiments
+import source.service.etl as etl
+from source.service.utility import get_config
 
 
 logging.config.fileConfig(
