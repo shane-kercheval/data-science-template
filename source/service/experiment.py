@@ -158,9 +158,9 @@ class ModelRegistry:
     """
     NOTE that these entities (e.g. Experiment/Run) are not only coupled to Model Registry they're
     actaually coupled to MLFlow because they the underlying MLFlow objects. Ideally, but overkill,
-    would be to use an ORM & Repository pattern to truly decouple entitles from MLFlow. But the goal
-    here is to simply have layers of abstraction, not to decouple, but to make the code easier to read,
-    use, test, etc.
+    would be to use an ORM & Repository pattern to truly decouple entitles from MLFlow. But the
+    goal here is to simply have layers of abstraction, not to decouple, but to make the code easier
+    to read, use, test, etc.
     """
     def __init__(self, tracking_uri):
         self.client = MlflowClient(tracking_uri=tracking_uri)
@@ -251,6 +251,14 @@ class Run(MLFlowEntity):
     @property
     def metrics(self):
         return self.mlflow_entity.data.metrics
+
+    @property
+    def params(self):
+        return self.mlflow_entity.data.params
+
+    @property
+    def tags(self):
+        return self.mlflow_entity.data.tags
 
     def download_artifact(self, artifact_name: str, read_from: Callable[[object, str], None]):
         return self.mlflow_registry.download_artifact(

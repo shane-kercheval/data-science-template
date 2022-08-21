@@ -3,11 +3,9 @@ import os
 import mlflow
 from mlflow.tracking import MlflowClient
 import mlflow.exceptions
-from sklearn.model_selection import RepeatedKFold
-from skopt import BayesSearchCV
+import pandas as pd
 
-from helpsk.sklearn_eval import MLExperimentResults
-import source.domain.classification_search_space as css
+from helpsk.validation import dataframes_match
 from source.service.experiment import Tracker, ModelRegistry, Experiment, Run
 
 
@@ -22,15 +20,19 @@ def test_services(tracking_uri, data_split):
     exp = registry.get_experiment(experiment_name=experiment_name)
     assert exp is None
 
+    def read_text(file_path):
+        with open(file_path, 'r') as handle:
+            return handle.read()
+
     tracker = Tracker(
         tracking_uri=tracking_uri,
         experiment_name=experiment_name,
         tags=dict(type='BayesSearchCV')
     )
 
-    def run_experiment(fake_metric, fake_params):
+    def run_experiment(fake_metric: str, fake_params: dict, fake_value: str, fake_name: str):
         with tracker:
-            tracker.log_text("run 2", "run.txt")
+            tracker.log_text(fake_value, fake_name)
             assert not os.path.isdir(Tracker.TEMP_DIR)
             tracker.log_model(model='mock')
             tracker.log_metric(metric=metric, metric_value=fake_metric)
@@ -40,7 +42,15 @@ def test_services(tracking_uri, data_split):
             tracker.log_pickle(obj=y_train, file_name='y_train.pkl')
             tracker.log_pickle(obj=y_test, file_name='y_test.pkl')
 
-    run_experiment(fake_metric=0.9, fake_params={'param1': 'value', 'param2': 2})
+    ####
+    # First Experiment
+    ####
+    run_experiment(
+        fake_metric=0.9,
+        fake_params={'param1': 'value', 'param2': '2'},
+        fake_value='run 1',
+        fake_name='run 1 text'
+    )
 
     assert tracker.elapsed_seconds > 0
     assert tracker.last_run_name is not None
@@ -67,6 +77,12 @@ def test_services(tracking_uri, data_split):
     assert exp.last_run.start_time is not None
     assert exp.last_run.end_time is not None
     assert exp.last_run.metrics == {'roc_auc': 0.9}
+    assert exp.last_run.params == {'param1': 'value', 'param2': '2'}
+    assert exp.last_run.tags['type'] == 'BayesSearchCV'
+    logged_value = exp.last_run.download_artifact(artifact_name='run 1 text', read_from=read_text)
+    assert logged_value == 'run 1'
+    downloaded_x_train = exp.last_run.download_artifact('x_train.pkl', read_from=pd.read_pickle)
+    assert dataframes_match([downloaded_x_train, x_train])
 
     runs = exp.runs
     assert len(runs) == 1
@@ -76,6 +92,76 @@ def test_services(tracking_uri, data_split):
     assert runs[0].start_time is not None
     assert runs[0].end_time is not None
     assert runs[0].metrics == {'roc_auc': 0.9}
+    assert runs[0].params == {'param1': 'value', 'param2': '2'}
+    assert runs[0].tags['type'] == 'BayesSearchCV'
+    logged_value = runs[0].download_artifact(artifact_name='run 1 text', read_from=read_text)
+    assert logged_value == 'run 1'
+    downloaded_x_train = runs[0].download_artifact('x_train.pkl', read_from=pd.read_pickle)
+    assert dataframes_match([downloaded_x_train, x_train])
+
+    ####
+    # Second Experiment
+    ####
+    first_exp_seconds = tracker.elapsed_seconds
+    first_exp_run_name = tracker.last_run_name
+    first_exp_start_time = exp.last_run.start_time
+    first_exp_end_time = exp.last_run.end_time
+
+    run_experiment(
+        fake_metric=0.8,
+        fake_params={'param1': 'value2', 'param2': '3'},
+        fake_value='run 2',
+        fake_name='run 2 text'
+    )
+
+    assert tracker.elapsed_seconds > 0
+    assert tracker.elapsed_seconds != first_exp_seconds
+    assert tracker.last_run_name is not None
+    assert tracker.last_run_name != first_exp_run_name
+
+    # same experiment
+    exp = Experiment.load(experiment_name=experiment_name, registry=registry)
+    assert exp is not None
+    assert exp.name == experiment_name
+    assert exp.id == '1'
+
+    # cache isn't cleared
+    assert exp.last_run.name == first_exp_run_name
+    assert len(exp.runs) == 1
+
+    registry.clear_cache()
+    assert exp.last_run.name == tracker.last_run_name
+    assert len(exp.runs) == 2
+    assert exp.last_run.experiment_name == experiment_name
+    assert exp.last_run.experiment_id == '1'
+    assert exp.last_run.start_time is not None
+    assert exp.last_run.start_time > first_exp_start_time
+    assert exp.last_run.end_time is not None
+    assert exp.last_run.end_time > first_exp_end_time
+    assert exp.last_run.metrics == {'roc_auc': 0.8}
+    assert exp.last_run.params == {'param1': 'value2', 'param2': '3'}
+    assert exp.last_run.tags['type'] == 'BayesSearchCV'
+    logged_value = exp.last_run.download_artifact(artifact_name='run 2 text', read_from=read_text)
+    assert logged_value == 'run 2'
+    downloaded_x_train = exp.last_run.download_artifact('x_train.pkl', read_from=pd.read_pickle)
+    assert dataframes_match([downloaded_x_train, x_train])
+
+    runs = exp.runs
+    assert len(runs) == 2
+    assert runs[0].name == tracker.last_run_name
+    assert runs[0].experiment_name == experiment_name
+    assert runs[0].experiment_id == '1'
+    assert runs[0].start_time is not None
+    assert runs[0].end_time is not None
+    assert runs[0].metrics == {'roc_auc': 0.8}
+    assert runs[0].params == {'param1': 'value2', 'param2': '3'}
+    assert runs[0].tags['type'] == 'BayesSearchCV'
+    logged_value = runs[0].download_artifact(artifact_name='run 2 text', read_from=read_text)
+    assert logged_value == 'run 2'
+    downloaded_x_train = runs[0].download_artifact('x_train.pkl', read_from=pd.read_pickle)
+    assert dataframes_match([downloaded_x_train, x_train])
+
+
 
 
 
