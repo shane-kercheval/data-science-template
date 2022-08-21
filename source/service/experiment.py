@@ -170,7 +170,7 @@ class ModelRegistry:
         self.get_runs.cache_clear()
         self.get_runs_from_id.cache_clear()
         self.get_run.cache_clear()
-        self.get_artifact.cache_clear()
+        self.download_artifact.cache_clear()
 
     @cache
     def get_experiment(self, experiment_name: str) -> mlflow.entities.experiment.Experiment:
@@ -193,7 +193,11 @@ class ModelRegistry:
         )
 
     @cache
-    def get_artifact(self, run_id, artifact_name, read_from: Callable[[object, str], None]):
+    def download_artifact(
+            self,
+            run_id,
+            artifact_name: str,
+            read_from: Callable[[object, str], None]):
         return read_from(self.client.download_artifacts(run_id=run_id, path=artifact_name))
 
 
@@ -247,6 +251,13 @@ class Run(MLFlowEntity):
     @property
     def metrics(self):
         return self.mlflow_entity.data.metrics
+
+    def download_artifact(self, artifact_name: str, read_from: Callable[[object, str], None]):
+        return self.mlflow_registry.download_artifact(
+            run_id=self.id,
+            artifact_name=artifact_name,
+            read_from=read_from
+        )
 
 
 class Experiment(MLFlowEntity):

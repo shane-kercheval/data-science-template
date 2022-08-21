@@ -41,7 +41,7 @@ def test_services(tracking_uri, data_split):
             tracker.log_pickle(obj=y_test, file_name='y_test.pkl')
 
     run_experiment(fake_metric=0.9, fake_params={'param1': 'value', 'param2': 2})
-    
+
     assert tracker.elapsed_seconds > 0
     assert tracker.last_run_name is not None
     exp = registry.get_experiment(experiment_name=experiment_name)
@@ -79,7 +79,7 @@ def test_services(tracking_uri, data_split):
 
 
 
-
+def temp():
     run_experiment(fake_metric=0.80, fake_params={'param1': 'value2', 'param2': 3})
     assert tracker.last_run_name is not None
     exp = registry.get_experiment('test_experiment')

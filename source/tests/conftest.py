@@ -7,7 +7,15 @@ import time
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
-        
+
+import logging.config
+
+logging.config.fileConfig(
+    "source/config/logging_to_file.conf",
+    defaults={'logfilename': 'source/tests/test_files/log.log'},
+    disable_existing_loggers=False
+)
+
 
 @pytest.fixture
 def tracking_uri() -> str:
@@ -37,9 +45,12 @@ def data_split(credit_data) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, p
 @pytest.fixture(scope='session')
 def ml_server_directory(tmpdir_factory):
     test_dir = str(tmpdir_factory.mktemp('ml_server'))
+    logging.info(f'ml_server_directory: creating {test_dir}')
+    # return test_dir
     try:
         yield test_dir
     finally:
+        logging.info(f'ml_server_directory: removing {test_dir}')
         shutil.rmtree(test_dir)
 
 
@@ -53,9 +64,12 @@ def start_ml_server(ml_server_directory):
             --port 1235
     """
     daemon = subprocess.Popen(command.split())
+    logging.info(f'start_ml_server: starting server; process {daemon.pid}')
     wait_for_service_to_start("http://0.0.0.0:1235")
     yield
+    logging.info(f'start_ml_server: stopping server; process {daemon.pid}')
     daemon.kill()
+    os.system("lsof -t -i:1235 | xargs -r kill")
 
 
 def wait_for_service_to_start(url: str):
