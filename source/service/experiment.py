@@ -1,7 +1,7 @@
 from __future__ import annotations
 import os
 from typing import Callable
-from collections import Iterable
+from collections.abc import Iterable
 from enum import Enum, unique
 import shutil
 from pathlib import Path

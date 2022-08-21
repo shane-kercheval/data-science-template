@@ -141,9 +141,6 @@ def test_services(tracking_uri, data_split):
     assert version.version == model_version.version
     assert version.current_stage == MLStage.PRODUCTION.value
 
-
-
-
     ####
     # Second Experiment
     ####
@@ -181,7 +178,7 @@ def test_services(tracking_uri, data_split):
     assert exp.last_run.experiment_id == '1'
     assert exp.last_run.start_time is not None
     assert exp.last_run.start_time > first_exp_start_time
-    assert exp.last_run.start_time == max(x.start_time for x in runs)
+    assert exp.last_run.start_time == max(x.start_time for x in exp.runs)
     assert exp.last_run.end_time is not None
     assert exp.last_run.end_time > first_exp_end_time
     assert exp.last_run.metrics == {'roc_auc': 0.8}
@@ -208,84 +205,49 @@ def test_services(tracking_uri, data_split):
     assert dataframes_match([downloaded_x_train, x_train])
 
     ####
+    # test model registry and transition
+    ####
+    # at this point there are no models yet
+    versions = registry.get_model_latest_verisons(model_name='credit_model')
+    assert len(versions) == 0
+    version = registry.get_production_model(model_name='credit_model')
+    assert version is None
+    # register model
+    model_version = exp.last_run.register_model(model_name='credit_model')
+    assert model_version.name == 'credit_model'
+    assert model_version.version == '1'
+    assert model_version.current_stage == 'None'
+    # check that we can get model from registry
+    versions = registry.get_model_latest_verisons(model_name='credit_model')
+    assert len(versions) == 1
+    assert versions[0].name == model_version.name
+    assert versions[0].version == model_version.version
+    assert versions[0].current_stage == model_version.current_stage
+    # there shouldn't be any production models
+    version = registry.get_production_model(model_name='credit_model')
+    assert version is None
+    # transition newly registered model into production
+    new_version = registry.transition_model_to_stage(
+        model_name='credit_model',
+        model_version=model_version.version,
+        to_stage=MLStage.PRODUCTION
+    )
+    assert new_version.name == model_version.name
+    assert new_version.version == model_version.version
+    assert new_version.current_stage == MLStage.PRODUCTION.value
+
+    version = registry.get_production_model(model_name='credit_model')
+    assert version.name == model_version.name
+    assert version.version == model_version.version
+    assert version.current_stage == MLStage.PRODUCTION.value
+
+    ####
     # Second Experiment
     ####
-    last_exp_seconds = tracker.elapsed_seconds
-    last_exp_run_name = tracker.last_run_name
-    last_exp_start_time = exp.last_run.start_time
-    last_exp_end_time = exp.last_run.end_time
-
-    run_experiment(
-        fake_metric=0.95,
-        fake_params={'param2': 'value3', 'param3': '4'},
-        fake_value='run 3',
-        fake_name='run 3 text'
-    )
-
-    assert tracker.elapsed_seconds > 0
-    assert tracker.elapsed_seconds != last_exp_seconds
-    assert tracker.last_run_name is not None
-    assert tracker.last_run_name != last_exp_run_name
-
-    # same experiment
-    exp = Experiment.load(experiment_name=experiment_name, registry=registry)
-    assert exp is not None
-    assert exp.name == experiment_name
-    assert exp.id == '1'
-
-    # cache isn't cleared
-    assert exp.last_run.name == last_exp_run_name
-    assert len(exp.runs) == 2
-
-    registry.clear_cache()
-    assert exp.last_run.name == tracker.last_run_name
-    assert len(exp.runs) == 3
-    assert exp.last_run.experiment_name == experiment_name
-    assert exp.last_run.experiment_id == '1'
-    assert exp.last_run.start_time is not None
-    assert exp.last_run.start_time > last_exp_start_time
-    assert exp.last_run.start_time == max(x.start_time for x in runs)
-    assert exp.last_run.end_time is not None
-    assert exp.last_run.end_time > last_exp_end_time
-    assert exp.last_run.metrics == {'roc_auc': 0.95}
-    assert exp.last_run.params == {'param2': 'value3', 'param3': '4'}
-    assert exp.last_run.tags['type'] == 'BayesSearchCV'
-    logged_value = exp.last_run.download_artifact(artifact_name='run 3 text', read_from=read_text)
-    assert logged_value == 'run 3'
-    downloaded_x_train = exp.last_run.download_artifact('x_train.pkl', read_from=pd.read_pickle)
-    assert dataframes_match([downloaded_x_train, x_train])
-
-    runs = exp.runs
-    assert len(runs) == 3
-    assert runs[0].name == tracker.last_run_name
-    assert runs[0].experiment_name == experiment_name
-    assert runs[0].experiment_id == '1'
-    assert runs[0].start_time is not None
-    assert runs[0].end_time is not None
-    assert runs[0].metrics == {'roc_auc': 0.95}
-    assert runs[0].params == {'param1': 'value2', 'param2': '3'}
-    assert runs[0].tags['type'] == 'BayesSearchCV'
-    logged_value = runs[0].download_artifact(artifact_name='run 2 text', read_from=read_text)
-    assert logged_value == 'run 2'
-    downloaded_x_train = runs[0].download_artifact('x_train.pkl', read_from=pd.read_pickle)
-    assert dataframes_match([downloaded_x_train, x_train])
-
-
-
-
-    exp.last_run.id
-    return_value = mlflow.register_model(
-        model_uri=f"runs:/{exp.last_run.id}/model",
-        name='credit_model'
-    )
-
-    temp = registry.client.transition_model_version_stage(
-        name='credit_model',
-        version=str(return_value.version),
-        stage='Production',
-    )
-
-
+    first_exp_seconds = tracker.elapsed_seconds
+    first_exp_run_name = tracker.last_run_name
+    first_exp_start_time = exp.last_run.start_time
+    first_exp_end_time = exp.last_run.end_time
 
 
 def temp():
