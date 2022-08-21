@@ -1,11 +1,14 @@
+from __future__ import annotations
 import os
 from typing import Callable
+from enum import Enum, unique
 import shutil
 from pathlib import Path
 from functools import cache
 import datetime
 import mlflow
 from mlflow.tracking import MlflowClient
+from mlflow.entities.model_registry import ModelVersion
 import sklearn.base
 
 from helpsk.sklearn_eval import MLExperimentResults
@@ -154,6 +157,13 @@ class Tracker:
         )
 
 
+@unique
+class MLStage(Enum):
+    STAGING = 'Staging'
+    PRODUCTION = 'Production'
+    ARCHIVED = 'Archived'
+
+
 class ModelRegistry:
     """
     NOTE that these entities (e.g. Experiment/Run) are not only coupled to Model Registry they're
@@ -171,6 +181,8 @@ class ModelRegistry:
         self.get_runs_from_id.cache_clear()
         self.get_run.cache_clear()
         self.download_artifact.cache_clear()
+        self.get_model_latest_verisons.cache_clear()
+        self.get_production_model.cache_clear()
 
     @cache
     def get_experiment(self, experiment_name: str) -> mlflow.entities.experiment.Experiment:
@@ -199,6 +211,74 @@ class ModelRegistry:
             artifact_name: str,
             read_from: Callable[[object, str], None]):
         return read_from(self.client.download_artifacts(run_id=run_id, path=artifact_name))
+
+    def register_model(self, run_id: str, model_name: str) -> ModelVersion:
+        model_version = mlflow.register_model(model_uri=f"runs:/{run_id}/model", name=model_name)
+        self.clear_cache()
+        return model_version
+
+    @cache
+    def get_model_latest_verisons(
+            self,
+            model_name: str,
+            stages: tuple[MLStage] | None = None) -> list[ModelVersion]:
+        """
+        Latest version models for each requests stage. If no ``stages`` provided, returns the
+        latest version for each stage.
+        """
+        try:
+            versions = self.client.get_latest_versions(
+                name=model_name,
+                stages={x.value for x in stages},
+            )
+        except mlflow.exceptions.RestException:
+            versions = []
+
+        return versions
+
+    @cache
+    def get_production_model(self, model_name: str) -> ModelVersion | None:
+        versions = self.get_model_latest_verisons(
+            model_name=model_name,
+            stages=(MLStage.PRODUCTION.value)
+        )
+        if len(versions) == 0:
+            return None
+
+        assert len(versions) == 1
+        return versions[0]
+
+    def transition_model_to_stage(
+            self,
+            model_name: str,
+            model_version: str,
+            to_stage: MLStage) -> ModelVersion:
+        model_version = self.client.transition_model_version_stage(
+            name=model_name,
+            version=model_version,
+            stage=to_stage.value,
+        )
+        return model_version
+
+    # def transition_last_model(model_name: str, stage: str) -> ModelVersion:
+    #     """
+    #     Register the model associated with the last active run and transition the stage to `stage`.
+
+    #     args:
+    #         ml_client: MlflowClient object
+    #         model_name: name of the registered model
+    #         stage: stage to transition model in last active run. (Staging|Archived|Production|None)
+    #     """
+    #     model_version = mlflow.register_model(
+    #         model_uri=f"runs:/{mlflow.last_active_run().info.run_id}/model",
+    #         name=model_name
+    #     )
+    #     _ = ml_client.transition_model_version_stage(
+    #         name=model_name,
+    #         version=str(model_version.version),
+    #         stage=stage,
+    #     )
+    #     return model_version
 
 
 class MLFlowEntity:
@@ -266,6 +346,17 @@ class Run(MLFlowEntity):
             artifact_name=artifact_name,
             read_from=read_from
         )
+    
+    def register_model(self, model_name: str) -> ModelVersion:
+        return self.mlflow_registry.register_model(run_id=self.id, model_name=model_name)
+
+    # def set_model_stage(self, model_name, to_stage: str) -> ModelVersion:
+    #     model_version = self.mlflow_registry.get_model_latest_verisons(model_name=model_name)
+    #     return self.mlflow_registry.transition_model_to_stage(
+    #         model_name=model_name,
+    #         model_version=str(model_version.version),
+    #         to_stage=to_stage,
+    #     )
 
 
 class Experiment(MLFlowEntity):

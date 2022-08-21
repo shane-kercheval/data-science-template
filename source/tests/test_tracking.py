@@ -6,7 +6,7 @@ import mlflow.exceptions
 import pandas as pd
 
 from helpsk.validation import dataframes_match
-from source.service.experiment import Tracker, ModelRegistry, Experiment, Run
+from source.service.experiment import MLStage, Tracker, ModelRegistry, Experiment, Run
 
 
 @pytest.mark.usefixtures('start_ml_server')
@@ -19,6 +19,11 @@ def test_services(tracking_uri, data_split):
     registry = ModelRegistry(tracking_uri=tracking_uri)
     exp = registry.get_experiment(experiment_name=experiment_name)
     assert exp is None
+
+    versions = registry.get_model_latest_verisons(model_name='credit_model')
+    assert len(versions) == 0
+    version = registry.get_production_model(model_name='credit_model')
+    assert version is None
 
     def read_text(file_path):
         with open(file_path, 'r') as handle:
@@ -98,6 +103,38 @@ def test_services(tracking_uri, data_split):
     assert logged_value == 'run 1'
     downloaded_x_train = runs[0].download_artifact('x_train.pkl', read_from=pd.read_pickle)
     assert dataframes_match([downloaded_x_train, x_train])
+
+    ####
+    # test model registry and transition
+    ####
+    # at this point there are no models yet
+    versions = registry.get_model_latest_verisons(model_name='credit_model')
+    assert len(versions) == 0
+    version = registry.get_production_model(model_name='credit_model')
+    assert version is None
+
+    model_version = exp.last_run.register_model(model_name='credit_model')
+    assert model_version.name == 'credit_model'
+    assert model_version.version == '1'
+    assert model_version.current_stage == 'None'
+
+    versions = registry.get_model_latest_verisons(model_name='credit_model')
+    assert len(versions) == 1
+    assert versions[0].name == model_version.name
+    assert versions[0].version == model_version.version
+    assert versions[0].current_stage == model_version.current_stage
+
+    version = registry.get_production_model(model_name='credit_model')
+    assert version is None
+
+    new_version = registry.transition_model_to_stage(
+        model_name='credit_model',
+        model_version=model_version.version,
+        to_stage=MLStage.PRODUCTION
+    )
+
+
+
 
     ####
     # Second Experiment
@@ -225,6 +262,20 @@ def test_services(tracking_uri, data_split):
     downloaded_x_train = runs[0].download_artifact('x_train.pkl', read_from=pd.read_pickle)
     assert dataframes_match([downloaded_x_train, x_train])
 
+
+
+
+    exp.last_run.id
+    return_value = mlflow.register_model(
+        model_uri=f"runs:/{exp.last_run.id}/model",
+        name='credit_model'
+    )
+
+    temp = registry.client.transition_model_version_stage(
+        name='credit_model',
+        version=str(return_value.version),
+        stage='Production',
+    )
 
 
 

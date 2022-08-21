@@ -56,6 +56,7 @@ def ml_server_directory(tmpdir_factory):
 
 @pytest.fixture(scope='session')
 def start_ml_server(ml_server_directory):
+    os.system("lsof -t -i:1235 | xargs -r kill")
     command = f"""
         mlflow server
             --backend-store-uri sqlite:///{os.path.join(ml_server_directory, 'mlflow.db')}
