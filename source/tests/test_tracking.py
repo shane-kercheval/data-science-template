@@ -1,7 +1,6 @@
 import pytest
 import os
 import mlflow
-from mlflow.tracking import MlflowClient
 import mlflow.exceptions
 import pandas as pd
 
@@ -207,28 +206,45 @@ def test_services(tracking_uri, data_split):
     ####
     # test model registry and transition
     ####
-    # at this point there are no models yet
-    versions = registry.get_model_latest_verisons(model_name='credit_model')
-    assert len(versions) == 0
-    version = registry.get_production_model(model_name='credit_model')
-    assert version is None
-    # register model
-    model_version = exp.last_run.register_model(model_name='credit_model')
-    assert model_version.name == 'credit_model'
-    assert model_version.version == '1'
-    assert model_version.current_stage == 'None'
-    # check that we can get model from registry
+    # there should be one model version from the last run
     versions = registry.get_model_latest_verisons(model_name='credit_model')
     assert len(versions) == 1
-    assert versions[0].name == model_version.name
-    assert versions[0].version == model_version.version
-    assert versions[0].current_stage == model_version.current_stage
-    # there shouldn't be any production models
-    version = registry.get_production_model(model_name='credit_model')
-    assert version is None
+    assert versions[0].version == '1'
+
+    # register model, check that the version is 2
+    model_version = exp.last_run.register_model(model_name='credit_model')
+    assert model_version.name == 'credit_model'
+    assert model_version.version == '2'
+    assert model_version.current_stage == 'None'
+
+    # check that we can get model from registry
+    versions = registry.get_model_latest_verisons(model_name='credit_model')
+    assert len(versions) == 2
+    assert versions[1].name == model_version.name
+    assert versions[1].version == model_version.version
+    assert versions[1].current_stage == model_version.current_stage
+
+    # get the production model, check that the version is still 1
+    prod_version = registry.get_production_model(model_name='credit_model')
+    assert prod_version.name == model_version.name
+    assert prod_version.version == '1'
+    assert prod_version.current_stage == MLStage.PRODUCTION.value
+
+    # transition production model to archived
+    new_prod_version = registry.transition_model_to_stage(
+        model_name=prod_version.name,
+        model_version=prod_version.version,
+        to_stage=MLStage.ARCHIVED
+    )
+    assert prod_version.version == '1'
+    assert new_prod_version.name == prod_version.name
+    assert new_prod_version.version == prod_version.version
+    assert new_prod_version.current_stage == 'Archived'
+
     # transition newly registered model into production
+    assert model_version.version == '2'
     new_version = registry.transition_model_to_stage(
-        model_name='credit_model',
+        model_name=model_version.name,
         model_version=model_version.version,
         to_stage=MLStage.PRODUCTION
     )
@@ -237,138 +253,7 @@ def test_services(tracking_uri, data_split):
     assert new_version.current_stage == MLStage.PRODUCTION.value
 
     version = registry.get_production_model(model_name='credit_model')
+    assert model_version.version == '2'
     assert version.name == model_version.name
     assert version.version == model_version.version
     assert version.current_stage == MLStage.PRODUCTION.value
-
-    ####
-    # Second Experiment
-    ####
-    first_exp_seconds = tracker.elapsed_seconds
-    first_exp_run_name = tracker.last_run_name
-    first_exp_start_time = exp.last_run.start_time
-    first_exp_end_time = exp.last_run.end_time
-
-
-def temp():
-    run_experiment(fake_metric=0.80, fake_params={'param1': 'value2', 'param2': 3})
-    assert tracker.last_run_name is not None
-    exp = registry.get_experiment('test_experiment')
-    registry.clear_cache()
-    exp = registry.get_experiment('test_experiment')
-
-
-    tracker.last_run_name
-
-    
-    exp = registry.get_experiment('test_experiment')
-    assert exp.name == 'test_experiment'
-    assert exp.experiment_id == '1'
-    runs = registry.get_runs(experiment_name='test_experiment')
-    type(runs)
-    runs_from_id = list(registry.get_runs_from_id('1'))
-
-    run_names = [x.data.tags['mlflow.runName'] for x in runs_from_id]
-    
-    
-    datetime.datetime.fromtimestamp(run.mlflow_entity.info.start_time/1000.0)
-
-
-    registry.get_run(experiment_name='test_experiment', run_name=tracker.last_run_name)
-
-    def read_txt(path):
-        with open(path, 'r') as handle:
-            value = handle.read()
-        return value
-
-    client.download_artifacts(run_id=run.id, path='test_2.txt')
-    read_txt('/tmp/pytest-of-root/pytest-30/ml_server0/mlflow-artifact-root/1/7d5d0c94087145fd9b1b67383d496cbc/artifacts/test_2.txt')
-    read_txt('Dockerfile')
-    read
-
-    run = Run.load(experiment_name='test_experiment', run_name=tracker.last_run_name, registry=registry)
-
-    run.mlflow_entity
-    run.experiment_name
-    run.name
-    run.id
-    run.start_time
-    run.start_time
-    run.mlflow_entity.info.start_time
-    run.mlflow_entity.info.experiment_id
-    run.mlflow_entity.info.start_time
-    run.id
-
-    value = registry.get_artifact(run_id=run.id, artifact_name='test_2.txt', read_from=read_txt)
-    assert value == 'Hello'
-
-
-
-
-
-    import datetime
-    datetime.datetime(run.mlflow_entity.info.start_time)
-    DateFormat = '%d%m%H%M%S'
-    import dateutil
-    dateutil.parser.parse(run.mlflow_entity.info.start_time).strftime(DateFormat)
-
-    run.mlflow_entity.info.end_time
-
-    exp = Experiment.load(experiment_name='test_experiment', registry=registry)
-    assert exp.mlflow_entity is not None
-    assert exp.name == 'test_experiment'
-    assert exp.id == '1'
-    assert exp.lifecycle_stage == 'active'
-
-
-    assert exp.last_run.start_time == max(x.start_time for x in runs)
-
-    runs[0].start_time
-    sorted(runs, key=lambda x: x.start_time, reverse=True)
-    sorted(runs, key=lambda x: x.start_time)
-    exp.get
-
-    
-
-    exp.mlflow_registry.get_runs.cache_clear()
-    exp.mlflow_registry.get_runs_from_id.cache_clear()
-    exp.mlflow_registry.get_run.cache_clear()
-    exp.mlflow_registry.get_experiment.cache_clear()
-
-    
-    exp.mlflow_registry.__dict__
-
-    exp.__dict__
-
-
-
-
-
-    client = MlflowClient(tracking_uri="http://0.0.0.0:1235")
-    experiment_data = client.get_experiment_by_name(experiment_name)
-    experiment_data
-    experiment_data['experiment_id']
-
-    mlflow.search_runs(["1"])
-    temp = client.search_runs(["1"])
-    type(list(temp)[0])
-
-    
-
-    tracker.elapsed_seconds
-    tracker.experiment_name
-    tracker.tags
-    tracker.tracking_uri
-
-
-    temp = DynamicAttributes(arg1='a')
-    temp.arg1
-
-
-    last_model = exp_registry.get_most_recent_model()
-    last_model = exp_registry.transition_model()
-    production_model = exp_registry.get_production_model()
-
-
-
-
