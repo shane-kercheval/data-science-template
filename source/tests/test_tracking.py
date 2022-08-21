@@ -112,26 +112,34 @@ def test_services(tracking_uri, data_split):
     assert len(versions) == 0
     version = registry.get_production_model(model_name='credit_model')
     assert version is None
-
+    # register model
     model_version = exp.last_run.register_model(model_name='credit_model')
     assert model_version.name == 'credit_model'
     assert model_version.version == '1'
     assert model_version.current_stage == 'None'
-
+    # check that we can get model from registry
     versions = registry.get_model_latest_verisons(model_name='credit_model')
     assert len(versions) == 1
     assert versions[0].name == model_version.name
     assert versions[0].version == model_version.version
     assert versions[0].current_stage == model_version.current_stage
-
+    # there shouldn't be any production models
     version = registry.get_production_model(model_name='credit_model')
     assert version is None
-
+    # transition newly registered model into production
     new_version = registry.transition_model_to_stage(
         model_name='credit_model',
         model_version=model_version.version,
         to_stage=MLStage.PRODUCTION
     )
+    assert new_version.name == model_version.name
+    assert new_version.version == model_version.version
+    assert new_version.current_stage == MLStage.PRODUCTION.value
+
+    version = registry.get_production_model(model_name='credit_model')
+    assert version.name == model_version.name
+    assert version.version == model_version.version
+    assert version.current_stage == MLStage.PRODUCTION.value
 
 
 

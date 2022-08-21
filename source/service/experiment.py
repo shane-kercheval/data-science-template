@@ -1,6 +1,7 @@
 from __future__ import annotations
 import os
 from typing import Callable
+from collections import Iterable
 from enum import Enum, unique
 import shutil
 from pathlib import Path
@@ -226,10 +227,14 @@ class ModelRegistry:
         Latest version models for each requests stage. If no ``stages`` provided, returns the
         latest version for each stage.
         """
+        if stages is not None:
+            if not isinstance(stages, Iterable):
+                stages = [stages]
+            stages = [x.value for x in stages]
         try:
             versions = self.client.get_latest_versions(
                 name=model_name,
-                stages={x.value for x in stages},
+                stages=stages,
             )
         except mlflow.exceptions.RestException:
             versions = []
@@ -240,7 +245,7 @@ class ModelRegistry:
     def get_production_model(self, model_name: str) -> ModelVersion | None:
         versions = self.get_model_latest_verisons(
             model_name=model_name,
-            stages=(MLStage.PRODUCTION.value)
+            stages=(MLStage.PRODUCTION,)
         )
         if len(versions) == 0:
             return None
@@ -258,6 +263,7 @@ class ModelRegistry:
             version=model_version,
             stage=to_stage.value,
         )
+        self.clear_cache()
         return model_version
 
     # def transition_last_model(model_name: str, stage: str) -> ModelVersion:
