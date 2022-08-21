@@ -5,7 +5,7 @@ import mlflow.exceptions
 import pandas as pd
 
 from helpsk.validation import dataframes_match
-from source.service.experiment import MLStage, Tracker, ModelRegistry, Experiment, Run
+from source.service.model_registry import MLStage, Tracker, ModelRegistry, Experiment, Run
 
 
 @pytest.mark.usefixtures('start_ml_server')
@@ -40,7 +40,7 @@ def test_services(tracking_uri, data_split):
             assert not os.path.isdir(Tracker.TEMP_DIR)
             tracker.log_model(model='mock')
             tracker.log_metric(metric=metric, metric_value=fake_metric)
-            tracker.log_params(best_params=fake_params)
+            tracker.log_params(params=fake_params)
             tracker.log_pickle(obj=x_train, file_name='x_train.pkl')
             tracker.log_pickle(obj=x_test, file_name='x_test.pkl')
             tracker.log_pickle(obj=y_train, file_name='y_train.pkl')

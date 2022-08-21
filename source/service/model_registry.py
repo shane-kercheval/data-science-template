@@ -16,21 +16,7 @@ from helpsk.sklearn_eval import MLExperimentResults
 from helpsk.utility import to_pickle
 
 
-def run(x_train, x_test, y_train, y_test, experiment_func, tracking_uri, experiment_name, tags):
-    tracker = Tracker(
-        experiment_name='test_experiment',
-        tags='BayesSearchCV'
-    )
-
-    with tracker:
-        results = experiment_func()
-        tracker.log_results(results)
-        tracker.log_model(model)
-        tracker.log_metric(metric)
-        tracker.log_pickle(results)
-
-
-class NotRunningTracker(Exception):
+class TrackerNotRunning(Exception):
     pass
 
 
@@ -87,12 +73,8 @@ class Tracker:
     def log_metric(self, metric, metric_value):
         mlflow.log_metric(metric, metric_value)
 
-    def log_results(self, results):
-        if self.last_run_name is None:
-            raise NotRunningTracker()
-        
-    def log_params(self, best_params):
-        params = best_params.copy()
+    def log_params(self, params):
+        params = params.copy()
         _ = params.pop('model', None)
         mlflow.log_params(params=params)
 
@@ -109,7 +91,7 @@ class Tracker:
             to_file: function that saves `obj` to the local file system given a path
         """
         if self.last_run_name is None:
-            raise NotRunningTracker()
+            raise TrackerNotRunning()
 
         try:
             Path(Tracker.TEMP_DIR).mkdir(exist_ok=False)
@@ -314,6 +296,13 @@ class Run(MLFlowEntity):
         assert entity.data.tags['mlflow.runName'] == run_name
         return cls(experiment_name=experiment_name, entity=entity, registry=registry)
 
+    @classmethod
+    def load_from_id(cls, run_id: str, registry: ModelRegistry):
+        entity = registry.client.get_run(run_id=run_id)
+        assert entity.data.tags['mlflow.runName'] == run_name
+        return cls(experiment_name=experiment_name, entity=entity, registry=registry)
+
+
     @property
     def name(self) -> str:
         return self.mlflow_entity.data.tags['mlflow.runName']
@@ -352,7 +341,7 @@ class Run(MLFlowEntity):
             artifact_name=artifact_name,
             read_from=read_from
         )
-    
+
     def register_model(self, model_name: str) -> ModelVersion:
         return self.mlflow_registry.register_model(run_id=self.id, model_name=model_name)
 
