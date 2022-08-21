@@ -247,8 +247,6 @@ class Run(MLFlowEntity):
     @property
     def metrics(self):
         return self.mlflow_entity.data.metrics
-    
-
 
 
 class Experiment(MLFlowEntity):

@@ -14,7 +14,7 @@ from source.service.experiment import Tracker, ModelRegistry, Experiment, Run
 @pytest.mark.usefixtures('start_ml_server')
 def test_services(tracking_uri, data_split):
     experiment_name = 'test_experiment'
-    score = 'roc_auc'
+    metric = 'roc_auc'
     x_train, x_test, y_train, y_test = data_split
 
     # experiment does not exist at this point
@@ -28,19 +28,21 @@ def test_services(tracking_uri, data_split):
         tags=dict(type='BayesSearchCV')
     )
 
-    def run_experiment(fake_score, fake_params):
+    def run_experiment(fake_metric, fake_params):
         with tracker:
             tracker.log_text("run 2", "run.txt")
             assert not os.path.isdir(Tracker.TEMP_DIR)
             tracker.log_model(model='mock')
-            tracker.log_metric(metric=score, metric_value=fake_score)
+            tracker.log_metric(metric=metric, metric_value=fake_metric)
             tracker.log_params(best_params=fake_params)
             tracker.log_pickle(obj=x_train, file_name='x_train.pkl')
             tracker.log_pickle(obj=x_test, file_name='x_test.pkl')
             tracker.log_pickle(obj=y_train, file_name='y_train.pkl')
             tracker.log_pickle(obj=y_test, file_name='y_test.pkl')
 
-    run_experiment(fake_score=0.9, fake_params={'param1': 'value', 'param2': 2})
+    run_experiment(fake_metric=0.9, fake_params={'param1': 'value', 'param2': 2})
+    
+    assert tracker.elapsed_seconds > 0
     assert tracker.last_run_name is not None
     exp = registry.get_experiment(experiment_name=experiment_name)
     assert exp is None  # value is cached
@@ -60,7 +62,11 @@ def test_services(tracking_uri, data_split):
     assert exp.name == experiment_name
     assert exp.id == '1'
     assert exp.last_run.name == tracker.last_run_name
-    assert exp.last_run.name == tracker.last_run_name
+    assert exp.last_run.experiment_name == experiment_name
+    assert exp.last_run.experiment_id == '1'
+    assert exp.last_run.start_time is not None
+    assert exp.last_run.end_time is not None
+    assert exp.last_run.metrics == {'roc_auc': 0.9}
 
     runs = exp.runs
     assert len(runs) == 1
@@ -69,13 +75,12 @@ def test_services(tracking_uri, data_split):
     assert runs[0].experiment_id == '1'
     assert runs[0].start_time is not None
     assert runs[0].end_time is not None
-    runs[0].mlflow_entity.data
     assert runs[0].metrics == {'roc_auc': 0.9}
 
 
 
 
-    run_experiment(fake_score=0.80, fake_params={'param1': 'value2', 'param2': 3})
+    run_experiment(fake_metric=0.80, fake_params={'param1': 'value2', 'param2': 3})
     assert tracker.last_run_name is not None
     exp = registry.get_experiment('test_experiment')
     registry.clear_cache()
