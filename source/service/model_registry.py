@@ -28,15 +28,15 @@ class Tracker:
             self,
             experiment_name: str,
             tags: str,
-            tracking_uri: str = 'http://0.0.0.0:1235'):
+            registry: ModelRegistry):
 
-        self.tracking_uri = tracking_uri
+        self.registry = registry
         self.experiment_name = experiment_name
         self.tags = tags
         self.start_time = None
         self.end_time = None
         self.last_run_name = None
-        mlflow.set_tracking_uri(tracking_uri)
+        mlflow.set_tracking_uri(registry.tracking_uri)
         mlflow.set_experiment(experiment_name)
 
     def __enter__(self):
@@ -56,6 +56,14 @@ class Tracker:
     def __exit__(self, exc_type, exc_value, traceback):
         self.end_time = datetime.datetime.now()
         mlflow.end_run()
+
+    @property
+    def last_run(self) -> Run:
+        return Run.load(
+            experiment_name=self.experiment_name,
+            run_name=self.last_run_name,
+            registry=self.registry
+        )
 
     @property
     def elapsed_seconds(self):
@@ -157,6 +165,7 @@ class ModelRegistry:
     """
     def __init__(self, tracking_uri):
         self.client = MlflowClient(tracking_uri=tracking_uri)
+        self.tracking_uri = tracking_uri
 
     def clear_cache(self):
         self.get_experiment.cache_clear()
@@ -166,6 +175,12 @@ class ModelRegistry:
         self.download_artifact.cache_clear()
         self.get_model_latest_verisons.cache_clear()
         self.get_production_model.cache_clear()
+
+    def track_experiment(self, experiment_name: str, tags: str) -> Tracker:
+        return Tracker(
+            experiment_name=experiment_name,
+            tags=tags,
+            registry=self)
 
     @cache
     def get_experiment(self, experiment_name: str) -> mlflow.entities.experiment.Experiment:
@@ -297,11 +312,10 @@ class Run(MLFlowEntity):
         return cls(experiment_name=experiment_name, entity=entity, registry=registry)
 
     @classmethod
-    def load_from_id(cls, run_id: str, registry: ModelRegistry):
+    def load_from_id(cls, experiment_name, run_id: str, registry: ModelRegistry):
         entity = registry.client.get_run(run_id=run_id)
-        assert entity.data.tags['mlflow.runName'] == run_name
+        assert entity.info.run_id == run_id
         return cls(experiment_name=experiment_name, entity=entity, registry=registry)
-
 
     @property
     def name(self) -> str:

@@ -36,13 +36,9 @@ def run_bayesian_search(
         n_repeats: int,
         random_state: int,
         tags: str):
-    tracker = Tracker(
-        experiment_name=experiment_name,
-        tags=tags,
-        tracking_uri=tracking_uri,
-    )
 
-    with tracker:
+    registry = ModelRegistry(tracking_uri=tracking_uri)
+    with registry.track_experiment(experiment_name=experiment_name, tags=tags) as tracker:
         bayes_search = BayesSearchCV(
             estimator=css.create_pipeline(data=x_train),
             search_spaces=css.create_search_space(iterations=n_iterations),
@@ -74,12 +70,12 @@ def run_bayesian_search(
         tracker.log_pickle(obj=y_train, file_name='y_train.pkl')
         tracker.log_pickle(obj=y_test, file_name='y_test.pkl')
 
-    registry = ModelRegistry(tracking_uri=tracking_uri)
-    last_run = Run.load(
-        experiment_name=experiment_name,
-        run_name=tracker.last_run_name,
-        registry=registry
-    )
+    last_run = tracker.last_run
+    # last_run = Run.load(
+    #     experiment_name=experiment_name,
+    #     run_name=tracker.last_run_name,
+    #     registry=registry
+    # )
 
     # if there is no model in production; put the current model in production
     # otherwise check if this score from this experiment is higher than the production score
@@ -90,7 +86,27 @@ def run_bayesian_search(
         registry.transition_model_to_stage(
             model_name=model_name,
             model_version=model_version.version,
-            to_stage=MLStage.Production,
+            to_stage=MLStage.PRODUCTION,
         )
     else:
-        production_run = Run.load(experiment_name=, run_name, register)
+        production_run = Run.load_from_id(
+            experiment_name=experiment_name,
+            run_id=production_model.run_id,
+            registery=registry
+        )
+
+        if bayes_search.best_score_ > production_run.metrics['score']:
+            model_version = last_run.register_model(model_name=model_name)
+            prod_version = registry.get_production_model(model_name=model_name)
+
+            _ = registry.transition_model_to_stage(
+                model_name=prod_version.name,
+                model_version=prod_version.version,
+                to_stage=MLStage.ARCHIVED
+            )
+
+            registry.transition_model_to_stage(
+                model_name=model_name,
+                model_version=model_version.version,
+                to_stage=MLStage.PRODUCTION,
+            )

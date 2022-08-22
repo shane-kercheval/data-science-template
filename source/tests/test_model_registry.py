@@ -28,8 +28,12 @@ def test_services(tracking_uri, data_split):
         with open(file_path, 'r') as handle:
             return handle.read()
 
-    tracker = Tracker(
-        tracking_uri=tracking_uri,
+    # tracker = Tracker(
+    #     tracking_uri=tracking_uri,
+    #     experiment_name=experiment_name,
+    #     tags=dict(type='BayesSearchCV')
+    # )
+    tracker = registry.track_experiment(
         experiment_name=experiment_name,
         tags=dict(type='BayesSearchCV')
     )
@@ -102,6 +106,28 @@ def test_services(tracking_uri, data_split):
     assert logged_value == 'run 1'
     downloaded_x_train = runs[0].download_artifact('x_train.pkl', read_from=pd.read_pickle)
     assert dataframes_match([downloaded_x_train, x_train])
+
+    run_from_name = Run.load(
+        experiment_name=experiment_name,
+        run_name=tracker.last_run_name,
+        registry=registry
+    )
+    assert run_from_name.name == exp.last_run.name
+    assert run_from_name.experiment_name == exp.last_run.experiment_name
+    assert run_from_name.experiment_id == exp.last_run.experiment_id
+    assert run_from_name.start_time == exp.last_run.start_time
+    assert run_from_name.end_time == exp.last_run.end_time
+
+    run_from_id = Run.load_from_id(
+        experiment_name=experiment_name,
+        run_id=exp.last_run.id,
+        registry=registry
+    )
+    assert run_from_id.name == exp.last_run.name
+    assert run_from_id.experiment_name == exp.last_run.experiment_name
+    assert run_from_id.experiment_id == exp.last_run.experiment_id
+    assert run_from_id.start_time == exp.last_run.start_time
+    assert run_from_id.end_time == exp.last_run.end_time
 
     ####
     # test model registry and transition
