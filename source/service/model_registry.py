@@ -56,13 +56,13 @@ class Tracker:
     def __exit__(self, exc_type, exc_value, traceback):
         self.end_time = datetime.datetime.now()
         mlflow.end_run()
+        self.registry.clear_cache()
 
     @property
     def last_run(self) -> Run:
-        return Run.load(
+        return self.registry.get_run_from_name(
             experiment_name=self.experiment_name,
             run_name=self.last_run_name,
-            registry=self.registry
         )
 
     @property
@@ -448,13 +448,13 @@ class Experiment(MLFlowEntity):
 
     @property
     def runs(self) -> list[Run]:
+        exp_runs = self.mlflow_registry._get_runs_from_experiment_id(experiment_id=self.experiment_id)  # noqa
         return [
-            Run.load(
+            self.mlflow_registry.get_run_from_name(
                 experiment_name=self.name,
                 run_name=x.data.tags['mlflow.runName'],
-                registry=self.mlflow_registry
             )
-            for x in self.mlflow_registry.get_runs_from_id(experiment_id=self.experiment_id)
+            for x in exp_runs
         ]
 
     @property
