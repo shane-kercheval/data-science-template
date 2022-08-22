@@ -380,7 +380,7 @@ class Run(MLFlowEntity):
         return self.mlflow_entity.data.tags['mlflow.runName']
 
     @property
-    def id(self):
+    def run_id(self):
         return self.mlflow_entity.info.run_id
 
     @property
@@ -443,7 +443,7 @@ class Experiment(MLFlowEntity):
         super().__init__(entity=entity, registry=registry)
 
     @property
-    def id(self):
+    def experiment_id(self):
         return self.mlflow_entity.experiment_id
 
     @property
