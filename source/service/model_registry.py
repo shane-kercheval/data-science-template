@@ -429,13 +429,14 @@ class Run(MLFlowEntity):
             to_stage=MLStage.PRODUCTION,
         )
 
-    # def set_model_stage(self, model_name, to_stage: str) -> ModelVersion:
-    #     model_version = self.mlflow_registry.get_model_latest_verisons(model_name=model_name)
-    #     return self.mlflow_registry.transition_model_to_stage(
-    #         model_name=model_name,
-    #         model_version=str(model_version.version),
-    #         to_stage=to_stage,
-    #     )
+    def set_model_stage(self, model_name, to_stage: MLStage) -> ModelVersion:
+        """Does not transition current models in production out of production"""
+        model_version = self.mlflow_registry.get_model_latest_verisons(model_name=model_name)
+        return self.mlflow_registry.transition_model_to_stage(
+            model_name=model_name,
+            model_version=model_version.version,
+            to_stage=to_stage,
+        )
 
 
 class Experiment(MLFlowEntity):
