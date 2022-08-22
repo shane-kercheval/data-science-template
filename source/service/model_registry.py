@@ -188,16 +188,6 @@ class ModelRegistry:
             registry=self)
 
     @cache
-    def _get_experiment_from_id(self, experiment_id: str) -> mlflow.entities.experiment.Experiment:
-        """
-        Return MLFlow Experiment based on experiment ID
-
-        Args:
-            experiment_id: the experiment id
-        """
-        return self.client.get_experiment(experiment_id=experiment_id)
-
-    @cache
     def _get_experiment_from_name(self, experiment_name: str) -> mlflow.entities.experiment.Experiment:  # noqa
         """
         Return MLFlow Experiment based on experiment name
@@ -206,6 +196,16 @@ class ModelRegistry:
             name: the experiment name
         """
         return self.client.get_experiment_from_name(name=experiment_name)
+
+    @cache
+    def _get_experiment_from_id(self, experiment_id: str) -> mlflow.entities.experiment.Experiment:
+        """
+        Return MLFlow Experiment based on experiment ID
+
+        Args:
+            experiment_id: the experiment id
+        """
+        return self.client.get_experiment(experiment_id=experiment_id)
 
     @cache
     def _get_runs_from_experiment_name(self, experiment_name: str) -> list[mlflow.entities.run.Run]:  # noqa
@@ -262,13 +262,11 @@ class ModelRegistry:
 
     def get_run_from_name(self, experiment_name: str, run_name: str) -> Run:
         run = self._get_run_from_name(experiment_name=experiment_name, run_name=run_name)
-        return Run(experiment_name=experiment_name, entity=run, registry=self)
+        return Run(entity=run, registry=self)
 
-    def get_run_from_id(self, experiment_name, run_id: str) -> Run:
+    def get_run_from_id(self, run_id: str) -> Run:
         run = self._get_run_id(run_id=run_id)
-        return Run(experiment_name=experiment_name, entity=run, registry=self)
-
-# TODO: remove need to pass experiment_name to create Run
+        return Run(entity=run, registry=self)
 
     @cache
     def get_model_latest_verisons(
@@ -306,12 +304,11 @@ class ModelRegistry:
         return versions[0]
 
     @cache
-    def get_production_run(self, experiment_name, model_name: str) -> Run:
+    def get_production_run(self, model_name: str) -> Run:
         # get model associated with production
         # get the run_id associated with that model
         production_model = self.get_production_model(model_name=model_name)
         return self.get_run_from_id(
-            experiment_name=experiment_name,
             run_id=production_model.run_id
         )
 
@@ -375,9 +372,8 @@ class MLFlowEntity:
 
 
 class Run(MLFlowEntity):
-    def __init__(self, experiment_name: str, entity: str, registry: ModelRegistry):
+    def __init__(self, entity: str, registry: ModelRegistry):
         super().__init__(entity=entity, registry=registry)
-        self.experiment_name = experiment_name
 
     @property
     def name(self) -> str:
@@ -422,6 +418,10 @@ class Run(MLFlowEntity):
         return self.mlflow_registry.register_model(run_id=self.id, model_name=model_name)
 
     def put_model_in_production(self, model_name: str) -> ModelVersion:
+        """
+        If there is currently a model in production, archive that model, then transition the
+        model associated with this run into production.
+        """
         model_verison = self.register_model(model_name=model_name)
         return self.mlflow_registry.transition_model_to_stage(
             model_name=model_name,

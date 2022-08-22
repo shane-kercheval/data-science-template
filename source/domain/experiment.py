@@ -64,9 +64,6 @@ def run_bayesian_search(
     if registry.get_production_model(model_name=model_name) is None:
         tracker.last_run.put_model_in_production(model_name=model_name)
     else:
-        production_run = registry.get_production_run(
-            experiment_name=experiment_name,
-            model_name=model_name,
-        )
+        production_run = registry.get_production_run(model_name=model_name)
         if bayes_search.best_score_ > production_run.metrics[score]:
             tracker.last_run.put_model_in_production(model_name=model_name)
