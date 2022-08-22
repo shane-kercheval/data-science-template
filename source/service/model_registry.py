@@ -164,14 +164,19 @@ class ModelRegistry:
     to read, use, test, etc.
     """
     def __init__(self, tracking_uri):
+        """
+        A ModelRegistry object
+        """
         self.client = MlflowClient(tracking_uri=tracking_uri)
         self.tracking_uri = tracking_uri
 
     def clear_cache(self):
-        self.get_experiment.cache_clear()
-        self.get_runs.cache_clear()
-        self.get_runs_from_id.cache_clear()
-        self.get_run.cache_clear()
+        self._get_experiment_from_name.cache_clear()
+        self._get_experiment_from_id.cache_clear()
+        self._get_runs_from_experiment_name.cache_clear()
+        self._get_runs_from_experiment_id.cache_clear()
+        self._get_run_from_name.cache_clear()
+        self._get_run_from_id.cache_clear()
         self.download_artifact.cache_clear()
         self.get_model_latest_verisons.cache_clear()
         self.get_production_model.cache_clear()
@@ -183,37 +188,87 @@ class ModelRegistry:
             registry=self)
 
     @cache
-    def get_experiment(self, experiment_name: str) -> mlflow.entities.experiment.Experiment:
-        return self.client.get_experiment_by_name(experiment_name)
+    def _get_experiment_from_id(self, experiment_id: str) -> mlflow.entities.experiment.Experiment:
+        """
+        Return MLFlow Experiment based on experiment ID
+
+        Args:
+            experiment_id: the experiment id
+        """
+        return self.client.get_experiment(experiment_id=experiment_id)
 
     @cache
-    def get_runs(self, experiment_name: str) -> list[mlflow.entities.run.Run]:
-        exp = self.get_experiment(experiment_name)
-        return list(self.get_runs_from_id(experiment_id=exp.experiment_id))
+    def _get_experiment_from_name(self, experiment_name: str) -> mlflow.entities.experiment.Experiment:  # noqa
+        """
+        Return MLFlow Experiment based on experiment name
+
+        Args:
+            name: the experiment name
+        """
+        return self.client.get_experiment_from_name(name=experiment_name)
 
     @cache
-    def get_runs_from_id(self, experiment_id: str) -> list[mlflow.entities.run.Run]:
+    def _get_runs_from_experiment_name(self, experiment_name: str) -> list[mlflow.entities.run.Run]:  # noqa
+        """
+        Return list of MLFlow Run objects based on experiment name
+
+        Args:
+            name: the experiment name
+        """
+        exp = self.get_experiment_from_name(name=experiment_name)
+        return list(self.get_runs_from_experiment_id(experiment_id=exp.experiment_id))
+
+    @cache
+    def _get_runs_from_experiment_id(self, experiment_id: str) -> list[mlflow.entities.run.Run]:
+        """
+        Return list of MLFlow Run objects based on experiment name
+
+        Args:
+            experiment_id: the experiment id
+        """
         return list(self.client.search_runs([experiment_id]))
 
     @cache
-    def get_run(self, experiment_name: str, run_name: str) -> mlflow.entities.run.Run:
+    def _get_run_from_name(self, experiment_name: str, run_name: str) -> mlflow.entities.run.Run:
+        """
+        Return MLFlow Run object based on run name (requires experiment_name)
+
+        Args:
+            experiment_name: the name of the experiment
+            run_name: the name of the run
+        """
         return next(
             x for x in self.get_runs(experiment_name)
             if x.data.tags['mlflow.runName'] == run_name
         )
 
     @cache
-    def download_artifact(
-            self,
-            run_id,
-            artifact_name: str,
-            read_from: Callable[[object, str], None]):
-        return read_from(self.client.download_artifacts(run_id=run_id, path=artifact_name))
+    def _get_run_from_id(self, run_id: str) -> mlflow.entities.run.Run:
+        """
+        Return MLFlow Run object based on run id
 
-    def register_model(self, run_id: str, model_name: str) -> ModelVersion:
-        model_version = mlflow.register_model(model_uri=f"runs:/{run_id}/model", name=model_name)
-        self.clear_cache()
-        return model_version
+        Args:
+            run_id: the id of the run
+        """
+        return self.client.get_run(run_id=run_id)
+
+    def get_experiment_from_name(self, experiment_name: str) -> Experiment:
+        experiment = self._get_experiment_from_name(experiment_name=experiment_name)
+        return Experiment(entity=experiment, registry=self)  # noqa
+
+    def get_experiment_from_id(self, experiment_id: str) -> Experiment:
+        experiment = self._get_experiment_from_id(experiment_id=experiment_id)
+        return Experiment(entity=experiment, registry=self)  # noqa
+
+    def get_run_from_name(self, experiment_name: str, run_name: str) -> Run:
+        run = self._get_run_from_name(experiment_name=experiment_name, run_name=run_name)
+        return Run(experiment_name=experiment_name, entity=run, registry=self)
+
+    def get_run_from_id(self, experiment_name, run_id: str) -> Run:
+        run = self._get_run_id(run_id=run_id)
+        return Run(experiment_name=experiment_name, entity=run, registry=self)
+
+# TODO: remove need to pass experiment_name to create Run
 
     @cache
     def get_model_latest_verisons(
@@ -250,11 +305,35 @@ class ModelRegistry:
         assert len(versions) == 1
         return versions[0]
 
+    @cache
+    def get_production_run(self, experiment_name, model_name: str) -> Run:
+        # get model associated with production
+        # get the run_id associated with that model
+        production_model = self.get_production_model(model_name=model_name)
+        return self.get_run_from_id(
+            experiment_name=experiment_name,
+            run_id=production_model.run_id
+        )
+
+    @cache
+    def download_artifact(
+            self,
+            run_id,
+            artifact_name: str,
+            read_from: Callable[[object, str], None]):
+        return read_from(self.client.download_artifacts(run_id=run_id, path=artifact_name))
+
+    def register_model(self, run_id: str, model_name: str) -> ModelVersion:
+        model_version = mlflow.register_model(model_uri=f"runs:/{run_id}/model", name=model_name)
+        self.clear_cache()
+        return model_version
+
     def transition_model_to_stage(
             self,
             model_name: str,
             model_version: str,
             to_stage: MLStage) -> ModelVersion:
+
         model_version = self.client.transition_model_version_stage(
             name=model_name,
             version=model_version,
@@ -263,25 +342,23 @@ class ModelRegistry:
         self.clear_cache()
         return model_version
 
-    # def transition_last_model(model_name: str, stage: str) -> ModelVersion:
-    #     """
-    #     Register the model associated with the last active run and transition the stage to `stage`.
+    def put_model_in_production(self, model_name, model_version) -> ModelVersion:
+        # get model that is currently in production
+        # if model is in production, move to archive
+        # put new model into production
+        production_model = self.get_production_model(model_name=model_name)
+        if production_model is not None:
+            _ = self.transition_model_to_stage(
+                model_name=production_model.name,
+                model_version=production_model.version,
+                to_stage=MLStage.ARCHIVED
+            )
 
-    #     args:
-    #         ml_client: MlflowClient object
-    #         model_name: name of the registered model
-    #         stage: stage to transition model in last active run. (Staging|Archived|Production|None)
-    #     """
-    #     model_version = mlflow.register_model(
-    #         model_uri=f"runs:/{mlflow.last_active_run().info.run_id}/model",
-    #         name=model_name
-    #     )
-    #     _ = ml_client.transition_model_version_stage(
-    #         name=model_name,
-    #         version=str(model_version.version),
-    #         stage=stage,
-    #     )
-    #     return model_version
+        return self.transition_model_to_stage(
+            model_name=model_name,
+            model_version=model_version,
+            to_stage=MLStage.PRODUCTION,
+        )
 
 
 class MLFlowEntity:
@@ -298,24 +375,9 @@ class MLFlowEntity:
 
 
 class Run(MLFlowEntity):
-    def __init__(self, experiment_name, entity, registry: ModelRegistry):
+    def __init__(self, experiment_name: str, entity: str, registry: ModelRegistry):
         super().__init__(entity=entity, registry=registry)
         self.experiment_name = experiment_name
-
-    @classmethod
-    def load(cls, experiment_name: str, run_name: str, registry: ModelRegistry):
-        entity = registry.get_run(
-            experiment_name=experiment_name,
-            run_name=run_name,
-        )
-        assert entity.data.tags['mlflow.runName'] == run_name
-        return cls(experiment_name=experiment_name, entity=entity, registry=registry)
-
-    @classmethod
-    def load_from_id(cls, experiment_name, run_id: str, registry: ModelRegistry):
-        entity = registry.client.get_run(run_id=run_id)
-        assert entity.info.run_id == run_id
-        return cls(experiment_name=experiment_name, entity=entity, registry=registry)
 
     @property
     def name(self) -> str:
@@ -359,6 +421,14 @@ class Run(MLFlowEntity):
     def register_model(self, model_name: str) -> ModelVersion:
         return self.mlflow_registry.register_model(run_id=self.id, model_name=model_name)
 
+    def put_model_in_production(self, model_name: str) -> ModelVersion:
+        model_verison = self.register_model(model_name=model_name)
+        return self.mlflow_registry.transition_model_to_stage(
+            model_name=model_name,
+            model_version=model_verison.version,
+            to_stage=MLStage.PRODUCTION,
+        )
+
     # def set_model_stage(self, model_name, to_stage: str) -> ModelVersion:
     #     model_version = self.mlflow_registry.get_model_latest_verisons(model_name=model_name)
     #     return self.mlflow_registry.transition_model_to_stage(
@@ -371,14 +441,6 @@ class Run(MLFlowEntity):
 class Experiment(MLFlowEntity):
     def __init__(self, entity, registry: ModelRegistry):
         super().__init__(entity=entity, registry=registry)
-
-    @classmethod
-    def load(cls, experiment_name: str, registry: ModelRegistry):
-        entity = registry.get_experiment(experiment_name=experiment_name)
-        if entity is None:
-            return None
-        assert entity.name == experiment_name
-        return cls(entity=entity, registry=registry)
 
     @property
     def id(self):

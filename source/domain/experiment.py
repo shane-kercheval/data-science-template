@@ -2,23 +2,14 @@
 """
 This file contains the logic for running ML experiments using BayesSearchCV.
 """
-import datetime
-import os
 import logging
 
 import pandas as pd
-import mlflow
-import mlflow.exceptions
 from helpsk.sklearn_eval import MLExperimentResults
-from helpsk.utility import read_pickle
-from mlflow.tracking import MlflowClient
 from sklearn.model_selection import RepeatedKFold
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import label_binarize
 from skopt import BayesSearchCV
 
-from helpsk.logging import log_function_call, log_timer
-from source.service.model_registry import Tracker, ModelRegistry, MLStage, Run
+from source.service.model_registry import ModelRegistry
 import source.domain.classification_search_space as css
 
 
@@ -70,43 +61,12 @@ def run_bayesian_search(
         tracker.log_pickle(obj=y_train, file_name='y_train.pkl')
         tracker.log_pickle(obj=y_test, file_name='y_test.pkl')
 
-    last_run = tracker.last_run
-    # last_run = Run.load(
-    #     experiment_name=experiment_name,
-    #     run_name=tracker.last_run_name,
-    #     registry=registry
-    # )
-
-    # if there is no model in production; put the current model in production
-    # otherwise check if this score from this experiment is higher than the production score
-    # if so, put this model into production
-    production_model = registry.get_production_model(model_name=model_name)
-    if production_model is None:
-        model_version = last_run.register_model(model_name=model_name)
-        registry.transition_model_to_stage(
-            model_name=model_name,
-            model_version=model_version.version,
-            to_stage=MLStage.PRODUCTION,
-        )
+    if registry.get_production_model(model_name=model_name) is None:
+        tracker.last_run.put_model_in_production(model_name=model_name)
     else:
-        production_run = Run.load_from_id(
+        production_run = registry.get_production_run(
             experiment_name=experiment_name,
-            run_id=production_model.run_id,
-            registery=registry
+            model_name=model_name,
         )
-
-        if bayes_search.best_score_ > production_run.metrics['score']:
-            model_version = last_run.register_model(model_name=model_name)
-            prod_version = registry.get_production_model(model_name=model_name)
-
-            _ = registry.transition_model_to_stage(
-                model_name=prod_version.name,
-                model_version=prod_version.version,
-                to_stage=MLStage.ARCHIVED
-            )
-
-            registry.transition_model_to_stage(
-                model_name=model_name,
-                model_version=model_version.version,
-                to_stage=MLStage.PRODUCTION,
-            )
+        if bayes_search.best_score_ > production_run.metrics[score]:
+            tracker.last_run.put_model_in_production(model_name=model_name)
