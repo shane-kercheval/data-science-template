@@ -29,7 +29,7 @@ def run_bayesian_search(
         tags: str):
 
     registry = ModelRegistry(tracking_uri=tracking_uri)
-    with registry.track_experiment(experiment_name=experiment_name, tags=tags) as tracker:
+    with registry.track_experiment(exp_name=experiment_name, tags=tags) as tracker:
         bayes_search = BayesSearchCV(
             estimator=css.create_pipeline(data=x_train),
             search_spaces=css.create_search_space(iterations=n_iterations),

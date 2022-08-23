@@ -1,40 +1,52 @@
 import pytest
 import os
-import mlflow
-import mlflow.exceptions
 import pandas as pd
 
 from helpsk.validation import dataframes_match
-from source.service.model_registry import MLStage, Tracker, ModelRegistry, Experiment, Run
+from source.service.model_registry import MLStage, Tracker, ModelRegistry, Experiment
 
 
 @pytest.mark.usefixtures('start_ml_server')
-def test_services(tracking_uri, data_split):
+def test_registry(tracking_uri, data_split):
     experiment_name = 'test_experiment'
+    model_name = 'credit_model'
     metric = 'roc_auc'
     x_train, x_test, y_train, y_test = data_split
 
     # experiment does not exist at this point
     registry = ModelRegistry(tracking_uri=tracking_uri)
-    exp = registry.get_experiment(experiment_name=experiment_name)
+    exp = registry.get_experiment_by_name(exp_name=experiment_name)
+    assert exp is None
+    exp = registry.get_experiment_by_id(exp_id='1')
     assert exp is None
 
-    versions = registry.get_model_latest_verisons(model_name='credit_model')
+    run = registry.get_run_by_name(exp_name=experiment_name, run_name='not exists')
+    assert run is None
+    run = registry.get_run_by_id(run_id='not exists')
+    assert run is None
+
+    versions = registry.get_model_latest_verisons(model_name=model_name)
     assert len(versions) == 0
-    version = registry.get_production_model(model_name='credit_model')
+
+    version = registry.get_production_model(model_name=model_name)
     assert version is None
+
+    run = registry.get_production_run(model_name=model_name)
+    assert run is None
+
+    artifact = registry.download_artifact(
+        run_id='id',
+        artifact_name='art',
+        read_from=pd.read_pickle
+    )
+    assert artifact is None
 
     def read_text(file_path):
         with open(file_path, 'r') as handle:
             return handle.read()
 
-    # tracker = Tracker(
-    #     tracking_uri=tracking_uri,
-    #     experiment_name=experiment_name,
-    #     tags=dict(type='BayesSearchCV')
-    # )
     tracker = registry.track_experiment(
-        experiment_name=experiment_name,
+        exp_name=experiment_name,
         tags=dict(type='BayesSearchCV')
     )
 
@@ -62,26 +74,13 @@ def test_services(tracking_uri, data_split):
 
     assert tracker.elapsed_seconds > 0
     assert tracker.last_run_name is not None
-    exp = registry.get_experiment(experiment_name=experiment_name)
-    assert exp is None  # value is cached
-    exp = Experiment.load(experiment_name=experiment_name, registry=registry)
-    assert exp is None
-
-    registry.clear_cache()
-
-    exp = registry.get_experiment(experiment_name=experiment_name)
-    assert exp is not None
-    assert isinstance(exp, mlflow.entities.experiment.Experiment)
-    assert exp.experiment_id == '1'
-    assert exp.name == experiment_name
-
-    exp = Experiment.load(experiment_name=experiment_name, registry=registry)
+    exp = registry.get_experiment_by_name(exp_name=experiment_name)
     assert exp is not None
     assert exp.name == experiment_name
-    assert exp.id == '1'
+    assert exp.exp_id == '1'
     assert exp.last_run.name == tracker.last_run_name
-    assert exp.last_run.experiment_name == experiment_name
-    assert exp.last_run.experiment_id == '1'
+    assert exp.last_run.exp_name == experiment_name
+    assert exp.last_run.exp_id == '1'
     assert exp.last_run.start_time is not None
     assert exp.last_run.end_time is not None
     assert exp.last_run.metrics == {'roc_auc': 0.9}
@@ -95,8 +94,8 @@ def test_services(tracking_uri, data_split):
     runs = exp.runs
     assert len(runs) == 1
     assert runs[0].name == tracker.last_run_name
-    assert runs[0].experiment_name == experiment_name
-    assert runs[0].experiment_id == '1'
+    assert runs[0].exp_name == experiment_name
+    assert runs[0].exp_id == '1'
     assert runs[0].start_time is not None
     assert runs[0].end_time is not None
     assert runs[0].metrics == {'roc_auc': 0.9}
@@ -107,53 +106,61 @@ def test_services(tracking_uri, data_split):
     downloaded_x_train = runs[0].download_artifact('x_train.pkl', read_from=pd.read_pickle)
     assert dataframes_match([downloaded_x_train, x_train])
 
-    run_from_name = Run.load(
-        experiment_name=experiment_name,
+    run_by_name = registry.get_run_by_name(
+        exp_name=experiment_name,
         run_name=tracker.last_run_name,
-        registry=registry
     )
-    assert run_from_name.name == exp.last_run.name
-    assert run_from_name.experiment_name == exp.last_run.experiment_name
-    assert run_from_name.experiment_id == exp.last_run.experiment_id
-    assert run_from_name.start_time == exp.last_run.start_time
-    assert run_from_name.end_time == exp.last_run.end_time
+    assert run_by_name.name == exp.last_run.name
+    assert run_by_name.exp_name == exp.last_run.exp_name
+    assert run_by_name.exp_id == exp.last_run.exp_id
+    assert run_by_name.start_time == exp.last_run.start_time
+    assert run_by_name.end_time == exp.last_run.end_time
 
-    run_from_id = Run.load_from_id(
-        experiment_name=experiment_name,
-        run_id=exp.last_run.id,
-        registry=registry
-    )
-    assert run_from_id.name == exp.last_run.name
-    assert run_from_id.experiment_name == exp.last_run.experiment_name
-    assert run_from_id.experiment_id == exp.last_run.experiment_id
-    assert run_from_id.start_time == exp.last_run.start_time
-    assert run_from_id.end_time == exp.last_run.end_time
+    run_by_id = registry.get_run_by_id(run_id=exp.last_run.run_id)
+    assert run_by_id.name == exp.last_run.name
+    assert run_by_id.exp_name == exp.last_run.exp_name
+    assert run_by_id.exp_id == exp.last_run.exp_id
+    assert run_by_id.start_time == exp.last_run.start_time
+    assert run_by_id.end_time == exp.last_run.end_time
 
     ####
     # test model registry and transition
     ####
     # at this point there are no models yet
-    versions = registry.get_model_latest_verisons(model_name='credit_model')
+    versions = registry.get_model_latest_verisons(model_name=model_name)
     assert len(versions) == 0
-    version = registry.get_production_model(model_name='credit_model')
+    version = registry.get_production_model(model_name=model_name)
     assert version is None
     # register model
-    model_version = exp.last_run.register_model(model_name='credit_model')
-    assert model_version.name == 'credit_model'
+    assert exp.last_run.model_version is None
+    assert exp.runs[0].model_version is None
+    model_version = exp.last_run.register_model(model_name=model_name)
+    assert exp.last_run.model_version.version == '1'
+    assert exp.runs[0].model_version.version == '1'
+    assert model_version.name == model_name
     assert model_version.version == '1'
     assert model_version.current_stage == 'None'
     # check that we can get model from registry
-    versions = registry.get_model_latest_verisons(model_name='credit_model')
+    versions = registry.get_model_latest_verisons(model_name=model_name)
     assert len(versions) == 1
     assert versions[0].name == model_version.name
     assert versions[0].version == model_version.version
     assert versions[0].current_stage == model_version.current_stage
     # there shouldn't be any production models
-    version = registry.get_production_model(model_name='credit_model')
+    version = registry.get_production_model(model_name=model_name)
     assert version is None
-    # transition newly registered model into production
+    # transition newly registered model into production, then archived, then production
+    registered_version = exp.last_run.put_model_in_production(model_name=model_name)
+    # if we've already registered the model (above) then we shouldn't re-register, so check
+    # that the model version is the same as it was
+    assert registered_version.version == model_version.version
+
+
+
+
+
     new_version = registry.transition_model_to_stage(
-        model_name='credit_model',
+        model_name=model_name,
         model_version=model_version.version,
         to_stage=MLStage.PRODUCTION
     )
@@ -161,7 +168,7 @@ def test_services(tracking_uri, data_split):
     assert new_version.version == model_version.version
     assert new_version.current_stage == MLStage.PRODUCTION.value
 
-    version = registry.get_production_model(model_name='credit_model')
+    version = registry.get_production_model(model_name=model_name)
     assert version.name == model_version.name
     assert version.version == model_version.version
     assert version.current_stage == MLStage.PRODUCTION.value
@@ -199,7 +206,7 @@ def test_services(tracking_uri, data_split):
     registry.clear_cache()
     assert exp.last_run.name == tracker.last_run_name
     assert len(exp.runs) == 2
-    assert exp.last_run.experiment_name == experiment_name
+    assert exp.last_run.exp_name == experiment_name
     assert exp.last_run.experiment_id == '1'
     assert exp.last_run.start_time is not None
     assert exp.last_run.start_time > first_exp_start_time
@@ -217,7 +224,7 @@ def test_services(tracking_uri, data_split):
     runs = exp.runs
     assert len(runs) == 2
     assert runs[0].name == tracker.last_run_name
-    assert runs[0].experiment_name == experiment_name
+    assert runs[0].exp_name == experiment_name
     assert runs[0].experiment_id == '1'
     assert runs[0].start_time is not None
     assert runs[0].end_time is not None
@@ -233,25 +240,25 @@ def test_services(tracking_uri, data_split):
     # test model registry and transition
     ####
     # there should be one model version from the last run
-    versions = registry.get_model_latest_verisons(model_name='credit_model')
+    versions = registry.get_model_latest_verisons(model_name=model_name)
     assert len(versions) == 1
     assert versions[0].version == '1'
 
     # register model, check that the version is 2
-    model_version = exp.last_run.register_model(model_name='credit_model')
-    assert model_version.name == 'credit_model'
+    model_version = exp.last_run.register_model(model_name=model_name)
+    assert model_version.name == model_name
     assert model_version.version == '2'
     assert model_version.current_stage == 'None'
 
     # check that we can get model from registry
-    versions = registry.get_model_latest_verisons(model_name='credit_model')
+    versions = registry.get_model_latest_verisons(model_name=model_name)
     assert len(versions) == 2
     assert versions[1].name == model_version.name
     assert versions[1].version == model_version.version
     assert versions[1].current_stage == model_version.current_stage
 
     # get the production model, check that the version is still 1
-    prod_version = registry.get_production_model(model_name='credit_model')
+    prod_version = registry.get_production_model(model_name=model_name)
     assert prod_version.name == model_version.name
     assert prod_version.version == '1'
     assert prod_version.current_stage == MLStage.PRODUCTION.value
@@ -278,7 +285,7 @@ def test_services(tracking_uri, data_split):
     assert new_version.version == model_version.version
     assert new_version.current_stage == MLStage.PRODUCTION.value
 
-    version = registry.get_production_model(model_name='credit_model')
+    version = registry.get_production_model(model_name=model_name)
     assert model_version.version == '2'
     assert version.name == model_version.name
     assert version.version == model_version.version

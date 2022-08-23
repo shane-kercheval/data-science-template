@@ -1,4 +1,5 @@
 from __future__ import annotations
+from nis import cat
 import os
 from typing import Callable
 from collections.abc import Iterable
@@ -26,18 +27,18 @@ class Tracker:
 
     def __init__(
             self,
-            experiment_name: str,
+            exp_name: str,
             tags: str,
             registry: ModelRegistry):
 
         self.registry = registry
-        self.experiment_name = experiment_name
+        self.exp_name = exp_name
         self.tags = tags
         self.start_time = None
         self.end_time = None
         self.last_run_name = None
         mlflow.set_tracking_uri(registry.tracking_uri)
-        mlflow.set_experiment(experiment_name)
+        mlflow.set_experiment(exp_name)
 
     def __enter__(self):
         """
@@ -60,8 +61,8 @@ class Tracker:
 
     @property
     def last_run(self) -> Run:
-        return self.registry.get_run_from_name(
-            experiment_name=self.experiment_name,
+        return self.registry.get_run_by_name(
+            exp_name=self.exp_name,
             run_name=self.last_run_name,
         )
 
@@ -171,101 +172,117 @@ class ModelRegistry:
         self.tracking_uri = tracking_uri
 
     def clear_cache(self):
-        self._get_experiment_from_name.cache_clear()
-        self._get_experiment_from_id.cache_clear()
-        self._get_runs_from_experiment_name.cache_clear()
-        self._get_runs_from_experiment_id.cache_clear()
-        self._get_run_from_name.cache_clear()
-        self._get_run_from_id.cache_clear()
+        self._get_experiment_by_name.cache_clear()
+        self._get_experiment_by_id.cache_clear()
+        self._get_runs_by_experiment_name.cache_clear()
+        self._get_runs_by_experiment_id.cache_clear()
+        self._get_run_by_name.cache_clear()
+        self._get_run_by_id.cache_clear()
         self.download_artifact.cache_clear()
         self.get_model_latest_verisons.cache_clear()
         self.get_production_model.cache_clear()
 
-    def track_experiment(self, experiment_name: str, tags: str) -> Tracker:
+    def track_experiment(self, exp_name: str, tags: str) -> Tracker:
         return Tracker(
-            experiment_name=experiment_name,
+            exp_name=exp_name,
             tags=tags,
             registry=self)
 
     @cache
-    def _get_experiment_from_name(self, experiment_name: str) -> mlflow.entities.experiment.Experiment:  # noqa
+    def _get_experiment_by_name(self, exp_name: str) -> mlflow.entities.experiment.Experiment:  # noqa
         """
         Return MLFlow Experiment based on experiment name
 
         Args:
             name: the experiment name
         """
-        return self.client.get_experiment_from_name(name=experiment_name)
+        return self.client.get_experiment_by_name(name=exp_name)
 
     @cache
-    def _get_experiment_from_id(self, experiment_id: str) -> mlflow.entities.experiment.Experiment:
+    def _get_experiment_by_id(self, exp_id: str) -> mlflow.entities.experiment.Experiment:
         """
         Return MLFlow Experiment based on experiment ID
 
         Args:
-            experiment_id: the experiment id
+            exp_id: the experiment id
         """
-        return self.client.get_experiment(experiment_id=experiment_id)
+        try:
+            return self.client.get_experiment(experiment_id=exp_id)
+        except mlflow.exceptions.RestException:
+            return None
 
     @cache
-    def _get_runs_from_experiment_name(self, experiment_name: str) -> list[mlflow.entities.run.Run]:  # noqa
+    def _get_runs_by_experiment_name(self, exp_name: str) -> list[mlflow.entities.run.Run]:  # noqa
         """
         Return list of MLFlow Run objects based on experiment name
 
         Args:
             name: the experiment name
         """
-        exp = self.get_experiment_from_name(name=experiment_name)
-        return list(self.get_runs_from_experiment_id(experiment_id=exp.experiment_id))
+        exp = self._get_experiment_by_name(exp_name=exp_name)
+        if exp is None:
+            return None
+        return list(self._get_runs_by_experiment_id(exp_id=exp.experiment_id))
 
     @cache
-    def _get_runs_from_experiment_id(self, experiment_id: str) -> list[mlflow.entities.run.Run]:
+    def _get_runs_by_experiment_id(self, exp_id: str) -> list[mlflow.entities.run.Run]:
         """
         Return list of MLFlow Run objects based on experiment name
 
         Args:
-            experiment_id: the experiment id
+            exp_id: the experiment id
         """
-        return list(self.client.search_runs([experiment_id]))
+        return list(self.client.search_runs([exp_id]))
 
     @cache
-    def _get_run_from_name(self, experiment_name: str, run_name: str) -> mlflow.entities.run.Run:
+    def _get_run_by_name(self, exp_name: str, run_name: str) -> mlflow.entities.run.Run:
         """
-        Return MLFlow Run object based on run name (requires experiment_name)
+        Return MLFlow Run object based on run name (requires experiment name)
 
         Args:
-            experiment_name: the name of the experiment
+            exp_name: the name of the experiment
             run_name: the name of the run
         """
-        return next(
-            x for x in self.get_runs(experiment_name)
-            if x.data.tags['mlflow.runName'] == run_name
-        )
+        runs = self._get_runs_by_experiment_name(exp_name=exp_name)
+        if runs is None:
+            return None
+        return next(x for x in runs if x.data.tags['mlflow.runName'] == run_name)
 
     @cache
-    def _get_run_from_id(self, run_id: str) -> mlflow.entities.run.Run:
+    def _get_run_by_id(self, run_id: str) -> mlflow.entities.run.Run:
         """
         Return MLFlow Run object based on run id
 
         Args:
             run_id: the id of the run
         """
-        return self.client.get_run(run_id=run_id)
+        try:
+            return self.client.get_run(run_id=run_id)
+        except mlflow.exceptions.MlflowException:
+            return None
 
-    def get_experiment_from_name(self, experiment_name: str) -> Experiment:
-        experiment = self._get_experiment_from_name(experiment_name=experiment_name)
+    def get_experiment_by_name(self, exp_name: str) -> Experiment:
+        experiment = self._get_experiment_by_name(exp_name=exp_name)
+        if experiment is None:
+            return None
         return Experiment(entity=experiment, registry=self)  # noqa
 
-    def get_experiment_from_id(self, experiment_id: str) -> Experiment:
-        experiment = self._get_experiment_from_id(experiment_id=experiment_id)
+    def get_experiment_by_id(self, exp_id: str) -> Experiment:
+        experiment = self._get_experiment_by_id(exp_id=exp_id)
+        if experiment is None:
+            return None
         return Experiment(entity=experiment, registry=self)  # noqa
 
-    def get_run_from_name(self, experiment_name: str, run_name: str) -> Run:
-        run = self._get_run_from_name(experiment_name=experiment_name, run_name=run_name)
+    def get_run_by_name(self, exp_name: str, run_name: str) -> Run:
+        run = self._get_run_by_name(exp_name=exp_name, run_name=run_name)
+        if run is None:
+            return None
         return Run(entity=run, registry=self)
 
-    def get_run_from_id(self, run_id: str) -> Run:
-        run = self._get_run_id(run_id=run_id)
+    def get_run_by_id(self, run_id: str) -> Run:
+        run = self._get_run_by_id(run_id=run_id)
+        if run is None:
+            return None
         return Run(entity=run, registry=self)
 
     @cache
@@ -308,7 +325,9 @@ class ModelRegistry:
         # get model associated with production
         # get the run_id associated with that model
         production_model = self.get_production_model(model_name=model_name)
-        return self.get_run_from_id(
+        if production_model is None:
+            return None
+        return self.get_run_by_id(
             run_id=production_model.run_id
         )
 
@@ -318,7 +337,11 @@ class ModelRegistry:
             run_id,
             artifact_name: str,
             read_from: Callable[[object, str], None]):
-        return read_from(self.client.download_artifacts(run_id=run_id, path=artifact_name))
+        try:
+            path = self.client.download_artifacts(run_id=run_id, path=artifact_name)
+            return read_from(path)
+        except mlflow.exceptions.RestException:
+            return None
 
     def register_model(self, run_id: str, model_name: str) -> ModelVersion:
         model_version = mlflow.register_model(model_uri=f"runs:/{run_id}/model", name=model_name)
@@ -374,6 +397,7 @@ class MLFlowEntity:
 class Run(MLFlowEntity):
     def __init__(self, entity: str, registry: ModelRegistry):
         super().__init__(entity=entity, registry=registry)
+        self.model_version = None  # gets set when model is registered
 
     @property
     def name(self) -> str:
@@ -384,8 +408,12 @@ class Run(MLFlowEntity):
         return self.mlflow_entity.info.run_id
 
     @property
-    def experiment_id(self):
+    def exp_id(self):
         return self.mlflow_entity.info.experiment_id
+
+    @property
+    def exp_name(self):
+        return self.mlflow_registry._get_experiment_by_id(self.exp_id).name
 
     @property
     def start_time(self):
@@ -409,13 +437,22 @@ class Run(MLFlowEntity):
 
     def download_artifact(self, artifact_name: str, read_from: Callable[[object, str], None]):
         return self.mlflow_registry.download_artifact(
-            run_id=self.id,
+            run_id=self.run_id,
             artifact_name=artifact_name,
             read_from=read_from
         )
 
     def register_model(self, model_name: str) -> ModelVersion:
-        return self.mlflow_registry.register_model(run_id=self.id, model_name=model_name)
+        """
+        Only registers the model if the model has not already been registered (by this locally
+        created object; i.e. doesn't check MLFlow, just caches the result locally when registering)
+        """
+        if self.model_version is None:
+            self.model_version = self.mlflow_registry.register_model(
+                run_id=self.run_id,
+                model_name=model_name
+            )
+        return self.model_version
 
     def put_model_in_production(self, model_name: str) -> ModelVersion:
         """
@@ -423,10 +460,9 @@ class Run(MLFlowEntity):
         model associated with this run into production.
         """
         model_verison = self.register_model(model_name=model_name)
-        return self.mlflow_registry.transition_model_to_stage(
+        return self.mlflow_registry.put_model_in_production(
             model_name=model_name,
             model_version=model_verison.version,
-            to_stage=MLStage.PRODUCTION,
         )
 
     def set_model_stage(self, model_name, to_stage: MLStage) -> ModelVersion:
@@ -444,15 +480,15 @@ class Experiment(MLFlowEntity):
         super().__init__(entity=entity, registry=registry)
 
     @property
-    def experiment_id(self):
+    def exp_id(self):
         return self.mlflow_entity.experiment_id
 
     @property
     def runs(self) -> list[Run]:
-        exp_runs = self.mlflow_registry._get_runs_from_experiment_id(experiment_id=self.experiment_id)  # noqa
+        exp_runs = self.mlflow_registry._get_runs_by_experiment_id(exp_id=self.exp_id)  # noqa
         return [
-            self.mlflow_registry.get_run_from_name(
-                experiment_name=self.name,
+            self.mlflow_registry.get_run_by_name(
+                exp_name=self.name,
                 run_name=x.data.tags['mlflow.runName'],
             )
             for x in exp_runs
