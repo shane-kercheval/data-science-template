@@ -17,17 +17,12 @@ logging.config.fileConfig(
 )
 
 
-@pytest.fixture
-def tracking_uri() -> str:
-    return "http://0.0.0.0:1235"
-
-
-@pytest.fixture
+@pytest.fixture(scope='session')
 def credit_data() -> pd.DataFrame:
     return pd.read_pickle('data/processed/credit.pkl')
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def data_split(credit_data) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     y_full = credit_data['target']
     x_full = credit_data.drop(columns='target')
@@ -43,6 +38,11 @@ def data_split(credit_data) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, p
 
 
 @pytest.fixture(scope='session')
+def tracking_uri() -> str:
+    return "http://0.0.0.0:1235"
+
+
+@pytest.fixture(scope='module')
 def ml_server_directory(tmpdir_factory):
     test_dir = str(tmpdir_factory.mktemp('ml_server'))
     logging.info(f'ml_server_directory: creating {test_dir}')
@@ -54,8 +54,8 @@ def ml_server_directory(tmpdir_factory):
         shutil.rmtree(test_dir)
 
 
-@pytest.fixture(scope='session')
-def start_ml_server(ml_server_directory):
+@pytest.fixture(scope='module')
+def start_ml_server(ml_server_directory, tracking_uri):
     os.system("lsof -t -i:1235 | xargs -r kill")
     command = f"""
         mlflow server
@@ -66,7 +66,7 @@ def start_ml_server(ml_server_directory):
     """
     daemon = subprocess.Popen(command.split())
     logging.info(f'start_ml_server: starting server; process {daemon.pid}')
-    wait_for_service_to_start("http://0.0.0.0:1235")
+    wait_for_service_to_start(tracking_uri)
     yield
     logging.info(f'start_ml_server: stopping server; process {daemon.pid}')
     daemon.kill()
