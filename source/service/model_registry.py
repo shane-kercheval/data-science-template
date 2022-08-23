@@ -181,6 +181,7 @@ class ModelRegistry:
         self.download_artifact.cache_clear()
         self.get_model_latest_verisons.cache_clear()
         self.get_production_model.cache_clear()
+        self.get_production_run.cache_clear()
 
     def track_experiment(self, exp_name: str, tags: str) -> Tracker:
         return Tracker(
