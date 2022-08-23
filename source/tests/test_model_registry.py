@@ -131,6 +131,9 @@ def test_registry(tracking_uri, data_split):
     assert len(versions) == 0
     version = registry.get_production_model(model_name=model_name)
     assert version is None
+    production_run = registry.get_production_run(model_name=model_name)
+    assert production_run is None
+
     # register model
     assert exp.last_run.model_version is None
     assert exp.runs[0].model_version is None
@@ -149,6 +152,8 @@ def test_registry(tracking_uri, data_split):
     # there shouldn't be any production models
     production_version = registry.get_production_model(model_name=model_name)
     assert production_version is None
+    production_run = registry.get_production_run(model_name=model_name)
+    assert production_run is None
     # transition newly registered model into production, then archived, then back to production
     registered_version = exp.last_run.put_model_in_production(model_name=model_name)
     # if we've already registered the model (above) then we shouldn't re-register, so check
@@ -158,6 +163,10 @@ def test_registry(tracking_uri, data_split):
     production_version = registry.get_production_model(model_name=model_name)
     assert production_version.run_id == exp.last_run.run_id
     assert production_version.version == model_version.version
+    production_run = registry.get_production_run(model_name=model_name)
+    assert production_run.run_id == exp.last_run.run_id
+    assert production_run.name == exp.last_run.name
+
     # now transition to archived
     new_version = exp.last_run.set_model_stage(model_name=model_name, to_stage=MLStage.ARCHIVED)
     assert new_version.name == model_version.name
@@ -166,6 +175,9 @@ def test_registry(tracking_uri, data_split):
     # now we shouldn't have a model in production
     production_version = registry.get_production_model(model_name=model_name)
     assert production_version is None
+    production_run = registry.get_production_run(model_name=model_name)
+    assert production_run is None
+
     # now put back in production
     new_version = exp.last_run.set_model_stage(model_name=model_name, to_stage=MLStage.PRODUCTION)
     assert new_version.name == model_version.name
@@ -175,6 +187,9 @@ def test_registry(tracking_uri, data_split):
     production_version = registry.get_production_model(model_name=model_name)
     assert production_version.run_id == exp.last_run.run_id
     assert production_version.version == model_version.version
+    production_run = registry.get_production_run(model_name=model_name)
+    assert production_run.run_id == exp.last_run.run_id
+    assert production_run.name == exp.last_run.name
 
     ####
     # Second Experiment
@@ -243,12 +258,20 @@ def test_registry(tracking_uri, data_split):
     assert previous_prod_version.name == model_version.name
     assert previous_prod_version.version == '1'
     assert previous_prod_version.current_stage == MLStage.PRODUCTION.value
+    production_run = registry.get_production_run(model_name=model_name)
+    assert production_run.run_id != exp.last_run.run_id
+    assert production_run.name != exp.last_run.name
+    assert production_run.run_id == exp.runs[1].run_id
+    assert production_run.name == exp.runs[1].name
 
     registered_version = exp.last_run.put_model_in_production(model_name=model_name)
     new_prod_version = registry.get_production_model(model_name=model_name)
     assert new_prod_version.name == model_version.name
     assert new_prod_version.version == '2'
     assert new_prod_version.current_stage == MLStage.PRODUCTION.value
+    production_run = registry.get_production_run(model_name=model_name)
+    assert production_run.run_id == exp.last_run.run_id
+    assert production_run.name == exp.last_run.name
 
     # check that previous version is now archived
     previous_model_version = registry.client.get_model_version(
