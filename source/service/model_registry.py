@@ -467,7 +467,7 @@ class Run(MLFlowEntity):
 
     def set_model_stage(self, model_name, to_stage: MLStage) -> ModelVersion:
         """Does not transition current models in production out of production"""
-        model_version = self.mlflow_registry.get_model_latest_verisons(model_name=model_name)
+        model_version = self.register_model(model_name=model_name)
         return self.mlflow_registry.transition_model_to_stage(
             model_name=model_name,
             model_version=model_version.version,
@@ -478,6 +478,7 @@ class Run(MLFlowEntity):
 class Experiment(MLFlowEntity):
     def __init__(self, entity, registry: ModelRegistry):
         super().__init__(entity=entity, registry=registry)
+        self.exp_runs = None
 
     @property
     def exp_id(self):
@@ -485,14 +486,16 @@ class Experiment(MLFlowEntity):
 
     @property
     def runs(self) -> list[Run]:
-        exp_runs = self.mlflow_registry._get_runs_by_experiment_id(exp_id=self.exp_id)  # noqa
-        return [
-            self.mlflow_registry.get_run_by_name(
-                exp_name=self.name,
-                run_name=x.data.tags['mlflow.runName'],
-            )
-            for x in exp_runs
-        ]
+        if self.exp_runs is None:
+            exp_runs = self.mlflow_registry._get_runs_by_experiment_id(exp_id=self.exp_id)  # noqa
+            self.exp_runs = [
+                self.mlflow_registry.get_run_by_name(
+                    exp_name=self.name,
+                    run_name=x.data.tags['mlflow.runName'],
+                )
+                for x in exp_runs
+            ]
+        return self.exp_runs
 
     @property
     def last_run(self) -> Run:
