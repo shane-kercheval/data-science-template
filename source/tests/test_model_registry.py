@@ -13,7 +13,7 @@ def test_registry(tracking_uri, data_split):
     metric = 'roc_auc'
     x_train, x_test, y_train, y_test = data_split
 
-    # experiment does not exist at this point
+    # check that experiment does not exist at this point
     registry = ModelRegistry(tracking_uri=tracking_uri)
     exp = registry.get_experiment_by_name(exp_name=experiment_name)
     assert exp is None
