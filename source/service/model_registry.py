@@ -1,5 +1,4 @@
 from __future__ import annotations
-from nis import cat
 import os
 from typing import Callable
 from collections.abc import Iterable
@@ -53,6 +52,7 @@ class Tracker:
             description=self.last_run_name,
             tags=self.tags
         )
+        return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.end_time = datetime.datetime.now()
@@ -187,7 +187,8 @@ class ModelRegistry:
         return Tracker(
             exp_name=exp_name,
             tags=tags,
-            registry=self)
+            registry=self
+        )
 
     @cache
     def _get_experiment_by_name(self, exp_name: str) -> mlflow.entities.experiment.Experiment:  # noqa

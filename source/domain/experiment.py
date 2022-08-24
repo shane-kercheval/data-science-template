@@ -9,7 +9,7 @@ from helpsk.sklearn_eval import MLExperimentResults
 from sklearn.model_selection import RepeatedKFold
 from skopt import BayesSearchCV
 
-from source.service.model_registry import ModelRegistry
+from source.service.model_registry import ModelRegistry, Tracker
 import source.domain.classification_search_space as css
 
 
@@ -23,17 +23,17 @@ def run_bayesian_search(
         model_name: str,
         score: str,
         n_iterations: int,
-        n_splits: int,
+        n_folds: int,
         n_repeats: int,
         random_state: int,
-        tags: str):
+        tags: dict[str, str]) -> Tracker:
 
     registry = ModelRegistry(tracking_uri=tracking_uri)
     with registry.track_experiment(exp_name=experiment_name, tags=tags) as tracker:
         bayes_search = BayesSearchCV(
             estimator=css.create_pipeline(data=x_train),
             search_spaces=css.create_search_space(iterations=n_iterations),
-            cv=RepeatedKFold(n_splits=n_splits, n_repeats=n_repeats, random_state=random_state),
+            cv=RepeatedKFold(n_splits=n_folds, n_repeats=n_repeats, random_state=random_state),
             scoring=score,
             refit=True,
             return_train_score=False,
@@ -61,9 +61,14 @@ def run_bayesian_search(
         tracker.log_pickle(obj=y_train, file_name='y_train.pkl')
         tracker.log_pickle(obj=y_test, file_name='y_test.pkl')
 
+    put_in_prod = False
     if registry.get_production_model(model_name=model_name) is None:
         tracker.last_run.put_model_in_production(model_name=model_name)
+        put_in_prod = True
     else:
         production_run = registry.get_production_run(model_name=model_name)
         if bayes_search.best_score_ > production_run.metrics[score]:
             tracker.last_run.put_model_in_production(model_name=model_name)
+            put_in_prod = True
+
+    return put_in_prod, tracker
