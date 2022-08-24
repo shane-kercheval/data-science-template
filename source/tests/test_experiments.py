@@ -1,7 +1,7 @@
 import pytest
 
 from source.domain.experiment import run_bayesian_search
-from source.service.model_registry import ModelRegistry
+from source.service.model_registry import ModelRegistry, MLStage
 
 
 @pytest.mark.usefixtures('start_ml_server')
@@ -23,7 +23,7 @@ def test_experiment(data_split, tracking_uri):
     exp = registry.get_experiment_by_id(exp_id='1')
     assert exp is None
 
-    tracker = run_bayesian_search(
+    put_in_prod, tracker = run_bayesian_search(
         x_train=x_train,
         x_test=x_test,
         y_train=y_train,
@@ -38,5 +38,12 @@ def test_experiment(data_split, tracking_uri):
         random_state=random_state,
         tags=tags,
     )
-
+    assert put_in_prod  # first model should be put into production
     assert tracker is not None
+    # since the model was registered, the model_version should be set
+    assert tracker.last_run.model_version is not None
+    assert tracker.last_run.model_version.version == '1'
+    assert tracker.last_run.run_id == tracker.last_run.model_version.run_id
+    assert tracker.last_run.model_version.name == model_name
+    assert tracker.last_run.model_version.current_stage == MLStage.PRODUCTION.value
+

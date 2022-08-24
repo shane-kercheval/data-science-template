@@ -156,6 +156,8 @@ def test_registry(tracking_uri, data_split):
     assert production_run is None
     # transition newly registered model into production, then archived, then back to production
     registered_version = exp.last_run.put_model_in_production(model_name=model_name)
+    assert registered_version.current_stage == MLStage.PRODUCTION.value
+    assert exp.last_run.model_version.current_stage == registered_version.current_stage
     # if we've already registered the model (above) then we shouldn't re-register, so check
     # that the model version is the same as it was before we put in production
     assert registered_version.version == model_version.version
@@ -173,6 +175,8 @@ def test_registry(tracking_uri, data_split):
     assert new_version.name == model_version.name
     assert new_version.version == model_version.version
     assert new_version.current_stage == MLStage.ARCHIVED.value
+    assert exp.last_run.model_version.current_stage == new_version.current_stage
+
     # now we shouldn't have a model in production
     production_version = registry.get_production_model(model_name=model_name)
     assert production_version is None
@@ -184,6 +188,8 @@ def test_registry(tracking_uri, data_split):
     assert new_version.name == model_version.name
     assert new_version.version == model_version.version
     assert new_version.current_stage == MLStage.PRODUCTION.value
+    assert exp.last_run.model_version.current_stage == new_version.current_stage
+
     # check that the model is in production
     production_version = registry.get_production_model(model_name=model_name)
     assert production_version.run_id == exp.last_run.run_id
@@ -268,6 +274,8 @@ def test_registry(tracking_uri, data_split):
     assert production_run.metrics == exp.runs[1].metrics
 
     registered_version = exp.last_run.put_model_in_production(model_name=model_name)
+    assert registered_version.current_stage == MLStage.PRODUCTION.value
+    assert exp.last_run.model_version.current_stage == registered_version.current_stage
     new_prod_version = registry.get_production_model(model_name=model_name)
     assert new_prod_version.name == model_version.name
     assert new_prod_version.version == '2'

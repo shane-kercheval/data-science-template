@@ -36,6 +36,7 @@ class Tracker:
         self.start_time = None
         self.end_time = None
         self.last_run_name = None
+        self._last_run = None
         mlflow.set_tracking_uri(registry.tracking_uri)
         mlflow.set_experiment(exp_name)
 
@@ -61,10 +62,12 @@ class Tracker:
 
     @property
     def last_run(self) -> Run:
-        return self.registry.get_run_by_name(
-            exp_name=self.exp_name,
-            run_name=self.last_run_name,
-        )
+        if self._last_run is None:
+            self._last_run = self.registry.get_run_by_name(
+                exp_name=self.exp_name,
+                run_name=self.last_run_name,
+            )
+        return self._last_run
 
     @property
     def elapsed_seconds(self):
@@ -462,19 +465,25 @@ class Run(MLFlowEntity):
         model associated with this run into production.
         """
         model_verison = self.register_model(model_name=model_name)
-        return self.mlflow_registry.put_model_in_production(
+        # this update will affect the underlying ModelVersion object; need to update the
+        # corresponding instance object
+        self.model_version = self.mlflow_registry.put_model_in_production(
             model_name=model_name,
             model_version=model_verison.version,
         )
+        return self.model_version
 
     def set_model_stage(self, model_name, to_stage: MLStage) -> ModelVersion:
         """Does not transition current models in production out of production"""
         model_version = self.register_model(model_name=model_name)
-        return self.mlflow_registry.transition_model_to_stage(
+        # this update will affect the underlying ModelVersion object; need to update the
+        # corresponding instance object
+        self.model_version = self.mlflow_registry.transition_model_to_stage(
             model_name=model_name,
             model_version=model_version.version,
             to_stage=to_stage,
         )
+        return self.model_version
 
 
 class Experiment(MLFlowEntity):
