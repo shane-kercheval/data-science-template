@@ -1,4 +1,5 @@
 import pytest
+from helpsk.sklearn_eval import MLExperimentResults
 
 from source.domain.experiment import run_bayesian_search
 from source.service.model_registry import ModelRegistry, MLStage
@@ -47,3 +48,8 @@ def test_experiment(data_split, tracking_uri):
     assert tracker.last_run.model_version.name == model_name
     assert tracker.last_run.model_version.current_stage == MLStage.PRODUCTION.value
 
+    results = tracker.last_run.download_artifact(
+        artifact_name='experiment.yaml',
+        read_from=MLExperimentResults.from_yaml_file
+    )
+    assert tracker.last_run.metrics[results.score_names[0]] == results.best_score
