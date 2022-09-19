@@ -1,3 +1,4 @@
+"""This file defines test fixtures for pytest unit-tests."""
 import pytest
 import os
 import shutil

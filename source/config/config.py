@@ -27,11 +27,11 @@ def dir_notebooks():
     return CONFIG['NOTEBOOKS']['DIRECTORY']
 
 
-def dir_experiment_server_url():
+def experiment_server_url():
     return CONFIG['MLFLOW']['SERVER_URL']
 
 
-def dir_experiment_client_url():
+def experiment_client_url():
     return CONFIG['MLFLOW']['CLIENT_URL']
 
 

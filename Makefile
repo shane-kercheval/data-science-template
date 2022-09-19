@@ -46,19 +46,21 @@ mlflow_clean:
 # Project
 ####
 linting:
-	flake8 --max-line-length 99 source/scripts
-	flake8 --max-line-length 99 source/library
+	flake8 --max-line-length 99 source/domain
+	flake8 --max-line-length 99 source/entrypoints
+	flake8 --max-line-length 99 source/service
 	flake8 --max-line-length 99 source/tests
 
 tests: linting
 	rm -f source/tests/test_files/log.log
-	python -m unittest discover source/tests
+	#python -m unittest discover source/tests
+	pytest source/tests
 
 data_extract:
-	python source/scripts/commands.py extract
+	python source/entrypoints/cli.py extract
 
 data_transform:
-	python source/scripts/commands.py transform
+	python source/entrypoints/cli.py transform
 
 data: data_extract data_transform
 
@@ -67,24 +69,22 @@ exploration:
 	mv source/notebooks/data-profile.html output/data/data-profile.html
 
 experiment_1:
-	python source/scripts/commands.py run-experiments \
+	python source/entrypoints/cli.py run-experiment \
 		-n_iterations=4 \
-		-n_splits=3 \
+		-n_folds=3 \
 		-n_repeats=1 \
 		-score='roc_auc' \
-		-tracking_uri='http://mlflow_server:1235' \
 		-random_state=3
 	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_1.ipynb
 	jupyter nbconvert --execute --to html source/notebooks/experiment_1.ipynb
 	mv source/notebooks/experiment_1.html output/experiment_1.html
 
 experiment_2:
-	python source/scripts/commands.py run-experiments \
+	python source/entrypoints/cli.py run-experiment \
 		-n_iterations=4 \
-		-n_splits=3 \
+		-n_folds=3 \
 		-n_repeats=1 \
 		-score='roc_auc' \
-		-tracking_uri='http://mlflow_server:1235' \
 		-random_state=42
 
 	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_2.ipynb
@@ -92,12 +92,11 @@ experiment_2:
 	mv source/notebooks/experiment_2.html output/experiment_2.html
 
 experiment_3:
-	python source/scripts/commands.py run-experiments \
+	python source/entrypoints/cli.py run-experiment \
 		-n_iterations=4 \
-		-n_splits=3 \
+		-n_folds=3 \
 		-n_repeats=1 \
 		-score='roc_auc' \
-		-tracking_uri='http://mlflow_server:1235' \
 		-required_performance_gain=0.01 \
 		-random_state=10
 
@@ -111,7 +110,7 @@ remove_logs:
 	rm -f output/log.log
 
 ## Run entire workflow.
-all: tests remove_logs data exploration experiments
+all: data tests remove_logs exploration experiments
 
 ## Delete all generated files (e.g. virtual)
 clean: mlflow_clean

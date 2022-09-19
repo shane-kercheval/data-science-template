@@ -170,6 +170,9 @@ class ModelRegistry:
     def __init__(self, tracking_uri):
         """
         A ModelRegistry object
+
+        Args:
+            tracking_uri: the URI for the underlying experimentation client (e.g. mlflow)
         """
         self.client = MlflowClient(tracking_uri=tracking_uri)
         self.tracking_uri = tracking_uri

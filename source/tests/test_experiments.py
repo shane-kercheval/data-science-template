@@ -14,6 +14,8 @@ def test_experiment(data_split, tracking_uri):
     n_iterations = 1
     n_folds = 3
     n_repeats = 1
+    # i.e. even the slightest gain in performance puts the new model into production
+    required_performance_gain = 0.0001
     tags = dict(type='BayesSearchCV')
 
     # check that experiment does not exist at this point
@@ -32,6 +34,7 @@ def test_experiment(data_split, tracking_uri):
         experiment_name=experiment_name,
         model_name=model_name,
         score=score,
+        required_performance_gain=required_performance_gain,
         n_iterations=n_iterations,
         n_folds=n_folds,
         n_repeats=n_repeats,
@@ -63,6 +66,7 @@ def test_experiment(data_split, tracking_uri):
         experiment_name=experiment_name,
         model_name=model_name,
         score=score,
+        required_performance_gain=required_performance_gain,
         n_iterations=n_iterations,
         n_folds=n_folds,
         n_repeats=n_repeats,

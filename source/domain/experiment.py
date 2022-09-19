@@ -22,11 +22,25 @@ def run_bayesian_search(
         experiment_name: str,
         model_name: str,
         score: str,
+        required_performance_gain: float,
         n_iterations: int,
         n_folds: int,
         n_repeats: int,
         random_state: int,
-        tags: dict[str, str]) -> Tracker:
+        tags: dict[str, str]) -> tuple[bool, Tracker]:
+    """
+    This method runs BayesSearchCV and searches the models and pre-processing steps defined in
+    classification_search_space.create_search_space() against the training and test sets passed in.
+
+    Args:
+        required_performance_gain:
+            percent increase required to put newly trained model into production
+            For example:
+                - a value of 0 means that if the new model's performance is identical to (or better
+                than) the old model's performance, then put the new model into production
+                - a value of 1 means that if the new model's performance is 1% higher (or more)
+                    than the old model's performance, then put the new model into production
+    """
 
     registry = ModelRegistry(tracking_uri=tracking_uri)
     with registry.track_experiment(exp_name=experiment_name, tags=tags) as tracker:
@@ -67,7 +81,8 @@ def run_bayesian_search(
         put_in_prod = True
     else:
         production_run = registry.get_production_run(model_name=model_name)
-        if bayes_search.best_score_ > production_run.metrics[score]:
+        required_performance_gain = 1 + required_performance_gain
+        if bayes_search.best_score_ >= production_run.metrics[score] * required_performance_gain:
             tracker.last_run.put_model_in_production(model_name=model_name)
             put_in_prod = True
 
