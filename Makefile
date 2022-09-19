@@ -75,9 +75,10 @@ experiment_1:
 		-n_repeats=1 \
 		-score='roc_auc' \
 		-random_state=3
-	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_1.ipynb
+	cp source/notebooks/experiment-template.ipynb source/notebooks/experiment_1.ipynb
 	jupyter nbconvert --execute --to html source/notebooks/experiment_1.ipynb
 	mv source/notebooks/experiment_1.html output/experiment_1.html
+	rm source/notebooks/experiment_1.ipynb
 
 experiment_2:
 	python source/entrypoints/cli.py run-experiment \
@@ -87,9 +88,10 @@ experiment_2:
 		-score='roc_auc' \
 		-random_state=42
 
-	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_2.ipynb
+	cp source/notebooks/experiment-template.ipynb source/notebooks/experiment_2.ipynb
 	jupyter nbconvert --execute --to html source/notebooks/experiment_2.ipynb
 	mv source/notebooks/experiment_2.html output/experiment_2.html
+	rm source/notebooks/experiment_2.ipynb
 
 experiment_3:
 	python source/entrypoints/cli.py run-experiment \
@@ -100,9 +102,10 @@ experiment_3:
 		-required_performance_gain=0.01 \
 		-random_state=10
 
-	cp source/notebooks/templates/experiment-template.ipynb source/notebooks/experiment_3.ipynb
+	cp source/notebooks/experiment-template.ipynb source/notebooks/experiment_3.ipynb
 	jupyter nbconvert --execute --to html source/notebooks/experiment_3.ipynb
 	mv source/notebooks/experiment_3.html output/experiment_3.html
+	rm source/notebooks/experiment_3.ipynb
 
 experiments: experiment_1 experiment_2 experiment_3
 

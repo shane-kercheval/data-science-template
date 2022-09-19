@@ -110,8 +110,6 @@ def run_experiment(
     logging.info(f"Experiment name: {tracker.last_run.exp_name}")
     logging.info(f"Run id: {tracker.last_run.run_id}")
     logging.info(f"Metric(s): {tracker.last_run.metrics}")
-    logging.info(f"Model name: {tracker.last_run.model_version.name}")
-    logging.info(f"Model stage: {tracker.last_run.model_version.current_stage}")
 
 
 if __name__ == '__main__':
