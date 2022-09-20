@@ -20,7 +20,7 @@ logging.config.fileConfig(
 
 @pytest.fixture(scope='session')
 def credit_data() -> pd.DataFrame:
-    return pd.read_pickle(os.path.join(os.getcwd(), 'data/processed/credit.pkl'))
+    return pd.read_pickle(os.path.join(os.getcwd(), 'tests/test_files/credit.pkl'))
 
 
 @pytest.fixture(scope='session')

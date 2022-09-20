@@ -194,4 +194,5 @@ data/raw/*
 !data/external/*.csv
 
 !tests/test_files/log.log
+!tests/test_files/credit.pkl
 !output/log.log
