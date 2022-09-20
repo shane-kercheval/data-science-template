@@ -12,15 +12,15 @@ from sklearn.preprocessing import label_binarize
 import logging.config
 
 logging.config.fileConfig(
-    "source/config/logging_to_file.conf",
-    defaults={'logfilename': 'tests/test_files/log.log'},
+    os.path.join(os.getcwd(), 'source/config/logging_to_file.conf'),
+    defaults={'logfilename': os.path.join(os.getcwd(), 'tests/test_files/log.log')},
     disable_existing_loggers=False
 )
 
 
 @pytest.fixture(scope='session')
 def credit_data() -> pd.DataFrame:
-    return pd.read_pickle('data/processed/credit.pkl')
+    return pd.read_pickle(os.path.join(os.getcwd(), 'data/processed/credit.pkl'))
 
 
 @pytest.fixture(scope='session')
