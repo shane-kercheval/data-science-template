@@ -32,7 +32,30 @@ def run_bayesian_search(
     This method runs BayesSearchCV and searches the models and pre-processing steps defined in
     classification_search_space.create_search_space() against the training and test sets passed in.
 
+    The experiment results and corresponding training/tests sets are saved to the mlflow server
+    with the corresponding `tracking_uri` provided. The runs will be in an experiment called
+    `experiment_name`. The best model found by BayesSearchCV will be registered as
+    `registered_model_name` with a new version number. The best model will be put into production
+    if it has a `required_performance_gain` percent increase compared with the current model in
+    production.
+
     Args:
+        x_train:
+            training features
+        x_test:
+            test features
+        y_train:
+            training target
+        y_test:
+            test target
+        tracking_uri:
+            the tracking URI for the experimentation server
+        experiment_name:
+            The name of the experiment saved to MLFlow.
+        model_name:
+            The name of the model saved to MLFlow.
+        score:
+            The name of the metric/score e.g. 'roc_auc'
         required_performance_gain:
             percent increase required to put newly trained model into production
             For example:
@@ -40,8 +63,19 @@ def run_bayesian_search(
                 than) the old model's performance, then put the new model into production
                 - a value of 1 means that if the new model's performance is 1% higher (or more)
                     than the old model's performance, then put the new model into production
+        n_iterations:
+            The number of iterations that the BayesSearchCV will search per model.
+            e.g. A value of 20 means that 20 different hyper-parameter combinations will be
+            searched for each model.
+        n_folds:
+            The number of folds to use when cross-validating.
+        n_repeats:
+            The number of repeats to use when cross-validating.
+        random_state:
+            The random stage
+        tags:
+            A dictionary of tags to store in MLFlow.
     """
-
     registry = ModelRegistry(tracking_uri=tracking_uri)
     with registry.track_experiment(exp_name=experiment_name, tags=tags) as tracker:
         bayes_search = BayesSearchCV(

@@ -1,3 +1,4 @@
+"""This file defines the models and transformations to tune."""
 import helpsk as hlp
 import pandas as pd
 from helpsk.sklearn_pipeline import CustomOrdinalEncoder

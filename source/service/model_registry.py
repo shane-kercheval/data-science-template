@@ -21,7 +21,10 @@ class TrackerNotRunning(Exception):
 
 
 class Tracker:
-
+    """
+    This class encapsulates the logic for starting the run in mlflow. It's meant to be used as a
+    context manager, and it also starts and stops a timer to track the duration of an mlrun.
+    """
     TEMP_DIR = '/tmp/0946a999-6cdd-400a-8640-7b5e29788b4c'
 
     def __init__(
