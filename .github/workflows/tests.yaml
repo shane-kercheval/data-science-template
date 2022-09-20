@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         # Run in all these versions of Python
-        python-version: [3.9]
+        python-version: ['3.9', '3.10']
 
     steps:
         # Checkout the latest code from the repo
@@ -35,9 +35,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run tests
-        run: python -m unittest discover source/tests
+        run: pytest tests
       - name: Run linting
         run: |
-          flake8 --max-line-length 110 source/scripts
-          flake8 --max-line-length 110 source/library
-          flake8 --max-line-length 110 source/tests
+          flake8 --max-line-length 99 source/domain
+          flake8 --max-line-length 99 source/entrypoints
+          flake8 --max-line-length 99 source/service
+          flake8 --max-line-length 99 tests

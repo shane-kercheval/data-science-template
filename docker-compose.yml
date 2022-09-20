@@ -1,7 +1,7 @@
 version: '3'
 services:
   mlflow_server:
-    image: "shanekercheval/python:ml"
+    build: .
     working_dir: /code
     volumes:
       - .:/code
@@ -13,7 +13,7 @@ services:
         --host 0.0.0.0
         --port 1235
   bash:
-    image: "shanekercheval/python:ml"
+    build: .
     working_dir: /code
     volumes:
       - .:/code
@@ -22,7 +22,7 @@ services:
     stdin_open: true # docker run -i
     tty: true        # docker run -t
   jupyter:
-    image: "shanekercheval/python:ml"
+    build: .
     working_dir: /code
     volumes:
       - .:/code

@@ -33,14 +33,26 @@ NOTE: The `requirements.txt` is not used by docker, but it is used by Github Wor
 
 Build and run docker-compose:
 
-```
-make docker_compose
-```
-
-Open the MLFlow Client/UI and Jupyter Notebook in the browser, and start a terminal session (via zsh) in the container. This command will open MLFlow and Jupyter to the default browser, and will connect to the container's terminal in the same terminal window.
-
-```
+```commandline
 make docker_run
+```
+
+Open the MLFlow Client/UI and Jupyter Notebook in the browser, and start a terminal session (via zsh) in the container. This command will open MLFlow and Jupyter to the default browser, and will connect to the container's terminal in the same terminal window:
+
+```commandline
+make docker_open
+```
+
+Running the entire project (tests, ETL, EDA, experiments) from command-line (outside of docker container):
+
+```commandline
+make docker_all
+```
+
+Running the entire project (tests, ETL, EDA, experiments) from command-line (inside docker container):
+
+```commandline
+make all
 ```
 
 ## Running the Code
