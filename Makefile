@@ -49,12 +49,12 @@ linting:
 	flake8 --max-line-length 99 source/domain
 	flake8 --max-line-length 99 source/entrypoints
 	flake8 --max-line-length 99 source/service
-	flake8 --max-line-length 99 source/tests
+	flake8 --max-line-length 99 tests
 
 tests: linting
-	rm -f source/tests/test_files/log.log
-	#python -m unittest discover source/tests
-	pytest source/tests
+	rm -f tests/test_files/log.log
+	#python -m unittest discover tests
+	pytest tests
 
 data_extract:
 	python source/entrypoints/cli.py extract

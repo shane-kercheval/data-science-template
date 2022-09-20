@@ -193,5 +193,5 @@ data/processed/*
 data/raw/*
 !data/external/*.csv
 
-!source/tests/test_files/log.log
+!tests/test_files/log.log
 !output/log.log

@@ -13,7 +13,7 @@ import logging.config
 
 logging.config.fileConfig(
     "source/config/logging_to_file.conf",
-    defaults={'logfilename': 'source/tests/test_files/log.log'},
+    defaults={'logfilename': 'tests/test_files/log.log'},
     disable_existing_loggers=False
 )
 

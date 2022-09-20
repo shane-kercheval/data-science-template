@@ -1,6 +1,6 @@
 import pandas as pd
 import source.domain.classification_search_space as css
-from source.tests.helpers import get_test_file_path
+from tests.helpers import get_test_file_path
 
 
 def to_string(obj):
