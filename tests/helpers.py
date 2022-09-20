@@ -6,4 +6,4 @@ def get_test_file_path(file_path) -> str:
     Returns the path to /tests folder, adjusting for the difference in the current working
     directory when debugging vs running from command line.
     """
-    return os.path.join('/code/tests/test_files', file_path)
+    return os.path.join(os.getcwd(), 'tests/test_files', file_path)
