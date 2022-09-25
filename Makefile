@@ -55,7 +55,7 @@ tests: linting
 	rm -f tests/test_files/log.log
 	#python -m unittest discover tests
 	#pytest tests
-	coverage run pytest tests
+	coverage run -m pytest tests
 	coverage html
 
 open_coverage:
