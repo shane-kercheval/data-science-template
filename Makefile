@@ -54,7 +54,12 @@ linting:
 tests: linting
 	rm -f tests/test_files/log.log
 	#python -m unittest discover tests
-	pytest tests
+	#pytest tests
+	coverage run -m pytest tests
+	coverage html
+
+open_coverage:
+	open 'htmlcov/index.html'
 
 data_extract:
 	python source/entrypoints/cli.py extract
