@@ -1,6 +1,6 @@
 click==8.1.*
 coverage==6.4.*
-helpsk==0.1.3*
+helpsk==0.1.*
 flake8==4.0.*
 jupyter-contrib-nbextensions==0.5.*
 lightgbm==3.3.*
