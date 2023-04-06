@@ -25,8 +25,6 @@ This project contains python that mimics a very slimmed down version of a DS/ML 
 
 The `docker-compose.yml` files define a basic image built on the `shanekercheval/python:ml` image. The compose file contains three services, MLFlow, Jupyter, and shell.
 
-NOTE: The `requirements.txt` is not used by docker, but it is used by Github Workflows for running unit-tests.
-
 # Running the Project
 
 ## Starting Docker
