@@ -1,12 +1,13 @@
 """
-This file contains the functions for the command line interface. The makefile calls the commands
-defined in this file.
+ontains the functions for the command line interface. The makefile calls the commands defined in
+this file.
 
 For help in terminal, navigate to the project directory, run the docker container, and from within
 the container run the following examples:
     - `python3.9 source/scripts/commands.py --help`
     - `python3.9 source/scripts/commands.py extract --help`
 """
+
 import logging.config
 import logging
 import os
@@ -16,38 +17,36 @@ from sklearn.preprocessing import label_binarize
 
 from helpsk.utility import read_pickle
 
-import source.config.config as config
-import source.domain.experiment as experiment
-import source.service.etl as etl
+from source.config import config
+from source.domain import experiment
+from source.service import etl
 
 
 logging.config.fileConfig(
     "source/config/logging_to_file.conf",
     defaults={'logfilename': 'output/log.log'},
-    disable_existing_loggers=False
+    disable_existing_loggers=False,
 )
 
 
 @click.group()
-def main():
-    """
-    Logic For Extracting and Transforming Datasets
-    """
+def main() -> None:
+    """Logic For Extracting and Transforming Datasets."""
     pass
 
 
 @main.command()
-def extract():
-    """This function downloads the credit data from openml.org."""
+def extract() -> None:
+    """Downloads the credit data from openml.org."""
     etl.extract(output_directory=config.dir_data_raw())
 
 
 @main.command()
-def transform():
-    """This function transforms the credit data."""
+def transform() -> None:
+    """Transforms the credit data."""
     etl.transform(
         input_directory=config.dir_data_raw(),
-        output_directory=config.dir_data_processed()
+        output_directory=config.dir_data_processed(),
     )
 
 
@@ -74,8 +73,8 @@ def run_experiment(
         n_repeats: int,
         score: str,
         required_performance_gain: float,
-        random_state):
-    """This function runs an ML experiment according to the parameters provided."""
+        random_state: int) -> None:
+    """Runs an ML experiment according to the parameters provided."""
     logging.info("Splitting training & test datasets")
     credit_data = read_pickle(os.path.join(config.dir_data_processed(), 'credit.pkl'))
     y_full = credit_data['target']
@@ -86,7 +85,7 @@ def run_experiment(
     # keep random_state the same across experiments to compare apples to apples
     x_train, x_test, y_train, y_test = train_test_split(
         x_full, y_full,
-        test_size=0.2, random_state=42
+        test_size=0.2, random_state=42,
     )
     put_in_production, tracker = experiment.run_bayesian_search(
         x_train=x_train,
@@ -102,7 +101,7 @@ def run_experiment(
         n_folds=n_folds,
         n_repeats=n_repeats,
         random_state=random_state,
-        tags=dict(type='BayesSearchCV'),
+        tags={'type': 'BayesSearchCV'},
     )
     logging.info(f"Finished running experiment ({round(tracker.elapsed_seconds)} seconds)")
     logging.info(f"Model was put into production: {put_in_production}")

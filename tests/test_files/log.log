@@ -1,12 +1,12 @@
-2022-09-20 01:54:03 - INFO     | ml_server_directory: creating /tmp/pytest-of-root/pytest-139/ml_server0
-2022-09-20 01:54:03 - INFO     | start_ml_server: starting server; process 49382
-2022-09-20 01:54:27 - INFO     | Best Score: 0.7566610156276207
-2022-09-20 01:54:27 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-09-20 01:54:50 - INFO     | Best Score: 0.7612216317384828
-2022-09-20 01:54:50 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
-2022-09-20 01:54:59 - INFO     | start_ml_server: stopping server; process 49382
-2022-09-20 01:54:59 - INFO     | ml_server_directory: removing /tmp/pytest-of-root/pytest-139/ml_server0
-2022-09-20 01:55:00 - INFO     | ml_server_directory: creating /tmp/pytest-of-root/pytest-139/ml_server0
-2022-09-20 01:55:00 - INFO     | start_ml_server: starting server; process 50070
-2022-09-20 01:55:08 - INFO     | start_ml_server: stopping server; process 50070
-2022-09-20 01:55:08 - INFO     | ml_server_directory: removing /tmp/pytest-of-root/pytest-139/ml_server0
+2023-11-10 07:10:45 - INFO     | ml_server_directory: creating /tmp/pytest-of-root/pytest-3/ml_server0
+2023-11-10 07:10:45 - INFO     | start_ml_server: starting server; process 44319
+2023-11-10 07:11:01 - INFO     | Best Score: 0.7566610156276207
+2023-11-10 07:11:01 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2023-11-10 07:11:17 - INFO     | Best Score: 0.7612216317384828
+2023-11-10 07:11:17 - INFO     | Best Params: OrderedDict([('model', RandomForestClassifier(n_estimators=500, random_state=42)), ('prep__non_numeric__encoder__transformer', OneHotEncoder(handle_unknown='ignore')), ('prep__numeric__imputer__transformer', SimpleImputer()), ('prep__numeric__pca__transformer', None), ('prep__numeric__scaler__transformer', None)])
+2023-11-10 07:11:18 - INFO     | start_ml_server: stopping server; process 44319
+2023-11-10 07:11:18 - INFO     | ml_server_directory: removing /tmp/pytest-of-root/pytest-3/ml_server0
+2023-11-10 07:11:18 - INFO     | ml_server_directory: creating /tmp/pytest-of-root/pytest-3/ml_server0
+2023-11-10 07:11:18 - INFO     | start_ml_server: starting server; process 45200
+2023-11-10 07:11:23 - INFO     | start_ml_server: stopping server; process 45200
+2023-11-10 07:11:23 - INFO     | ml_server_directory: removing /tmp/pytest-of-root/pytest-3/ml_server0

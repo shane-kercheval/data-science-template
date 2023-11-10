@@ -46,10 +46,9 @@ mlflow_clean:
 # Project
 ####
 linting:
-	flake8 --max-line-length 99 source/domain
-	flake8 --max-line-length 99 source/entrypoints
-	flake8 --max-line-length 99 source/service
-	flake8 --max-line-length 99 tests
+	ruff check source/domain
+	ruff check source/entrypoints
+	ruff check source/service
 
 tests: linting
 	rm -f tests/test_files/log.log

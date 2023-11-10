@@ -1,7 +1,6 @@
 
-"""
-This file contains the logic for running ML experiments using BayesSearchCV.
-"""
+"""Contains the logic for running ML experiments using BayesSearchCV."""
+
 import logging
 
 import pandas as pd
@@ -29,7 +28,7 @@ def run_bayesian_search(
         random_state: int,
         tags: dict[str, str]) -> tuple[bool, Tracker]:
     """
-    This method runs BayesSearchCV and searches the models and pre-processing steps defined in
+    Runs BayesSearchCV and searches the models and pre-processing steps defined in
     classification_search_space.create_search_space() against the training and test sets passed in.
 
     The experiment results and corresponding training/tests sets are saved to the mlflow server
