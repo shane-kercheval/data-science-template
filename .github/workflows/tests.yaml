@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         # Run in all these versions of Python
-        python-version: ['3.9', '3.10']
+        python-version: ['3.10', '3.11']
 
     steps:
         # Checkout the latest code from the repo
@@ -38,7 +38,6 @@ jobs:
         run: pytest tests
       - name: Run linting
         run: |
-          flake8 --max-line-length 99 source/domain
-          flake8 --max-line-length 99 source/entrypoints
-          flake8 --max-line-length 99 source/service
-          flake8 --max-line-length 99 tests
+          ruff check source/domain
+          ruff check source/entrypoints
+          ruff check source/service

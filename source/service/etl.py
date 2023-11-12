@@ -1,6 +1,5 @@
-"""
-This file contains the logic for extracting and transforming the project data.
-"""
+"""Contains the logic for extracting and transforming the project data."""
+
 import os
 import warnings
 import logging
@@ -14,15 +13,15 @@ from sklearn.datasets import fetch_openml
 
 @log_function_call
 @log_timer
-def extract(output_directory: str):
-    """This function downloads the credit data from openml.org."""
+def extract(output_directory: str) -> None:
+    """Downloads the credit data from openml.org."""
     logging.info("Downloading credit data from https://www.openml.org/d/31")
     credit_g = fetch_openml('credit-g', version=1)
     credit_data = credit_g['data']
     credit_data['target'] = credit_g['target']
     logging.info(
         f"Credit data downloaded with {credit_data.shape[0]} "
-        f"rows and {credit_data.shape[1]} columns."
+        f"rows and {credit_data.shape[1]} columns.",
     )
     output_file = os.path.join(output_directory, 'credit.pkl')
     logging.info(f"Saving credit data to `{output_file}`")
@@ -31,9 +30,9 @@ def extract(output_directory: str):
 
 @log_function_call
 @log_timer
-def transform(input_directory: str, output_directory: str):
+def transform(input_directory: str, output_directory: str) -> None:
     """
-    This function transforms the credit data.
+    Transforms the credit data.
 
     Args:
         input_directory: the directory to find credit.pkl

@@ -1,7 +1,9 @@
-"""This file defines the models and transformations to tune."""
-import helpsk as hlp
+"""Defines the models and transformations to tune."""
+
 import pandas as pd
+import helpsk.pandas as hpd
 from helpsk.sklearn_pipeline import CustomOrdinalEncoder
+from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
 from sklearn.dummy import DummyClassifier
@@ -10,49 +12,88 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, OneHotEncoder
-from skopt.space import Categorical, Real, Integer  # noqa
+from skopt.space import Categorical, Real, Integer
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 
 
+class TransformerChooser(BaseEstimator, TransformerMixin):
+    """
+    Transformer that wraps another Transformer. This allows different transformer objects to be
+    tuned. get_feature_names_out() is also implemented to allow the pipeline to return the
+    transformed feature names (used when creating the feature importance table).
+    """
+
+    def __init__(self, transformer: BaseEstimator | None = None):
+        """
+        Args:
+            transformer:
+                Transformer object (e.g. StandardScaler, MinMaxScaler).
+        """
+        self.transformer = transformer
+
+    def fit(self, X, y=None):  # noqa
+        """Fit implementation."""
+        if self.transformer is None:
+            return self
+
+        return self.transformer.fit(X, y)
+
+    def transform(self, X):  # noqa
+        """Transform implementation."""
+        if self.transformer is None:
+            return X
+
+        return self.transformer.transform(X)
+
+    def get_feature_names_out(self, input_features=None):  # noqa
+        if hasattr(self.transformer, 'get_feature_names_out'):
+            return self.transformer.get_feature_names_out(input_features)
+        return input_features
+
+
 def create_pipeline(data: pd.DataFrame) -> Pipeline:
-    numeric_column_names = hlp.pandas.get_numeric_columns(data)
-    non_numeric_column_names = hlp.pandas.get_non_numeric_columns(data)
+    """Creates a `sklearn.pipeline.Pipeline` object that contains the transformations."""
+    numeric_column_names = hpd.get_numeric_columns(data)
+    non_numeric_column_names = hpd.get_non_numeric_columns(data)
 
     numeric_pipeline = Pipeline([
         # tune how we want to impute values
         # e.g. whether or not we want to impute (and how) or simply remove rows with missing values
-        ('imputer', hlp.sklearn_pipeline.TransformerChooser()),
+        ('imputer', TransformerChooser()),
         # tune how we want to scale values
         # e.g. MinMax/Normalization/None
-        ('scaler', hlp.sklearn_pipeline.TransformerChooser()),
-        ('pca', hlp.sklearn_pipeline.TransformerChooser()),
+        ('scaler', TransformerChooser()),
+        ('pca', TransformerChooser()),
     ])
     non_numeric_pipeline = Pipeline([
         # tune how we handle categoric values
         # e.g. One Hot, Custom-OrdinalEncoder
-        ('encoder', hlp.sklearn_pipeline.TransformerChooser()),
+        ('encoder', TransformerChooser()),
     ])
     # associate numeric/non-numeric columns with corresponding pipeline
     transformations_pipeline = ColumnTransformer([
         ('numeric', numeric_pipeline, numeric_column_names),
-        ('non_numeric', non_numeric_pipeline, non_numeric_column_names)
+        ('non_numeric', non_numeric_pipeline, non_numeric_column_names),
     ])
-    full_pipeline = Pipeline([
+    return Pipeline([
         ('prep', transformations_pipeline),
-        ('model', DummyClassifier())
+        ('model', DummyClassifier()),
     ])
 
-    return full_pipeline
 
-
-def create_search_space(iterations=50, random_state=42) -> list:
+def create_search_space(iterations: int = 50, random_state: int = 42) -> list:
+    """
+    Creates a list of dictionaries, where each dictionary represents a search space for a
+    `sklearn.pipeline.Pipeline` object. Each dictionary contains the parameters to tune for the
+    `sklearn.pipeline.Pipeline` object, as well as the values to try for each parameter.
+    """
     return [
         (
             {
                 'model':
                     Categorical(
-                        categories=[LogisticRegression(max_iter=1000, random_state=random_state)]
+                        categories=[LogisticRegression(max_iter=1000, random_state=random_state)],
                     ),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=[SimpleImputer()]),
@@ -61,15 +102,15 @@ def create_search_space(iterations=50, random_state=42) -> list:
                 'prep__numeric__pca__transformer':
                     Categorical(categories=[None]),
                 'prep__non_numeric__encoder__transformer':
-                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')])
+                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')]),
             },
-            1
+            1,
         ),
         (
             {
                 'model':
                     Categorical(
-                        categories=[LogisticRegression(max_iter=1000, random_state=random_state)]
+                        categories=[LogisticRegression(max_iter=1000, random_state=random_state)],
                     ),
                 'model__C':
                     Real(low=1e-06, high=100, prior='log-uniform', transform='identity'),
@@ -78,9 +119,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         categories=[
                             SimpleImputer(),
                             SimpleImputer(strategy='median'),
-                            SimpleImputer(strategy='most_frequent')
+                            SimpleImputer(strategy='most_frequent'),
                         ],
-                        prior=[0.5, 0.25, 0.25]
+                        prior=[0.5, 0.25, 0.25],
                     ),
                 'prep__numeric__scaler__transformer':
                     Categorical(categories=[StandardScaler(), MinMaxScaler()], prior=[0.65, 0.35]),
@@ -90,12 +131,12 @@ def create_search_space(iterations=50, random_state=42) -> list:
                     Categorical(
                         categories=[
                             OneHotEncoder(handle_unknown='ignore'),
-                            CustomOrdinalEncoder()
+                            CustomOrdinalEncoder(),
                         ],
-                        prior=[0.65, 0.35]
-                    )
+                        prior=[0.65, 0.35],
+                    ),
             },
-            iterations
+            iterations,
         ),
         # (
         #     {
@@ -150,8 +191,8 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         ExtraTreesClassifier(
                             bootstrap=True,
                             n_estimators=500,
-                            random_state=random_state
-                        )
+                            random_state=random_state,
+                        ),
                     ]),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=[SimpleImputer()]),
@@ -160,9 +201,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
                 'prep__numeric__pca__transformer':
                     Categorical(categories=[None]),
                 'prep__non_numeric__encoder__transformer':
-                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')])
+                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')]),
             },
-            1
+            1,
         ),
         (
             {
@@ -171,8 +212,8 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         ExtraTreesClassifier(
                             bootstrap=True,
                             n_estimators=500,
-                            random_state=random_state
-                        )
+                            random_state=random_state,
+                        ),
                     ]),
                 'model__max_features':
                     Real(low=0.01, high=0.95, prior='uniform', transform='identity'),
@@ -193,9 +234,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         categories=[
                             SimpleImputer(),
                             SimpleImputer(strategy='median'),
-                            SimpleImputer(strategy='most_frequent')
+                            SimpleImputer(strategy='most_frequent'),
                         ],
-                        prior=[0.5, 0.25, 0.25]
+                        prior=[0.5, 0.25, 0.25],
                     ),
                 'prep__numeric__scaler__transformer':
                     Categorical(categories=[None]),
@@ -205,18 +246,18 @@ def create_search_space(iterations=50, random_state=42) -> list:
                     Categorical(
                         categories=[
                             OneHotEncoder(handle_unknown='ignore'),
-                            CustomOrdinalEncoder()
+                            CustomOrdinalEncoder(),
                         ],
-                        prior=[0.65, 0.35]
-                    )
+                        prior=[0.65, 0.35],
+                    ),
             },
-            iterations
+            iterations,
         ),
         (
             {
                 'model':
                     Categorical(categories=[
-                        RandomForestClassifier(n_estimators=500, random_state=random_state)
+                        RandomForestClassifier(n_estimators=500, random_state=random_state),
                     ]),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=[SimpleImputer()]),
@@ -225,15 +266,15 @@ def create_search_space(iterations=50, random_state=42) -> list:
                 'prep__numeric__pca__transformer':
                     Categorical(categories=[None]),
                 'prep__non_numeric__encoder__transformer':
-                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')])
+                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')]),
             },
-            1
+            1,
         ),
         (
             {
                 'model':
                     Categorical(categories=[
-                        RandomForestClassifier(n_estimators=500, random_state=random_state)
+                        RandomForestClassifier(n_estimators=500, random_state=random_state),
                     ]),
                 'model__max_features':
                     Real(low=0.01, high=0.95, prior='uniform', transform='identity'),
@@ -264,12 +305,12 @@ def create_search_space(iterations=50, random_state=42) -> list:
                     Categorical(
                         categories=[
                             OneHotEncoder(handle_unknown='ignore'),
-                            CustomOrdinalEncoder()
+                            CustomOrdinalEncoder(),
                         ],
-                        prior=[0.65, 0.35]
-                    )
+                        prior=[0.65, 0.35],
+                    ),
             },
-            iterations
+            iterations,
         ),
         (
             {
@@ -280,7 +321,7 @@ def create_search_space(iterations=50, random_state=42) -> list:
                             eval_metric='logloss',
                             use_label_encoder=False,
                             random_state=random_state,
-                        )
+                        ),
                     ]),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=[SimpleImputer()]),
@@ -289,9 +330,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
                 'prep__numeric__pca__transformer':
                     Categorical(categories=[None]),
                 'prep__non_numeric__encoder__transformer':
-                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')])
+                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')]),
             },
-            1
+            1,
         ),
         (
             {
@@ -302,7 +343,7 @@ def create_search_space(iterations=50, random_state=42) -> list:
                             eval_metric='logloss',
                             use_label_encoder=False,
                             random_state=random_state,
-                        )
+                        ),
                     ]),
                 'model__max_depth':
                     Integer(low=1, high=20, prior='log-uniform', transform='identity'),
@@ -328,7 +369,7 @@ def create_search_space(iterations=50, random_state=42) -> list:
                             SimpleImputer(),
                             SimpleImputer(strategy='median'),
                             SimpleImputer(strategy='most_frequent')],
-                        prior=[0.5, 0.25, 0.25]
+                        prior=[0.5, 0.25, 0.25],
                     ),
                 'prep__numeric__scaler__transformer':
                     Categorical(categories=[None]),
@@ -339,30 +380,30 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         categories=[
                             OneHotEncoder(handle_unknown='ignore'),
                             CustomOrdinalEncoder()],
-                        prior=[0.65, 0.35]
-                    )
+                        prior=[0.65, 0.35],
+                    ),
             },
-            iterations
+            iterations,
         ),
         (
             {
                 'model':
                     Categorical(categories=[
-                        LGBMClassifier(random_state=random_state)
+                        LGBMClassifier(random_state=random_state),
                     ]),
                 'prep__numeric__imputer__transformer': Categorical(categories=[SimpleImputer()]),
                 'prep__numeric__scaler__transformer': Categorical(categories=[None]),
                 'prep__numeric__pca__transformer': Categorical(categories=[None]),
                 'prep__non_numeric__encoder__transformer':
-                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')])
+                    Categorical(categories=[OneHotEncoder(handle_unknown='ignore')]),
             },
-            1
+            1,
         ),
         (
             {
                 'model':
                     Categorical(categories=[
-                        LGBMClassifier(random_state=random_state)
+                        LGBMClassifier(random_state=random_state),
                     ]),
                 'model__num_leaves': Integer(low=2, high=500, prior='uniform'),
                 'model__subsample': Real(low=0.3, high=1, prior='uniform', transform='identity'),
@@ -378,7 +419,7 @@ def create_search_space(iterations=50, random_state=42) -> list:
                             SimpleImputer(),
                             SimpleImputer(strategy='median'),
                             SimpleImputer(strategy='most_frequent')],
-                        prior=[0.5, 0.25, 0.25]
+                        prior=[0.5, 0.25, 0.25],
                     ),
                 'prep__numeric__scaler__transformer':
                     Categorical(categories=[None]),
@@ -389,17 +430,17 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         categories=[
                             OneHotEncoder(handle_unknown='ignore'),
                             CustomOrdinalEncoder()],
-                        prior=[0.65, 0.35]
-                    )
+                        prior=[0.65, 0.35],
+                    ),
             },
-            iterations
+            iterations,
         ),
     ]
 
 
-def get_search_space_mappings():
+def get_search_space_mappings() -> dict:
     """
-    This function returns a dictionary, with the keys being the paths from the
+    Returns a dictionary, with the keys being the paths from the
     `sklearn.pipeline.Pipeline` returned by the `create_pipeline()` function (e.g.
     "prep__numeric__imputer") and transforms the path into a 'friendlier' value (e.g. "imputer"),
     returned as the value in the dictionary.

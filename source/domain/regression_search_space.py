@@ -1,3 +1,5 @@
+"""Regression search space for the domain."""
+
 import numpy as np
 import pandas as pd
 from helpsk.sklearn_pipeline import CustomOrdinalEncoder
@@ -7,16 +9,18 @@ from sklearn.ensemble import ExtraTreesRegressor, RandomForestRegressor
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import ElasticNet
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, OneHotEncoder
-from skopt.space import Categorical, Real, Integer  # noqa
+from skopt.space import Categorical, Real, Integer
 from xgboost import XGBRegressor
 
 
 def create_pipeline(data: pd.DataFrame) -> Pipeline:
+    """Creates a pipeline for the data passed in."""
     assert data is not None
     return Pipeline(steps=[])
 
 
-def create_search_space(iterations=50, random_state=42) -> list:
+def create_search_space(iterations: int = 50, random_state: int = 42) -> list:
+    """Creates a search space for the regression problem."""
     return [
         (
             {
@@ -31,35 +35,35 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         categories=(
                             SimpleImputer(),
                             SimpleImputer(strategy='median'),
-                            SimpleImputer(strategy='most_frequent')
+                            SimpleImputer(strategy='most_frequent'),
                         ),
-                        prior=[0.5, 0.25, 0.25]
+                        prior=[0.5, 0.25, 0.25],
                     ),
                 'prep__numeric__scaler__transformer':
                     Categorical(
                         categories=(
                             StandardScaler(),
-                            MinMaxScaler()
+                            MinMaxScaler(),
                         ),
-                        prior=[0.65, 0.35]
+                        prior=[0.65, 0.35],
                     ),
                 'prep__numeric__pca__transformer':
                     Categorical(
                         categories=(
                             None,
                             PCA(n_components='mle')),
-                        prior=None
+                        prior=None,
                     ),
                 'prep__non_numeric__encoder__transformer':
                     Categorical(
                         categories=(
                             OneHotEncoder(handle_unknown='ignore'),
-                            CustomOrdinalEncoder()
+                            CustomOrdinalEncoder(),
                         ),
-                        prior=[0.65, 0.35]
-                    )
+                        prior=[0.65, 0.35],
+                    ),
             },
-            iterations
+            iterations,
         ),
         (
             {
@@ -72,9 +76,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
                 'prep__numeric__pca__transformer':
                     Categorical(categories=(None,), prior=None),
                 'prep__non_numeric__encoder__transformer':
-                    Categorical(categories=(OneHotEncoder(handle_unknown='ignore')), prior=None)
+                    Categorical(categories=(OneHotEncoder(handle_unknown='ignore')), prior=None),
             },
-            1
+            1,
         ),
         (
             {
@@ -83,10 +87,10 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         ExtraTreesRegressor(
                             bootstrap=True,
                             n_estimators=500,
-                            random_state=random_state
+                            random_state=random_state,
                         )
                     ),
-                    prior=None
+                    prior=None,
                 ),
                 'model__max_features':
                     Real(low=0.01, high=0.95, prior='uniform', transform='identity'),
@@ -106,26 +110,26 @@ def create_search_space(iterations=50, random_state=42) -> list:
                     Categorical(categories=(
                         SimpleImputer(),
                         SimpleImputer(strategy='median'),
-                        SimpleImputer(strategy='most_frequent')
+                        SimpleImputer(strategy='most_frequent'),
                     ),
-                    prior=[0.5, 0.25, 0.25]
+                    prior=[0.5, 0.25, 0.25],
                 ),
                 'prep__numeric__scaler__transformer': Categorical(categories=(None,), prior=None),
                 'prep__numeric__pca__transformer': Categorical(
                     categories=(
                         None,
-                        PCA(n_components='mle')
+                        PCA(n_components='mle'),
                     ),
-                    prior=None
+                    prior=None,
                 ),
                 'prep__non_numeric__encoder__transformer': Categorical(
                     categories=(
-                        OneHotEncoder(handle_unknown='ignore'), CustomOrdinalEncoder()
+                        OneHotEncoder(handle_unknown='ignore'), CustomOrdinalEncoder(),
                     ),
-                    prior=[0.65, 0.35]
-                )
+                    prior=[0.65, 0.35],
+                ),
             },
-            iterations
+            iterations,
         ),
         (
             {
@@ -134,7 +138,7 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         ExtraTreesRegressor(
                             bootstrap=True,
                             n_estimators=500,
-                            random_state=random_state
+                            random_state=random_state,
                         ),
                     ), prior=None),
                 'prep__numeric__imputer__transformer':
@@ -144,9 +148,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
                 'prep__numeric__pca__transformer':
                     Categorical(categories=(None,), prior=None),
                 'prep__non_numeric__encoder__transformer':
-                    Categorical(categories=(OneHotEncoder(handle_unknown='ignore')), prior=None)
+                    Categorical(categories=(OneHotEncoder(handle_unknown='ignore')), prior=None),
             },
-            1
+            1,
         ),
         (
             {
@@ -155,7 +159,7 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         categories=(
                             RandomForestRegressor(n_estimators=500, random_state=random_state),
                         ),
-                        prior=None
+                        prior=None,
                     ),
                 'model__max_features':
                     Real(low=0.01, high=0.95, prior='uniform', transform='identity'),
@@ -176,29 +180,29 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         categories=(
                             SimpleImputer(),
                             SimpleImputer(strategy='median'),
-                            SimpleImputer(strategy='most_frequent')
+                            SimpleImputer(strategy='most_frequent'),
                         ),
-                        prior=[0.5, 0.25, 0.25]
+                        prior=[0.5, 0.25, 0.25],
                     ),
                 'prep__numeric__scaler__transformer':
                     Categorical(categories=(None,), prior=None),
                 'prep__numeric__pca__transformer':
                     Categorical(
                         categories=(
-                            None, PCA(n_components='mle')
+                            None, PCA(n_components='mle'),
                         ),
-                        prior=None
+                        prior=None,
                     ),
                 'prep__non_numeric__encoder__transformer':
                     Categorical(
                         categories=(
                             OneHotEncoder(handle_unknown='ignore'),
-                            CustomOrdinalEncoder()
+                            CustomOrdinalEncoder(),
                         ),
-                        prior=[0.65, 0.35]
-                    )
+                        prior=[0.65, 0.35],
+                    ),
             },
-            iterations
+            iterations,
         ),
         (
             {
@@ -215,10 +219,10 @@ def create_search_space(iterations=50, random_state=42) -> list:
                 'prep__non_numeric__encoder__transformer':
                     Categorical(
                         categories=(OneHotEncoder(handle_unknown='ignore')),
-                        prior=None
-                    )
+                        prior=None,
+                    ),
             },
-            1
+            1,
         ),
         (
             {
@@ -234,10 +238,10 @@ def create_search_space(iterations=50, random_state=42) -> list:
                             predictor=None, random_state=random_state, reg_alpha=None,
                             reg_lambda=None, scale_pos_weight=None, subsample=None,
                             tree_method=None, use_label_encoder=False, validate_parameters=None,
-                            verbosity=None
+                            verbosity=None,
                         )
                     ),
-                    prior=None
+                    prior=None,
                 ),
                 'model__max_depth':
                     Integer(low=1, high=20, prior='log-uniform', transform='identity'),
@@ -262,9 +266,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
                         categories=(
                             SimpleImputer(),
                             SimpleImputer(strategy='median'),
-                            SimpleImputer(strategy='most_frequent')
+                            SimpleImputer(strategy='most_frequent'),
                         ),
-                        prior=[0.5, 0.25, 0.25]
+                        prior=[0.5, 0.25, 0.25],
                     ),
                 'prep__numeric__scaler__transformer':
                     Categorical(categories=(None,), prior=None),
@@ -274,12 +278,12 @@ def create_search_space(iterations=50, random_state=42) -> list:
                     Categorical(
                         categories=(
                             OneHotEncoder(handle_unknown='ignore'),
-                            CustomOrdinalEncoder()
+                            CustomOrdinalEncoder(),
                         ),
-                        prior=[0.65, 0.35]
-                    )
+                        prior=[0.65, 0.35],
+                    ),
             },
-            iterations
+            iterations,
         ),
         (
             {
@@ -296,10 +300,10 @@ def create_search_space(iterations=50, random_state=42) -> list:
                             predictor=None, random_state=random_state, reg_alpha=None,
                             reg_lambda=None, scale_pos_weight=None, subsample=None,
                             tree_method=None, use_label_encoder=False, validate_parameters=None,
-                            verbosity=None
+                            verbosity=None,
                         )
                     ),
-                    prior=None
+                    prior=None,
                 ),
                 'prep__numeric__imputer__transformer':
                     Categorical(categories=(SimpleImputer(),), prior=None),
@@ -310,9 +314,9 @@ def create_search_space(iterations=50, random_state=42) -> list:
                 'prep__non_numeric__encoder__transformer':
                     Categorical(
                         categories=(OneHotEncoder(handle_unknown='ignore')),
-                        prior=None
-                    )
+                        prior=None,
+                    ),
             },
-            1
-        )
+            1,
+        ),
     ]

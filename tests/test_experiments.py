@@ -1,4 +1,7 @@
+"""Tests for the experiment module."""
+
 import pytest
+import pandas as pd
 from helpsk.sklearn_eval import MLExperimentResults
 
 from source.domain.experiment import run_bayesian_search
@@ -6,7 +9,8 @@ from source.service.model_registry import ModelRegistry, MLStage
 
 
 @pytest.mark.usefixtures('start_ml_server')
-def test_experiment(data_split, tracking_uri):
+def test_experiment(data_split: tuple[pd.DataFrame], tracking_uri: str) -> None:
+    """Tests that the experiment runs and is logged correctly."""
     x_train, x_test, y_train, y_test = data_split
     experiment_name = 'test_experiment'
     model_name = 'credit_model'
@@ -16,7 +20,7 @@ def test_experiment(data_split, tracking_uri):
     n_repeats = 1
     # i.e. even the slightest gain in performance puts the new model into production
     required_performance_gain = 0.0001
-    tags = dict(type='BayesSearchCV')
+    tags = {'type': 'BayesSearchCV'}
 
     # check that experiment does not exist at this point
     registry = ModelRegistry(tracking_uri=tracking_uri)
