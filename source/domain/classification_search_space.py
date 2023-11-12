@@ -1,8 +1,9 @@
 """Defines the models and transformations to tune."""
 
-import helpsk as hlp
 import pandas as pd
+import helpsk.pandas as hpd
 from helpsk.sklearn_pipeline import CustomOrdinalEncoder
+from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
 from sklearn.dummy import DummyClassifier
@@ -16,24 +17,59 @@ from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 
 
+class TransformerChooser(BaseEstimator, TransformerMixin):
+    """
+    Transformer that wraps another Transformer. This allows different transformer objects to be
+    tuned. get_feature_names_out() is also implemented to allow the pipeline to return the
+    transformed feature names (used when creating the feature importance table).
+    """
+
+    def __init__(self, transformer: BaseEstimator | None = None):
+        """
+        Args:
+            transformer:
+                Transformer object (e.g. StandardScaler, MinMaxScaler).
+        """
+        self.transformer = transformer
+
+    def fit(self, X, y=None):  # noqa
+        """Fit implementation."""
+        if self.transformer is None:
+            return self
+
+        return self.transformer.fit(X, y)
+
+    def transform(self, X):  # noqa
+        """Transform implementation."""
+        if self.transformer is None:
+            return X
+
+        return self.transformer.transform(X)
+
+    def get_feature_names_out(self, input_features=None):  # noqa
+        if hasattr(self.transformer, 'get_feature_names_out'):
+            return self.transformer.get_feature_names_out(input_features)
+        return input_features
+
+
 def create_pipeline(data: pd.DataFrame) -> Pipeline:
     """Creates a `sklearn.pipeline.Pipeline` object that contains the transformations."""
-    numeric_column_names = hlp.pandas.get_numeric_columns(data)
-    non_numeric_column_names = hlp.pandas.get_non_numeric_columns(data)
+    numeric_column_names = hpd.get_numeric_columns(data)
+    non_numeric_column_names = hpd.get_non_numeric_columns(data)
 
     numeric_pipeline = Pipeline([
         # tune how we want to impute values
         # e.g. whether or not we want to impute (and how) or simply remove rows with missing values
-        ('imputer', hlp.sklearn_pipeline.TransformerChooser()),
+        ('imputer', TransformerChooser()),
         # tune how we want to scale values
         # e.g. MinMax/Normalization/None
-        ('scaler', hlp.sklearn_pipeline.TransformerChooser()),
-        ('pca', hlp.sklearn_pipeline.TransformerChooser()),
+        ('scaler', TransformerChooser()),
+        ('pca', TransformerChooser()),
     ])
     non_numeric_pipeline = Pipeline([
         # tune how we handle categoric values
         # e.g. One Hot, Custom-OrdinalEncoder
-        ('encoder', hlp.sklearn_pipeline.TransformerChooser()),
+        ('encoder', TransformerChooser()),
     ])
     # associate numeric/non-numeric columns with corresponding pipeline
     transformations_pipeline = ColumnTransformer([

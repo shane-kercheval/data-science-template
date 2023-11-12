@@ -113,11 +113,16 @@ experiment_3:
 
 experiments: experiment_1 experiment_2 experiment_3
 
+predictions:
+	python source/entrypoints/cli.py predict \
+		-input_file='/code/data/processed/credit.pkl'
+		-output_file='/code/output/credit_predictions.csv'
+
 remove_logs:
 	rm -f output/log.log
 
 ## Run entire workflow.
-all: data tests remove_logs exploration experiments
+all: tests data remove_logs exploration experiments predictions
 
 ## Delete all generated files (e.g. virtual)
 clean: mlflow_clean
