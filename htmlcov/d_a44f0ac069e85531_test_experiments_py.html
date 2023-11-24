@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="d_a44f0ac069e85531_test_model_registry_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.2">coverage.py v7.3.2</a>,
-            created at 2023-11-10 07:11 +0000
+            created at 2023-11-24 20:29 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -86,7 +86,7 @@
     <p class="run"><span class="n"><a id="t4" href="#t4">4</a></span><span class="t"><span class="key">import</span> <span class="nam">pandas</span> <span class="key">as</span> <span class="nam">pd</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t5" href="#t5">5</a></span><span class="t"><span class="key">from</span> <span class="nam">helpsk</span><span class="op">.</span><span class="nam">sklearn_eval</span> <span class="key">import</span> <span class="nam">MLExperimentResults</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t6" href="#t6">6</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t7" href="#t7">7</a></span><span class="t"><span class="key">from</span> <span class="nam">source</span><span class="op">.</span><span class="nam">domain</span><span class="op">.</span><span class="nam">experiment</span> <span class="key">import</span> <span class="nam">run_bayesian_search</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t7" href="#t7">7</a></span><span class="t"><span class="key">from</span> <span class="nam">source</span><span class="op">.</span><span class="nam">library</span><span class="op">.</span><span class="nam">experiment</span> <span class="key">import</span> <span class="nam">run_bayesian_search</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t8" href="#t8">8</a></span><span class="t"><span class="key">from</span> <span class="nam">source</span><span class="op">.</span><span class="nam">service</span><span class="op">.</span><span class="nam">model_registry</span> <span class="key">import</span> <span class="nam">ModelRegistry</span><span class="op">,</span> <span class="nam">MLStage</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t9" href="#t9">9</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t10" href="#t10">10</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -138,7 +138,7 @@
     <p class="pln"><span class="n"><a id="t56" href="#t56">56</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t57" href="#t57">57</a></span><span class="t">    <span class="nam">results</span> <span class="op">=</span> <span class="nam">tracker</span><span class="op">.</span><span class="nam">last_run</span><span class="op">.</span><span class="nam">download_artifact</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t">        <span class="nam">artifact_name</span><span class="op">=</span><span class="str">'experiment.yaml'</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">        <span class="nam">read_from</span><span class="op">=</span><span class="nam">MLExperimentResults</span><span class="op">.</span><span class="nam">from_yaml_file</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">        <span class="nam">read_from</span><span class="op">=</span><span class="nam">MLExperimentResults</span><span class="op">.</span><span class="nam">from_yaml_file</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t60" href="#t60">60</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t61" href="#t61">61</a></span><span class="t">    <span class="key">assert</span> <span class="nam">tracker</span><span class="op">.</span><span class="nam">last_run</span><span class="op">.</span><span class="nam">metrics</span><span class="op">[</span><span class="nam">results</span><span class="op">.</span><span class="nam">score_names</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">]</span> <span class="op">==</span> <span class="nam">results</span><span class="op">.</span><span class="nam">best_score</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t62" href="#t62">62</a></span><span class="t">    <span class="nam">previous_score</span> <span class="op">=</span> <span class="nam">results</span><span class="op">.</span><span class="nam">best_score</span>&nbsp;</span><span class="r"></span></p>
@@ -173,7 +173,7 @@
     <p class="pln"><span class="n"><a id="t91" href="#t91">91</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t92" href="#t92">92</a></span><span class="t">    <span class="nam">results</span> <span class="op">=</span> <span class="nam">tracker</span><span class="op">.</span><span class="nam">last_run</span><span class="op">.</span><span class="nam">download_artifact</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t93" href="#t93">93</a></span><span class="t">        <span class="nam">artifact_name</span><span class="op">=</span><span class="str">'experiment.yaml'</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t94" href="#t94">94</a></span><span class="t">        <span class="nam">read_from</span><span class="op">=</span><span class="nam">MLExperimentResults</span><span class="op">.</span><span class="nam">from_yaml_file</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t94" href="#t94">94</a></span><span class="t">        <span class="nam">read_from</span><span class="op">=</span><span class="nam">MLExperimentResults</span><span class="op">.</span><span class="nam">from_yaml_file</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t95" href="#t95">95</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t96" href="#t96">96</a></span><span class="t">    <span class="key">assert</span> <span class="nam">results</span><span class="op">.</span><span class="nam">best_score</span> <span class="op">></span> <span class="nam">previous_score</span>  <span class="com"># has to be better if it was put into production</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t97" href="#t97">97</a></span><span class="t">    <span class="key">assert</span> <span class="nam">tracker</span><span class="op">.</span><span class="nam">last_run</span><span class="op">.</span><span class="nam">metrics</span><span class="op">[</span><span class="nam">results</span><span class="op">.</span><span class="nam">score_names</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">]</span> <span class="op">==</span> <span class="nam">results</span><span class="op">.</span><span class="nam">best_score</span>&nbsp;</span><span class="r"></span></p>
@@ -186,7 +186,7 @@
             <a id="nextFileLink" class="nav" href="d_a44f0ac069e85531_test_model_registry_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.2">coverage.py v7.3.2</a>,
-            created at 2023-11-10 07:11 +0000
+            created at 2023-11-24 20:29 +0000
         </p>
     </div>
 </footer>

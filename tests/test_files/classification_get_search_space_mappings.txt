@@ -19,5 +19,5 @@
 'prep__numeric__imputer__transformer': 'imputer',
 'prep__numeric__scaler__transformer': 'scaler',
 'prep__numeric__pca__transformer': 'pca',
-'prep__non_numeric__encoder__transformer': 'encoder'
+'prep__savings_status__encoder__transformer': 'prep__savings_status__encoder'
 }
