@@ -19,7 +19,7 @@ from sklearn.preprocessing import label_binarize
 from helpsk.utility import read_pickle
 
 from source.config import config
-from source.domain import experiment
+from source.library import experiment
 from source.service import etl, model_registry
 
 

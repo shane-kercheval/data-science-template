@@ -46,7 +46,7 @@ mlflow_clean:
 # Project
 ####
 linting:
-	ruff check source/domain
+	ruff check source/library
 	ruff check source/entrypoints
 	ruff check source/service
 

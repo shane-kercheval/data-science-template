@@ -4,7 +4,7 @@ import pytest
 import pandas as pd
 from helpsk.sklearn_eval import MLExperimentResults
 
-from source.domain.experiment import run_bayesian_search
+from source.library.experiment import run_bayesian_search
 from source.service.model_registry import ModelRegistry, MLStage
 
 
@@ -56,7 +56,7 @@ def test_experiment(data_split: tuple[pd.DataFrame], tracking_uri: str) -> None:
 
     results = tracker.last_run.download_artifact(
         artifact_name='experiment.yaml',
-        read_from=MLExperimentResults.from_yaml_file
+        read_from=MLExperimentResults.from_yaml_file,
     )
     assert tracker.last_run.metrics[results.score_names[0]] == results.best_score
     previous_score = results.best_score
@@ -91,7 +91,7 @@ def test_experiment(data_split: tuple[pd.DataFrame], tracking_uri: str) -> None:
 
     results = tracker.last_run.download_artifact(
         artifact_name='experiment.yaml',
-        read_from=MLExperimentResults.from_yaml_file
+        read_from=MLExperimentResults.from_yaml_file,
     )
     assert results.best_score > previous_score  # has to be better if it was put into production
     assert tracker.last_run.metrics[results.score_names[0]] == results.best_score
